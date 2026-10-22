@@ -1,0 +1,244 @@
+/*
+ * Tailwind v4 Field Guide (React edition): the build-step stylesheet.
+ *
+ * This file is a showcase of what real Tailwind v4 CSS looks like when it goes
+ * through a bundler (@tailwindcss/vite). There is no tailwind.config.js: the
+ * whole configuration lives here, in CSS, one commented block at a time.
+ *
+ * Demo-specific CSS does NOT belong here. Each demo keeps its own stylesheet
+ * next to it (src/demos/<name>.css) and starts it with:
+ *     @reference "../index.css";
+ * so it can use @apply, theme() and the tokens below without duplicating them.
+ */
+
+/* ==========================================================================
+   1. ENGINE: one import pulls in theme, preflight and utilities
+   --------------------------------------------------------------------------
+   v4 replaces the three @tailwind directives with a single CSS import. The
+   Vite plugin scans the project for class names automatically; no `content`
+   array to maintain.
+   ========================================================================== */
+@import "tailwindcss";
+
+/* ==========================================================================
+   2. PLUGINS: first-party plugins are loaded from CSS with @plugin
+   --------------------------------------------------------------------------
+   typography: adds the `prose` class family (used by the Welcome demo)
+   forms:      `strategy: "class"` opts out of global form resets, so you get
+               .form-input / .form-select / .form-checkbox … only where you ask
+   ========================================================================== */
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms" {
+  strategy: "class";
+}
+
+/* ==========================================================================
+   3. SOURCE DETECTION: tune the automatic class scanner
+   --------------------------------------------------------------------------
+   `@source not` (v4.1) removes a path from scanning, relative to this file.
+   The README mentions class names in prose; it should not generate CSS.
+   ========================================================================== */
+@source not "../README.md";
+
+/* ==========================================================================
+   4. DARK MODE: a hybrid @custom-variant
+   --------------------------------------------------------------------------
+   Same behaviour as the HTML pages: `dark:` follows the OS setting, unless the
+   theme menu pins light or dark by writing data-theme on <html>.
+   ========================================================================== */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+}
+
+/* ==========================================================================
+   5. SEMANTIC TOKENS: plain CSS variables that change per theme
+   --------------------------------------------------------------------------
+   These are the same values as html/assets/showcase.css. They live outside
+   @theme on purpose: @theme variables are static design-system values, while
+   these are swapped at runtime (system / light / dark).
+   ========================================================================== */
+@layer base {
+  :root {
+    --bg: #f2f5f6;
+    --surface: #ffffff;
+    --ink: #0d1b21;
+    --muted: #53646c;
+    --line: #d5dfe3;
+    --stage: #e9eff1;
+    --dot: #c2cfd4;
+    --accent: #0369a1;
+    --accent-soft: #e0f0f9;
+    --code-bg: #0f1c22;
+    --code-fg: #d5e2e7;
+    --code-tag: #7dd3fc;
+    --code-attr: #c4b5fd;
+    --code-str: #bef264;
+    --code-variant: #fbbf24;
+    --code-comment: #7b8f97;
+    /* one colour per Tailwind release, used for "since v4.x" badges */
+    --v40: #0369a1;
+    --v41: #6d28d9;
+    --v42: #a16207;
+    --v43: #047857;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a1317;
+      --surface: #101d23;
+      --ink: #e3ecef;
+      --muted: #93a5ad;
+      --line: #22343c;
+      --stage: #0d181d;
+      --dot: #23353d;
+      --accent: #38bdf8;
+      --accent-soft: #0c2a38;
+      --code-bg: #071014;
+      --code-fg: #d5e2e7;
+      --v40: #38bdf8;
+      --v41: #a78bfa;
+      --v42: #fbbf24;
+      --v43: #34d399;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a1317;
+    --surface: #101d23;
+    --ink: #e3ecef;
+    --muted: #93a5ad;
+    --line: #22343c;
+    --stage: #0d181d;
+    --dot: #23353d;
+    --accent: #38bdf8;
+    --accent-soft: #0c2a38;
+    --code-bg: #071014;
+    --code-fg: #d5e2e7;
+    --v40: #38bdf8;
+    --v41: #a78bfa;
+    --v42: #fbbf24;
+    --v43: #34d399;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+}
+
+/* ==========================================================================
+   6. THEME BRIDGE: `@theme inline` exposes the tokens as utilities
+   --------------------------------------------------------------------------
+   bg-bg, bg-surface, text-ink, text-muted, border-line, bg-accent-soft,
+   text-code-str, text-v41 … all generated from these lines.
+   `inline` makes each utility emit var(--bg) directly instead of a theme
+   variable that points at it, so the utilities react to the data-theme
+   switch above (a plain @theme would freeze the value at :root).
+   ========================================================================== */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-stage: var(--stage);
+  --color-dot: var(--dot);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+  --color-code-tag: var(--code-tag);
+  --color-code-attr: var(--code-attr);
+  --color-code-str: var(--code-str);
+  --color-code-variant: var(--code-variant);
+  --color-code-comment: var(--code-comment);
+  --color-v40: var(--v40);
+  --color-v41: var(--v41);
+  --color-v42: var(--v42);
+  --color-v43: var(--v43);
+}
+
+/* ==========================================================================
+   7. FONTS AND SHAPE: static design-system values go in a plain @theme
+   --------------------------------------------------------------------------
+   Redefining --font-sans changes what `font-sans` (and therefore <body>)
+   resolves to. --font-display becomes the new `font-display` utility.
+   The families are loaded by the Google Fonts <link> in index.html; the rest
+   of each stack is the fallback while they load.
+   ========================================================================== */
+@theme {
+  --font-display: "Bricolage Grotesque", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --radius-card: 10px;
+}
+
+/* ==========================================================================
+   8. BASE: page defaults, written with @apply against the tokens above
+   ========================================================================== */
+@layer base {
+  body {
+    @apply bg-bg font-sans text-[15px] leading-relaxed text-ink antialiased;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+}
+
+/* ==========================================================================
+   9. CUSTOM UTILITIES: @utility registers real utilities
+   --------------------------------------------------------------------------
+   Unlike plain classes in a stylesheet, these work with every variant
+   (hover:, dark:, @md:, md:, group-hover: …) and are sorted into the
+   utilities layer, so they can still be overridden by other utilities.
+   ========================================================================== */
+
+/* bg-dots: the dotted-grid "stage" background, default 16px spacing.
+   Static form. */
+@utility bg-dots {
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+/* bg-dots-<n>: the same grid with a custom spacing, e.g. bg-dots-24.
+   Functional form: --value(integer) resolves the bare number after the dash. */
+@utility bg-dots-* {
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: calc(--value(integer) * 1px) calc(--value(integer) * 1px);
+}
+
+/* focus-ring: a consistent keyboard focus outline.
+   Nested selectors inside @utility are allowed, so the :focus-visible logic
+   ships with the utility instead of needing focus-visible: on every element. */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* prose-themed: points the typography plugin's colour variables at our tokens.
+   `prose prose-themed` follows system / light / dark without prose-invert. */
+@utility prose-themed {
+  --tw-prose-body: var(--ink);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-lead: var(--muted);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-hr: var(--line);
+  --tw-prose-quotes: var(--ink);
+  --tw-prose-quote-borders: var(--line);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-code: var(--code-fg);
+  --tw-prose-pre-bg: var(--code-bg);
+  --tw-prose-th-borders: var(--line);
+  --tw-prose-td-borders: var(--line);
+}
