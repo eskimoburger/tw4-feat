@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tailwind v4 Page Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* page-specific v4 CSS (@theme, @utility, @keyframes, …) goes below */
+  @theme {
+    --animate-float: float 3s ease-in-out infinite;
+    @keyframes float {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -10px; }
+    }
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="sc-intro">
+    <p class="sc-eyebrow">Page 00 · Template</p>
+    <h1>Page title</h1>
+    <p class="sc-lede">One or two sentences on what this page covers.</p>
+    <nav data-sc-toc aria-label="Features on this page"></nav>
+  </section>
+
+  <article class="sc-feature" id="custom-animation">
+    <div class="sc-notes">
+      <h2>Custom animations in <code>@theme</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Define an <code>--animate-*</code> theme variable and its <code>@keyframes</code> inside <code>@theme</code>, and Tailwind generates an <code>animate-*</code> utility for it.</p>
+      <ul class="sc-parts">
+        <li><code>--animate-*</code></li>
+        <li><code>animate-float</code></li>
+        <li><code>motion-reduce:animate-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/animation#customizing-your-theme" target="_blank" rel="noopener">Docs: animation</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Floating badge <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="custom-animation-1">Replay</button></figcaption>
+        <div class="sc-demo" id="custom-animation-1">
+          <div class="mx-auto w-fit animate-float rounded-xl bg-white px-4 py-3 shadow-lg motion-reduce:animate-none dark:bg-slate-800 dark:text-white">
+            New in v4
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-animation-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-float: float 3s ease-in-out infinite;
+  @keyframes float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -10px; }
+  }
+}</pre>
+      </figure>
+      <figure class="sc-example">
+        <figcaption>Staggered dots</figcaption>
+        <div class="sc-demo" id="custom-animation-2">
+          <div class="flex justify-center gap-3">
+            <span class="size-4 animate-float rounded-full bg-sky-500"></span>
+            <span class="size-4 animate-float rounded-full bg-sky-500 [animation-delay:150ms]"></span>
+            <span class="size-4 animate-float rounded-full bg-sky-500 [animation-delay:300ms]"></span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-animation-2"></pre>
+      </figure>
+    </div>
+  </article>
+</main>
+
+<footer data-sc-foot></footer>
+</body>
+</html>
