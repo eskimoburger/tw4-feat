@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tailwind v4 Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* hero demo: a registered angle so the conic border can animate */
+  @property --ix-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+  @theme {
+    --animate-ix-orbit: ix-orbit 5s linear infinite;
+    @keyframes ix-orbit {
+      to { --ix-angle: 360deg; }
+    }
+  }
+</style>
+<style>
+  /* overview layout: hero tray, release timeline, filter bar, page cards */
+  .ix-hero {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+  .ix-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .ix-stats b {
+    color: var(--ink);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .ix-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ix-cta a {
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: var(--surface);
+  }
+  .ix-cta a.ix-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--surface);
+  }
+  .ix-cta a:hover {
+    border-color: var(--accent);
+  }
+  .ix-tray {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  .ix-tray .sc-example {
+    background: var(--surface);
+  }
+  .ix-tray .sc-demo {
+    min-height: 11.5rem;
+    display: grid;
+    place-items: center;
+  }
+
+  .ix-section-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .ix-releases {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+  .ix-release {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+  .ix-release h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 19px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ix-release time {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .ix-release ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13.5px;
+    display: grid;
+    gap: 3px;
+  }
+  .ix-release a {
+    color: var(--accent);
+  }
+  .ix-release code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--accent-soft);
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+
+  .ix-filterbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .ix-filter {
+    font: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 12px;
+    cursor: pointer;
+  }
+  .ix-filter span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .ix-filter[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+
+  .ix-group {
+    display: grid;
+    gap: 12px;
+  }
+  .ix-group-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0;
+  }
+  .ix-cards {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+  }
+  .ix-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    min-width: 0;
+  }
+  .ix-card-motion {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  }
+  .ix-card-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 10px;
+    align-items: baseline;
+  }
+  .ix-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ix-card h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .ix-card h3 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .ix-card h3 a:hover {
+    color: var(--accent);
+  }
+  .ix-count {
+    grid-column: 2;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ix-blurb {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+  .ix-chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .ix-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    line-height: 1.3;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 3px 7px;
+    background: var(--bg);
+    overflow-wrap: anywhere;
+  }
+  .ix-chip:hover {
+    border-color: var(--accent);
+  }
+  .ix-dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--v40);
+  }
+  .ix-v {
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .ix-chip[data-v="4.1"] .ix-dot { background: var(--v41); }
+  .ix-chip[data-v="4.2"] .ix-dot { background: var(--v42); }
+  .ix-chip[data-v="4.3"] .ix-dot { background: var(--v43); }
+  .ix-chip[data-v="core"] .ix-dot { background: var(--muted); }
+  .ix-index[data-filter="4.0"] .ix-chips li:not(:has([data-v="4.0"])),
+  .ix-index[data-filter="4.1"] .ix-chips li:not(:has([data-v="4.1"])),
+  .ix-index[data-filter="4.2"] .ix-chips li:not(:has([data-v="4.2"])),
+  .ix-index[data-filter="4.3"] .ix-chips li:not(:has([data-v="4.3"])),
+  .ix-index[data-filter="core"] .ix-chips li:not(:has([data-v="core"])) {
+    display: none;
+  }
+  .ix-index {
+    display: grid;
+    gap: 28px;
+  }
+
+  .ix-run {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .ix-run .sc-example {
+    background: var(--surface);
+  }
+  .ix-run p {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="ix-hero">
+    <div class="sc-intro">
+      <p class="sc-eyebrow">Tailwind CSS v4.0 → v4.3.3</p>
+      <h1>Tailwind v4 Field Guide</h1>
+      <p class="sc-lede">Every Tailwind CSS v4 feature, each with live examples you can poke at and the exact markup underneath. The pages run straight in the browser with the official v4 build; a React app covers Motion and the features that need a build step.</p>
+      <ul class="ix-stats">
+        <li><b>356</b> features</li>
+        <li><b>1261</b> examples</li>
+        <li><b>14</b> pages</li>
+        <li><b>4</b> releases</li>
+      </ul>
+      <div class="ix-cta">
+        <a class="ix-primary" href="07-motion-transitions.html">Start with motion</a>
+        <a href="01-setup.html">Start from setup</a>
+        <a href="../react/README.md">React + Motion app</a>
+      </div>
+    </div>
+
+    <div class="ix-tray" aria-label="Three motion examples">
+      <figure class="sc-example">
+        <figcaption>Entry with <code>starting:</code> <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="ix-enter">Replay</button></figcaption>
+        <div class="sc-demo" id="ix-enter">
+          <ul class="grid w-full max-w-56 gap-2">
+            <li class="flex items-center gap-2.5 rounded-lg bg-white px-3 py-2 text-sm text-slate-800 shadow-sm ring-1 ring-slate-900/5 transition duration-500 ease-out starting:translate-y-3 starting:opacity-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><span class="size-2 rounded-full bg-emerald-500"></span>Deploy finished</li>
+            <li class="flex items-center gap-2.5 rounded-lg bg-white px-3 py-2 text-sm text-slate-800 shadow-sm ring-1 ring-slate-900/5 transition delay-150 duration-500 ease-out starting:translate-y-3 starting:opacity-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><span class="size-2 rounded-full bg-sky-500"></span>2 new comments</li>
+            <li class="flex items-center gap-2.5 rounded-lg bg-white px-3 py-2 text-sm text-slate-800 shadow-sm ring-1 ring-slate-900/5 transition delay-300 duration-500 ease-out starting:translate-y-3 starting:opacity-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><span class="size-2 rounded-full bg-amber-500"></span>Invoice #1042 paid</li>
+          </ul>
+        </div>
+      </figure>
+      <figure class="sc-example">
+        <figcaption>3D flip on hover or focus</figcaption>
+        <div class="sc-demo" id="ix-flip">
+          <button type="button" class="group h-32 w-52 cursor-pointer rounded-xl perspective-distant focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-500">
+            <span class="relative block size-full transition duration-700 ease-out transform-3d group-hover:rotate-y-180 group-focus-visible:rotate-y-180 motion-reduce:transition-none">
+              <span class="absolute inset-0 grid place-content-center gap-1 rounded-xl bg-linear-135 from-sky-500 to-indigo-600 text-white shadow-lg backface-hidden">
+                <span class="text-xs font-medium tracking-wide uppercase opacity-80">Front</span>
+                <span class="text-lg font-semibold">rotate-y-180</span>
+              </span>
+              <span class="absolute inset-0 grid rotate-y-180 place-content-center gap-1 rounded-xl bg-white text-slate-800 shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                <span class="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">Back</span>
+                <span class="text-lg font-semibold">backface-hidden</span>
+              </span>
+            </span>
+          </button>
+        </div>
+      </figure>
+      <figure class="sc-example">
+        <figcaption>Animated conic border with <code>@property</code></figcaption>
+        <div class="sc-demo" id="ix-orbit">
+          <div class="animate-ix-orbit rounded-2xl bg-conic-[from_var(--ix-angle),var(--color-sky-400),var(--color-violet-500),var(--color-emerald-400),var(--color-sky-400)] p-[2px] motion-reduce:animate-none">
+            <div class="rounded-[calc(1rem-2px)] bg-white px-5 py-4 text-center dark:bg-slate-900">
+              <p class="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">Pro plan</p>
+              <p class="font-semibold text-slate-900 dark:text-white"><span class="text-2xl">$24</span> / month</p>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="ix-index" aria-labelledby="releases-title" style="gap: 14px">
+    <h2 class="ix-section-title" id="releases-title">What each release added</h2>
+    <div class="ix-releases">
+      <article class="ix-release">
+        <h3>v4.0 <time datetime="2025-01-21">21 Jan 2025</time></h3>
+        <ul>
+          <li>New Oxide engine and <code>@import "tailwindcss"</code> (<a href="01-setup.html">setup</a>)</li>
+          <li>CSS-first config with <code>@theme</code> (<a href="02-theme.html">theme</a>)</li>
+          <li><code>@utility</code>, <code>@custom-variant</code>, <code>@reference</code> (<a href="03-directives.html">directives</a>)</li>
+          <li>Container queries in core (<a href="04-container-queries.html">container queries</a>)</li>
+          <li><code>not-*</code>, <code>in-*</code>, <code>nth-*</code>, <code>**:</code> (<a href="05-selector-variants.html">variants</a>)</li>
+          <li><code>starting:</code> and <code>transition-discrete</code> (<a href="07-motion-transitions.html">motion</a>)</li>
+          <li>3D transforms (<a href="09-3d-transforms.html">3D</a>), conic and radial gradients (<a href="10-gradients.html">gradients</a>)</li>
+          <li><code>inset-shadow-*</code>, <code>inset-ring-*</code> (<a href="11-effects.html">effects</a>), <code>field-sizing</code> (<a href="13-text-layout.html">text</a>)</li>
+        </ul>
+      </article>
+      <article class="ix-release">
+        <h3>v4.1 <time datetime="2025-04-01">1 Apr 2025</time></h3>
+        <ul>
+          <li><code>text-shadow-*</code>, <code>mask-*</code>, coloured <code>drop-shadow</code> (<a href="11-effects.html">effects</a>)</li>
+          <li><code>@source not</code> and <code>@source inline()</code> (<a href="01-setup.html">setup</a>)</li>
+          <li><code>user-valid</code>, <code>details-content</code>, <code>pointer-*</code>, <code>noscript</code> (<a href="06-environment-variants.html">variants</a>)</li>
+          <li><code>wrap-break-word</code>, <code>items-baseline-last</code>, safe alignment (<a href="13-text-layout.html">text</a>)</li>
+        </ul>
+      </article>
+      <article class="ix-release">
+        <h3>v4.2 <time datetime="2026-02-18">18 Feb 2026</time></h3>
+        <ul>
+          <li>Mauve, olive, mist and taupe palettes (<a href="02-theme.html">theme</a>)</li>
+          <li>First-party webpack plugin (<a href="01-setup.html">setup</a>)</li>
+          <li>Logical properties: <code>pbs-*</code>, <code>inline-*</code>, <code>inset-s-*</code> (<a href="13-text-layout.html">text</a>)</li>
+          <li><code>font-features-*</code> (<a href="13-text-layout.html">text</a>)</li>
+        </ul>
+      </article>
+      <article class="ix-release">
+        <h3>v4.3 <time datetime="2026-05-08">8 May 2026</time></h3>
+        <ul>
+          <li><code>scrollbar-*</code>, <code>zoom-*</code>, <code>tab-*</code> (<a href="14-v43-utilities.html">4.3 utilities</a>)</li>
+          <li><code>@container-size</code> (<a href="04-container-queries.html">container queries</a>)</li>
+          <li>Stacked and compound <code>@variant</code>, <code>--default()</code> (<a href="03-directives.html">directives</a>)</li>
+          <li>Patches: CLI <code>--silent</code> (4.3.1), bare <code>auto-rows-12</code> (4.3.2), <code>--watch --poll</code> (4.3.3)</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="ix-index" id="pages" aria-label="All pages">
+    <div class="ix-filterbar" role="group" aria-label="Filter features by release">
+      <button class="ix-filter" type="button" data-filter="all" aria-pressed="true">Everything <span>356</span></button><button class="ix-filter" type="button" data-filter="4.0" aria-pressed="false">New in v4.0 <span>187</span></button><button class="ix-filter" type="button" data-filter="4.1" aria-pressed="false">New in v4.1 <span>40</span></button><button class="ix-filter" type="button" data-filter="4.2" aria-pressed="false">New in v4.2 <span>8</span></button><button class="ix-filter" type="button" data-filter="4.3" aria-pressed="false">New in v4.3 <span>20</span></button><button class="ix-filter" type="button" data-filter="core" aria-pressed="false">Core (pre-v4) <span>101</span></button>
+    </div>
+
+  <section class="ix-group" aria-labelledby="g-foundations">
+    <h2 class="ix-group-title" id="g-foundations">Foundations</h2>
+    <div class="ix-cards">
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">01</span>
+          <h3><a href="01-setup.html">Setup &amp; engine</a></h3>
+          <span class="ix-count" data-count>31 features · 105 examples</span>
+        </header>
+        <p class="ix-blurb">Install paths (Vite, PostCSS, CLI, CDN, webpack), the one-line import, content detection, @source, prefixes, layers and v4 class syntax.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="01-setup.html#install-paths"><span class="ix-dot" aria-hidden="true"></span>Choosing an installation path<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#install-vite"><span class="ix-dot" aria-hidden="true"></span>Vite plugin<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#install-postcss"><span class="ix-dot" aria-hidden="true"></span>PostCSS plugin<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#install-cli"><span class="ix-dot" aria-hidden="true"></span>Tailwind CLI<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#install-browser-cdn"><span class="ix-dot" aria-hidden="true"></span>Browser build (Play CDN)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.2" href="01-setup.html#install-webpack"><span class="ix-dot" aria-hidden="true"></span>webpack and Rspack loader<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#single-import"><span class="ix-dot" aria-hidden="true"></span>One line: @import &quot;tailwindcss&quot;<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#import-bundling"><span class="ix-dot" aria-hidden="true"></span>Built-in imports, nesting and vendor prefixes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#auto-content-detection"><span class="ix-dot" aria-hidden="true"></span>Automatic content detection<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#source-directive"><span class="ix-dot" aria-hidden="true"></span>@source, source() and source(none)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="01-setup.html#source-inline"><span class="ix-dot" aria-hidden="true"></span>@source inline() safelist<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="01-setup.html#source-not"><span class="ix-dot" aria-hidden="true"></span>@source not ignore paths<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="01-setup.html#source-not-inline"><span class="ix-dot" aria-hidden="true"></span>@source not inline() block classes<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="01-setup.html#arbitrary-values"><span class="ix-dot" aria-hidden="true"></span>Arbitrary values in square brackets<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#css-var-shorthand"><span class="ix-dot" aria-hidden="true"></span>CSS variable shorthand bg-(--brand)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#type-hints"><span class="ix-dot" aria-hidden="true"></span>Type hints: text-(length:--size)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#bare-values"><span class="ix-dot" aria-hidden="true"></span>Bare values: grid-cols-15, w-17, data-current:<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="01-setup.html#arbitrary-properties"><span class="ix-dot" aria-hidden="true"></span>Arbitrary properties: [mask-type:luminance]<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="01-setup.html#arbitrary-variants"><span class="ix-dot" aria-hidden="true"></span>Arbitrary variants: [&amp;&gt;*]:p-2<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#cascade-layers"><span class="ix-dot" aria-hidden="true"></span>Native cascade layers<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#layer-base-components"><span class="ix-dot" aria-hidden="true"></span>Base styles and component classes with @layer<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#preflight"><span class="ix-dot" aria-hidden="true"></span>Preflight and the v4 base-style changes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#import-pieces"><span class="ix-dot" aria-hidden="true"></span>Import the pieces separately (drop Preflight)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#important-modifier"><span class="ix-dot" aria-hidden="true"></span>Important modifier: trailing !<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#prefix"><span class="ix-dot" aria-hidden="true"></span>Prefix: prefix(tw)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#important-flag"><span class="ix-dot" aria-hidden="true"></span>Important flag: @import &quot;tailwindcss&quot; important<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#modern-css"><span class="ix-dot" aria-hidden="true"></span>Modern CSS under the hood<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#browser-requirements"><span class="ix-dot" aria-hidden="true"></span>Browser requirements<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="01-setup.html#engine-performance"><span class="ix-dot" aria-hidden="true"></span>The new engine, in numbers<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="01-setup.html#editor-intellisense"><span class="ix-dot" aria-hidden="true"></span>Editor setup: Tailwind CSS IntelliSense<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="01-setup.html#prettier-plugin"><span class="ix-dot" aria-hidden="true"></span>Class sorting with prettier-plugin-tailwindcss<span class="ix-v">core</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">02</span>
+          <h3><a href="02-theme.html">Theme variables</a></h3>
+          <span class="ix-count" data-count>21 features · 74 examples</span>
+        </header>
+        <p class="ix-blurb">@theme and every namespace, the single --spacing scale, the OKLCH palette with the 4.2 colours, breakpoints and fonts.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="02-theme.html#theme-directive"><span class="ix-dot" aria-hidden="true"></span>@theme vs plain :root variables<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#namespace-table"><span class="ix-dot" aria-hidden="true"></span>Theme variable namespaces<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#extend-override-reset"><span class="ix-dot" aria-hidden="true"></span>Extend, override and reset the default theme<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#dynamic-spacing"><span class="ix-dot" aria-hidden="true"></span>One --spacing variable drives the scale<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#using-theme-variables"><span class="ix-dot" aria-hidden="true"></span>Using theme variables in CSS, inline styles and JavaScript<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#oklch-palette"><span class="ix-dot" aria-hidden="true"></span>The OKLCH default palette<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#opacity-modifiers"><span class="ix-dot" aria-hidden="true"></span>Opacity modifiers with color-mix()<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#custom-breakpoints"><span class="ix-dot" aria-hidden="true"></span>Custom and removed breakpoints<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="02-theme.html#range-variants"><span class="ix-dot" aria-hidden="true"></span>max-*, breakpoint ranges and min-[…]<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#theme-inline"><span class="ix-dot" aria-hidden="true"></span>@theme inline: tokens that point at other variables<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#theme-static"><span class="ix-dot" aria-hidden="true"></span>@theme static: always emit the variables<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#custom-fonts"><span class="ix-dot" aria-hidden="true"></span>Custom font families with --font-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#custom-type-scale"><span class="ix-dot" aria-hidden="true"></span>Type scale tokens with line-height, tracking and weight<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#custom-radius-shadow"><span class="ix-dot" aria-hidden="true"></span>Radius and shadow scales<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#custom-ease-animate"><span class="ix-dot" aria-hidden="true"></span>Custom easing and animations<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#scoped-theming"><span class="ix-dot" aria-hidden="true"></span>Re-theme a subtree at runtime<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#sharing-theme"><span class="ix-dot" aria-hidden="true"></span>Share a theme across projects<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#theme-options"><span class="ix-dot" aria-hidden="true"></span>@theme default, reference and import options<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#container-sizes"><span class="ix-dot" aria-hidden="true"></span>--container-*: container variants and sizes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#custom-misc-scales"><span class="ix-dot" aria-hidden="true"></span>Blur, perspective and aspect-ratio scales<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="02-theme.html#default-theme-vars"><span class="ix-dot" aria-hidden="true"></span>--default-* variables<span class="ix-v">v4.0</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">03</span>
+          <h3><a href="03-directives.html">Directives &amp; functions</a></h3>
+          <span class="ix-count" data-count>30 features · 100 examples</span>
+        </header>
+        <p class="ix-blurb">@utility (with --value, --modifier and --default), @variant, @custom-variant, @apply, @reference, @plugin, @config and the CSS functions.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-simple"><span class="ix-dot" aria-hidden="true"></span>Simple @utility<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-nested"><span class="ix-dot" aria-hidden="true"></span>@utility with nested selectors<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="03-directives.html#apply-directive"><span class="ix-dot" aria-hidden="true"></span>@apply in custom CSS<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#layer-vs-utility"><span class="ix-dot" aria-hidden="true"></span>@layer components vs @utility<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#variant-directive"><span class="ix-dot" aria-hidden="true"></span>@variant in custom CSS<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.3" href="03-directives.html#variant-stacked-compound"><span class="ix-dot" aria-hidden="true"></span>Stacked and compound @variant<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#custom-variant-shorthand"><span class="ix-dot" aria-hidden="true"></span>@custom-variant shorthand<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#custom-variant-block"><span class="ix-dot" aria-hidden="true"></span>@custom-variant block form with @slot<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="03-directives.html#custom-variant-nested-variant"><span class="ix-dot" aria-hidden="true"></span>@variant inside @custom-variant<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-theme-values"><span class="ix-dot" aria-hidden="true"></span>Functional utilities from theme keys<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-bare-values"><span class="ix-dot" aria-hidden="true"></span>Bare values: --value(integer)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-arbitrary-values"><span class="ix-dot" aria-hidden="true"></span>Arbitrary values: --value([length])<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-fallbacks"><span class="ix-dot" aria-hidden="true"></span>Several --value() fallbacks<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-modifier"><span class="ix-dot" aria-hidden="true"></span>--modifier() for the /modifier part<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-negative"><span class="ix-dot" aria-hidden="true"></span>Negative utilities: @utility -name-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-ratio"><span class="ix-dot" aria-hidden="true"></span>Fractions and ratios: --value(ratio)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#utility-literal-values"><span class="ix-dot" aria-hidden="true"></span>Literal values: --value('auto')<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.3" href="03-directives.html#utility-default"><span class="ix-dot" aria-hidden="true"></span>--default() in --value() and --modifier()<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="03-directives.html#utility-same-name"><span class="ix-dot" aria-hidden="true"></span>Same utility defined more than once<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#alpha-function"><span class="ix-dot" aria-hidden="true"></span>--alpha(): adjust colour opacity<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#spacing-function"><span class="ix-dot" aria-hidden="true"></span>--spacing(): theme-based spacing<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#theme-function"><span class="ix-dot" aria-hidden="true"></span>--theme(): read theme variables<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="03-directives.html#legacy-theme-function"><span class="ix-dot" aria-hidden="true"></span>Legacy theme() (deprecated)<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#reference-directive"><span class="ix-dot" aria-hidden="true"></span>@reference for Vue, Svelte and CSS modules<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#config-directive"><span class="ix-dot" aria-hidden="true"></span>@config: load a legacy JavaScript config<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#plugin-directive"><span class="ix-dot" aria-hidden="true"></span>@plugin: load JavaScript plugins from CSS<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#plugin-options"><span class="ix-dot" aria-hidden="true"></span>@plugin options block<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#source-directive"><span class="ix-dot" aria-hidden="true"></span>@source: register extra files to scan<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="03-directives.html#source-inline"><span class="ix-dot" aria-hidden="true"></span>@source not and @source inline()<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="03-directives.html#import-directive"><span class="ix-dot" aria-hidden="true"></span>@import &quot;tailwindcss&quot; and its options<span class="ix-v">v4.0</span></a></li></ul>
+      </article>
+    </div>
+  </section>
+  <section class="ix-group" aria-labelledby="g-layout">
+    <h2 class="ix-group-title" id="g-layout">Layout & variants</h2>
+    <div class="ix-cards">
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">04</span>
+          <h3><a href="04-container-queries.html">Container queries</a></h3>
+          <span class="ix-count" data-count>20 features · 60 examples</span>
+        </header>
+        <p class="ix-blurb">@container, size and range variants, named containers, container units and @container-size, in resizable demos.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-basic"><span class="ix-dot" aria-hidden="true"></span>@container and the size variants<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#live-resize"><span class="ix-dot" aria-hidden="true"></span>Drag to resize: the live playground<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#portability"><span class="ix-dot" aria-hidden="true"></span>One component, two slots<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-vs-viewport"><span class="ix-dot" aria-hidden="true"></span>Container queries or viewport breakpoints?<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#product-grid"><span class="ix-dot" aria-hidden="true"></span>A grid whose columns follow its container<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-max"><span class="ix-dot" aria-hidden="true"></span>@max-*: below a container size<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-range"><span class="ix-dot" aria-hidden="true"></span>Container query ranges<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-named"><span class="ix-dot" aria-hidden="true"></span>Named containers<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#nested-containers"><span class="ix-dot" aria-hidden="true"></span>Nested containers<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-arbitrary"><span class="ix-dot" aria-hidden="true"></span>Arbitrary container sizes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-scale"><span class="ix-dot" aria-hidden="true"></span>The container size scale<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-custom-sizes"><span class="ix-dot" aria-hidden="true"></span>Custom container sizes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="04-container-queries.html#container-units"><span class="ix-dot" aria-hidden="true"></span>Container query units<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="04-container-queries.html#fluid-type"><span class="ix-dot" aria-hidden="true"></span>Fluid type with cqi<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.3" href="04-container-queries.html#container-size"><span class="ix-dot" aria-hidden="true"></span>@container-size: size containers<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="04-container-queries.html#container-height"><span class="ix-dot" aria-hidden="true"></span>Height and aspect-ratio container queries<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-not"><span class="ix-dot" aria-hidden="true"></span>Negated container queries (not-@md:)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-utility"><span class="ix-dot" aria-hidden="true"></span>container is not @container<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="04-container-queries.html#container-normal"><span class="ix-dot" aria-hidden="true"></span>@container-normal and @container-[…]<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="04-container-queries.html#container-style-queries"><span class="ix-dot" aria-hidden="true"></span>Container style queries (bonus)<span class="ix-v">core</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">05</span>
+          <h3><a href="05-selector-variants.html">Selector variants</a></h3>
+          <span class="ix-count" data-count>29 features · 118 examples</span>
+        </header>
+        <p class="ix-blurb">not-*, in-*, nth-*, has-*, named groups and peers, *: and **:, data-*, aria-*, supports-*, pseudo-elements and arbitrary variants.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#group-variants"><span class="ix-dot" aria-hidden="true"></span>group and group-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#peer-variants"><span class="ix-dot" aria-hidden="true"></span>peer and peer-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#named-groups-peers"><span class="ix-dot" aria-hidden="true"></span>Named groups and peers<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#has-variant"><span class="ix-dot" aria-hidden="true"></span>has-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#group-has"><span class="ix-dot" aria-hidden="true"></span>group-has-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#peer-has"><span class="ix-dot" aria-hidden="true"></span>peer-has-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#data-variants"><span class="ix-dot" aria-hidden="true"></span>data-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#aria-variants"><span class="ix-dot" aria-hidden="true"></span>aria-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#not-variant"><span class="ix-dot" aria-hidden="true"></span>not-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#not-media-supports"><span class="ix-dot" aria-hidden="true"></span>not- with @supports and media queries<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#supports-variants"><span class="ix-dot" aria-hidden="true"></span>supports-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#in-variant"><span class="ix-dot" aria-hidden="true"></span>in-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#structural-pseudo-classes"><span class="ix-dot" aria-hidden="true"></span>first, last, only, odd, even and empty<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#nth-variants"><span class="ix-dot" aria-hidden="true"></span>nth-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#children-variant"><span class="ix-dot" aria-hidden="true"></span>*: direct children<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#descendant-variant"><span class="ix-dot" aria-hidden="true"></span>**: all descendants<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#arbitrary-variants"><span class="ix-dot" aria-hidden="true"></span>Arbitrary variants<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#arbitrary-groups-peers"><span class="ix-dot" aria-hidden="true"></span>Arbitrary group-[…] and peer-[…]<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#variant-stacking-order"><span class="ix-dot" aria-hidden="true"></span>Variant stacking order<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="05-selector-variants.html#variant-compounding-rules"><span class="ix-dot" aria-hidden="true"></span>What each wrapper variant can wrap<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#target-focus-visited"><span class="ix-dot" aria-hidden="true"></span>target:, focus-within:, focus-visible:, visited:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#before-after"><span class="ix-dot" aria-hidden="true"></span>before: and after:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#placeholder-variant"><span class="ix-dot" aria-hidden="true"></span>placeholder:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#file-variant"><span class="ix-dot" aria-hidden="true"></span>file:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#marker-variant"><span class="ix-dot" aria-hidden="true"></span>marker:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#selection-variant"><span class="ix-dot" aria-hidden="true"></span>selection:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#first-line-letter"><span class="ix-dot" aria-hidden="true"></span>first-line: and first-letter:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#backdrop-variant"><span class="ix-dot" aria-hidden="true"></span>backdrop:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="05-selector-variants.html#rtl-ltr"><span class="ix-dot" aria-hidden="true"></span>rtl: and ltr:<span class="ix-v">core</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">06</span>
+          <h3><a href="06-environment-variants.html">Environment &amp; form variants</a></h3>
+          <span class="ix-count" data-count>34 features · 104 examples</span>
+        </header>
+        <p class="ix-blurb">user-valid, open on details, dialog and popover, details-content, inert, pointer-*, motion, contrast, forced colours, print and noscript.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.1" href="06-environment-variants.html#user-valid-user-invalid"><span class="ix-dot" aria-hidden="true"></span>user-valid: / user-invalid:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#validation-states"><span class="ix-dot" aria-hidden="true"></span>invalid: valid: required: optional:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#placeholder-shown"><span class="ix-dot" aria-hidden="true"></span>placeholder-shown:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#checked"><span class="ix-dot" aria-hidden="true"></span>checked: for checkboxes and radios<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#indeterminate"><span class="ix-dot" aria-hidden="true"></span>indeterminate:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#enabled-disabled"><span class="ix-dot" aria-hidden="true"></span>enabled: / disabled:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#focus-visible"><span class="ix-dot" aria-hidden="true"></span>focus-visible:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#read-only"><span class="ix-dot" aria-hidden="true"></span>read-only:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#in-range-out-of-range"><span class="ix-dot" aria-hidden="true"></span>in-range: / out-of-range:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#autofill"><span class="ix-dot" aria-hidden="true"></span>autofill:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#field-sizing"><span class="ix-dot" aria-hidden="true"></span>field-sizing-content<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#accent-caret"><span class="ix-dot" aria-hidden="true"></span>accent-* and caret-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#color-scheme"><span class="ix-dot" aria-hidden="true"></span>scheme-* (color-scheme)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#open-details"><span class="ix-dot" aria-hidden="true"></span>open: on &lt;details&gt;<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#open-popover"><span class="ix-dot" aria-hidden="true"></span>open: on popovers<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#open-dialog"><span class="ix-dot" aria-hidden="true"></span>open: on &lt;dialog&gt;<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="06-environment-variants.html#details-content"><span class="ix-dot" aria-hidden="true"></span>details-content:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#inert"><span class="ix-dot" aria-hidden="true"></span>inert:<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#starting-variant"><span class="ix-dot" aria-hidden="true"></span>starting: (@starting-style)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#hover-media-query"><span class="ix-dot" aria-hidden="true"></span>hover: only on hover-capable devices<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="06-environment-variants.html#pointer-variants"><span class="ix-dot" aria-hidden="true"></span>pointer-fine: pointer-coarse: pointer-none:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="06-environment-variants.html#any-pointer"><span class="ix-dot" aria-hidden="true"></span>any-pointer-fine: any-pointer-coarse: any-pointer-none:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#motion-variants"><span class="ix-dot" aria-hidden="true"></span>motion-safe: / motion-reduce:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#contrast-variants"><span class="ix-dot" aria-hidden="true"></span>contrast-more: / contrast-less:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#forced-colors"><span class="ix-dot" aria-hidden="true"></span>forced-colors:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#forced-color-adjust"><span class="ix-dot" aria-hidden="true"></span>forced-color-adjust-none / -auto<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#orientation"><span class="ix-dot" aria-hidden="true"></span>portrait: / landscape:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#print-variant"><span class="ix-dot" aria-hidden="true"></span>print:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="06-environment-variants.html#inverted-colors"><span class="ix-dot" aria-hidden="true"></span>inverted-colors:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="06-environment-variants.html#noscript"><span class="ix-dot" aria-hidden="true"></span>noscript:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#not-media-variants"><span class="ix-dot" aria-hidden="true"></span>not-* with media variants<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="06-environment-variants.html#custom-variants-environment"><span class="ix-dot" aria-hidden="true"></span>@custom-variant for environment checks<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#dark-variant"><span class="ix-dot" aria-hidden="true"></span>dark: (see the dark mode page)<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="06-environment-variants.html#status-board"><span class="ix-dot" aria-hidden="true"></span>Environment status board<span class="ix-v">core</span></a></li></ul>
+      </article>
+    </div>
+  </section>
+  <section class="ix-group" aria-labelledby="g-motion">
+    <h2 class="ix-group-title" id="g-motion">Motion</h2>
+    <div class="ix-cards">
+      <article class="ix-card ix-card-motion">
+        <header class="ix-card-head">
+          <span class="ix-num">07</span>
+          <h3><a href="07-motion-transitions.html">Motion: transitions</a></h3>
+          <span class="ix-count" data-count>31 features · 106 examples</span>
+        </header>
+        <p class="ix-blurb">Durations, easing with linear() springs, transition-discrete, starting: entry animations, dialogs, popovers, accordions and staggers.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#transition-property"><span class="ix-dot" aria-hidden="true"></span>Which properties transition<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#default-transition"><span class="ix-dot" aria-hidden="true"></span>What bare transition covers, and the default theme variables<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#transition-duration"><span class="ix-dot" aria-hidden="true"></span>How long: duration-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#transition-delay"><span class="ix-dot" aria-hidden="true"></span>Wait first: delay-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#ease-utilities"><span class="ix-dot" aria-hidden="true"></span>How it moves: ease-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#custom-easing"><span class="ix-dot" aria-hidden="true"></span>Custom easing in @theme<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#easing-race"><span class="ix-dot" aria-hidden="true"></span>Easing race track<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#hover-micro"><span class="ix-dot" aria-hidden="true"></span>Hover and focus micro-interactions<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#individual-transforms"><span class="ix-dot" aria-hidden="true"></span>translate, scale and rotate compose<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#motion-safe-reduce"><span class="ix-dot" aria-hidden="true"></span>motion-safe: and motion-reduce:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#transition-discrete"><span class="ix-dot" aria-hidden="true"></span>Animate display: none with transition-discrete<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#starting-variant"><span class="ix-dot" aria-hidden="true"></span>starting: for entry animations<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#popover-enter-exit"><span class="ix-dot" aria-hidden="true"></span>Popover enter and exit with open:<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#dialog-enter-exit"><span class="ix-dot" aria-hidden="true"></span>&lt;dialog&gt; enter and exit with backdrop:<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#toast-enter-exit"><span class="ix-dot" aria-hidden="true"></span>Toasts: starting: in, data-closing: out<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="07-motion-transitions.html#details-accordion"><span class="ix-dot" aria-hidden="true"></span>Native accordion with details-content:<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#grid-rows-accordion"><span class="ix-dot" aria-hidden="true"></span>Cross-browser accordion: grid-rows-[0fr] to [1fr]<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#interpolate-size"><span class="ix-dot" aria-hidden="true"></span>Animate to height: auto<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#toggle-switch"><span class="ix-dot" aria-hidden="true"></span>Switches and checkboxes with peer-checked: and has-checked:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#state-rotate"><span class="ix-dot" aria-hidden="true"></span>Rotate icons from state: data-*, aria-*, open:<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#heart-pop"><span class="ix-dot" aria-hidden="true"></span>Like, rating and success morphs<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#stagger-var"><span class="ix-dot" aria-hidden="true"></span>Staggered transitions with a CSS variable<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#stagger-nth"><span class="ix-dot" aria-hidden="true"></span>Staggers from position: nth-* and sibling-index()<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#gradient-transitions"><span class="ix-dot" aria-hidden="true"></span>Gradient colour stops transition<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="07-motion-transitions.html#bg-position-slide"><span class="ix-dot" aria-hidden="true"></span>Sliding gradients with bg-size and bg-position<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#sliding-indicator"><span class="ix-dot" aria-hidden="true"></span>Sliding indicator driven by a CSS variable<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#will-change"><span class="ix-dot" aria-hidden="true"></span>will-change-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="07-motion-transitions.html#pointer-hover"><span class="ix-dot" aria-hidden="true"></span>Hover is capability-gated: pointer-coarse: and friends<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#motion-system"><span class="ix-dot" aria-hidden="true"></span>Motion tokens: @custom-variant, @utility, @keyframes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="07-motion-transitions.html#browser-support"><span class="ix-dot" aria-hidden="true"></span>What your browser can do<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="07-motion-transitions.html#react-patterns"><span class="ix-dot" aria-hidden="true"></span>The same patterns in React<span class="ix-v">v4.0</span></a></li></ul>
+      </article>
+      <article class="ix-card ix-card-motion">
+        <header class="ix-card-head">
+          <span class="ix-num">08</span>
+          <h3><a href="08-motion-keyframes.html">Motion: keyframes &amp; scroll</a></h3>
+          <span class="ix-count" data-count>32 features · 115 examples</span>
+        </header>
+        <p class="ix-blurb">Built-in and custom @keyframes, animation controls, @property glows, scroll-driven animations, View Transitions, SVG and text effects.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#animate-spin"><span class="ix-dot" aria-hidden="true"></span>animate-spin<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#animate-pulse"><span class="ix-dot" aria-hidden="true"></span>animate-pulse<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#animate-ping"><span class="ix-dot" aria-hidden="true"></span>animate-ping<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#animate-bounce"><span class="ix-dot" aria-hidden="true"></span>animate-bounce<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#motion-safe-reduce"><span class="ix-dot" aria-hidden="true"></span>animate-none, motion-safe: and motion-reduce:<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#theme-animate-keyframes"><span class="ix-dot" aria-hidden="true"></span>Custom animations in @theme<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#arbitrary-animate"><span class="ix-dot" aria-hidden="true"></span>animate-[…] and animate-(--var)<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#entrance-fade-pop"><span class="ix-dot" aria-hidden="true"></span>Entrances: fade-in-up and pop<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#stagger-entrance"><span class="ix-dot" aria-hidden="true"></span>Staggered entrance with --i<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#animation-controls"><span class="ix-dot" aria-hidden="true"></span>Animation controls with arbitrary properties<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#utility-animate-delay"><span class="ix-dot" aria-hidden="true"></span>Your own scale: animate-delay-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="08-motion-keyframes.html#shimmer-skeleton"><span class="ix-dot" aria-hidden="true"></span>Shimmer skeleton loader<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#marquee"><span class="ix-dot" aria-hidden="true"></span>Infinite marquee and logo strip<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#micro-loops"><span class="ix-dot" aria-hidden="true"></span>Attention loops: heartbeat, float, wiggle, ring-pulse<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#typewriter-caret"><span class="ix-dot" aria-hidden="true"></span>Typewriter and blinking caret<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="08-motion-keyframes.html#gradient-pan"><span class="ix-dot" aria-hidden="true"></span>Gradient pan: animated backgrounds<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="08-motion-keyframes.html#gradient-text"><span class="ix-dot" aria-hidden="true"></span>Shimmering and panning gradient text<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#svg-stroke-draw"><span class="ix-dot" aria-hidden="true"></span>SVG line drawing, checkmarks and marching dashes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#state-driven-animation"><span class="ix-dot" aria-hidden="true"></span>State-driven animation<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#individual-transforms"><span class="ix-dot" aria-hidden="true"></span>Individual transform properties stack with keyframes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#starting-style-enter"><span class="ix-dot" aria-hidden="true"></span>starting: enter transitions<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#scroll-reveal-view"><span class="ix-dot" aria-hidden="true"></span>Scroll-driven reveal: view()<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#scroll-progress-bar"><span class="ix-dot" aria-hidden="true"></span>Reading progress: scroll()<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#scroll-named-timelines"><span class="ix-dot" aria-hidden="true"></span>Named timelines, timeline-scope and parallax<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#supports-gating"><span class="ix-dot" aria-hidden="true"></span>Progressive enhancement with supports-[…]<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="08-motion-keyframes.html#view-transitions"><span class="ix-dot" aria-hidden="true"></span>View Transitions API and view-transition-name<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#property-conic-border"><span class="ix-dot" aria-hidden="true"></span>@property and bg-conic: rotating borders and glows<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#property-number-counter"><span class="ix-dot" aria-hidden="true"></span>@property counters: numbers that count up<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#animate-gradient-stops"><span class="ix-dot" aria-hidden="true"></span>Animating gradient colour stops<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="08-motion-keyframes.html#mask-edge-fades"><span class="ix-dot" aria-hidden="true"></span>Edge fades with mask-*<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="08-motion-keyframes.html#text-shadow-glow"><span class="ix-dot" aria-hidden="true"></span>text-shadow-*: glow and flicker<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="08-motion-keyframes.html#theme-tokens-in-keyframes"><span class="ix-dot" aria-hidden="true"></span>Theme tokens inside animations<span class="ix-v">v4.0</span></a></li></ul>
+      </article>
+    </div>
+  </section>
+  <section class="ix-group" aria-labelledby="g-visual">
+    <h2 class="ix-group-title" id="g-visual">Visual effects</h2>
+    <div class="ix-cards">
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">09</span>
+          <h3><a href="09-3d-transforms.html">3D transforms</a></h3>
+          <span class="ix-count" data-count>18 features · 57 examples</span>
+        </header>
+        <p class="ix-blurb">rotate-x/y/z, perspective, transform-3d, backface visibility and translate-z, with flip cards, cubes and pointer tilt.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#rotate-3d-axes"><span class="ix-dot" aria-hidden="true"></span>3D rotation: rotate-x/y/z<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#perspective"><span class="ix-dot" aria-hidden="true"></span>Camera depth: perspective-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#transform-style"><span class="ix-dot" aria-hidden="true"></span>Keep depth: transform-3d<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#backface-visibility"><span class="ix-dot" aria-hidden="true"></span>Card faces: backface-hidden<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#flip-state-variants"><span class="ix-dot" aria-hidden="true"></span>State variants that drive a flip<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#translate-z"><span class="ix-dot" aria-hidden="true"></span>Depth offset: translate-z-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="09-3d-transforms.html#transform-origin"><span class="ix-dot" aria-hidden="true"></span>Hinges: origin-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#perspective-origin"><span class="ix-dot" aria-hidden="true"></span>Vanishing point: perspective-origin-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#scale-z"><span class="ix-dot" aria-hidden="true"></span>Stretch depth: scale-z-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#css-variable-3d"><span class="ix-dot" aria-hidden="true"></span>Variables in 3D: (--var) and calc()<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#keyframes-3d"><span class="ix-dot" aria-hidden="true"></span>3D loops with @theme keyframes<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#starting-style-3d"><span class="ix-dot" aria-hidden="true"></span>3D entrances with starting:<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#individual-transforms"><span class="ix-dot" aria-hidden="true"></span>Separate rotate, scale, translate<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="09-3d-transforms.html#skew"><span class="ix-dot" aria-hidden="true"></span>Shear: skew-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="09-3d-transforms.html#transform-family"><span class="ix-dot" aria-hidden="true"></span>The transform-* family<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#theme-3d-tokens"><span class="ix-dot" aria-hidden="true"></span>Your own depths, hinges and angles in @theme<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="09-3d-transforms.html#scroll-coverflow"><span class="ix-dot" aria-hidden="true"></span>Scroll-driven tilt with a custom @utility<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.3" href="09-3d-transforms.html#zoom-vs-scale"><span class="ix-dot" aria-hidden="true"></span>zoom-* next to scale-*<span class="ix-v">v4.3</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">10</span>
+          <h3><a href="10-gradients.html">Gradients</a></h3>
+          <span class="ix-count" data-count>23 features · 84 examples</span>
+        </header>
+        <p class="ix-blurb">Linear angles, interpolation modes, radial and conic gradients, colour stops, gradient text and borders, animated gradients.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#linear-directions"><span class="ix-dot" aria-hidden="true"></span>Linear gradient directions<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="10-gradients.html#color-stops"><span class="ix-dot" aria-hidden="true"></span>Colour stops: from, via, to<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="10-gradients.html#stop-positions"><span class="ix-dot" aria-hidden="true"></span>Gradient stop positions<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#linear-angles"><span class="ix-dot" aria-hidden="true"></span>Linear gradient angles<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#linear-arbitrary"><span class="ix-dot" aria-hidden="true"></span>Arbitrary and variable gradients<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#interpolation-modifiers"><span class="ix-dot" aria-hidden="true"></span>Interpolation modifiers<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#radial"><span class="ix-dot" aria-hidden="true"></span>Radial gradients<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#conic"><span class="ix-dot" aria-hidden="true"></span>Conic gradients<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#stops-with-opacity"><span class="ix-dot" aria-hidden="true"></span>Stops with opacity<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#variants-per-stop"><span class="ix-dot" aria-hidden="true"></span>Variants change only that stop<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="10-gradients.html#gradient-text"><span class="ix-dot" aria-hidden="true"></span>Gradient text<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="10-gradients.html#gradient-border"><span class="ix-dot" aria-hidden="true"></span>Gradient borders<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#gradient-transitions"><span class="ix-dot" aria-hidden="true"></span>Animating gradients<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#mesh-background"><span class="ix-dot" aria-hidden="true"></span>Mesh backgrounds<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="10-gradients.html#animated-gradient-pan"><span class="ix-dot" aria-hidden="true"></span>Animated gradient pan<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="10-gradients.html#striped-progress"><span class="ix-dot" aria-hidden="true"></span>Striped and animated progress bars<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#conic-spinner"><span class="ix-dot" aria-hidden="true"></span>Conic gradient spinners<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#arbitrary-bg-image-and-theme"><span class="ix-dot" aria-hidden="true"></span>Arbitrary background images and tokens<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="10-gradients.html#bg-size-position-arbitrary"><span class="ix-dot" aria-hidden="true"></span>Arbitrary bg-size and bg-position<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="10-gradients.html#gradient-masks"><span class="ix-dot" aria-hidden="true"></span>Gradients as masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#custom-gradient-utilities"><span class="ix-dot" aria-hidden="true"></span>Custom gradient tokens and utilities<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#rename-migration"><span class="ix-dot" aria-hidden="true"></span>bg-gradient-to-* is now bg-linear-to-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="10-gradients.html#gradient-gotchas"><span class="ix-dot" aria-hidden="true"></span>Gradient gotchas<span class="ix-v">v4.0</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">11</span>
+          <h3><a href="11-effects.html">Shadows, masks &amp; effects</a></h3>
+          <span class="ix-count" data-count>27 features · 124 examples</span>
+        </header>
+        <p class="ix-blurb">The shadow scale, inset shadows and rings, text-shadow, coloured drop-shadow, mask-*, filters, blend modes and color-scheme.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.0" href="11-effects.html#shadow-scale"><span class="ix-dot" aria-hidden="true"></span>Box-shadow scale<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="11-effects.html#shadow-color"><span class="ix-dot" aria-hidden="true"></span>Colored shadows<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#shadow-opacity"><span class="ix-dot" aria-hidden="true"></span>Shadow opacity modifier<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#ring"><span class="ix-dot" aria-hidden="true"></span>Rings<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#inset-shadow"><span class="ix-dot" aria-hidden="true"></span>Inset shadows<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#inset-ring"><span class="ix-dot" aria-hidden="true"></span>Inset rings<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#layered-shadows"><span class="ix-dot" aria-hidden="true"></span>Layered shadows and rings<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#text-shadow"><span class="ix-dot" aria-hidden="true"></span>Text shadows<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#drop-shadow"><span class="ix-dot" aria-hidden="true"></span>Drop shadows<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#outline-hidden"><span class="ix-dot" aria-hidden="true"></span>outline-hidden vs outline-none<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#accessible-focus-rings"><span class="ix-dot" aria-hidden="true"></span>Accessible focus rings<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#backdrop-filter"><span class="ix-dot" aria-hidden="true"></span>Backdrop filters and glass<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#blur-filter"><span class="ix-dot" aria-hidden="true"></span>Blur filter<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="11-effects.html#filter-chain"><span class="ix-dot" aria-hidden="true"></span>Filter family<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-edges"><span class="ix-dot" aria-hidden="true"></span>Edge masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-linear"><span class="ix-dot" aria-hidden="true"></span>Angled linear masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-radial"><span class="ix-dot" aria-hidden="true"></span>Radial masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-conic"><span class="ix-dot" aria-hidden="true"></span>Conic masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-composite"><span class="ix-dot" aria-hidden="true"></span>Combining masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-image-custom"><span class="ix-dot" aria-hidden="true"></span>Image masks<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#mask-box-props"><span class="ix-dot" aria-hidden="true"></span>Mask size, position, repeat, clip and origin<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="11-effects.html#mix-blend-mode"><span class="ix-dot" aria-hidden="true"></span>Element blending<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="11-effects.html#bg-blend-mode"><span class="ix-dot" aria-hidden="true"></span>Background blending<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#color-scheme"><span class="ix-dot" aria-hidden="true"></span>color-scheme<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="11-effects.html#theme-effect-tokens"><span class="ix-dot" aria-hidden="true"></span>Effect tokens in @theme<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.2" href="11-effects.html#tinted-neutral-shadows"><span class="ix-dot" aria-hidden="true"></span>Tinted neutrals for shadows and rings<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.1" href="11-effects.html#animated-effects"><span class="ix-dot" aria-hidden="true"></span>Animating effects<span class="ix-v">v4.1</span></a></li></ul>
+      </article>
+    </div>
+  </section>
+  <section class="ix-group" aria-labelledby="g-theming">
+    <h2 class="ix-group-title" id="g-theming">Theming & utilities</h2>
+    <div class="ix-cards">
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">12</span>
+          <h3><a href="12-dark-mode.html">Dark mode &amp; theming</a></h3>
+          <span class="ix-count" data-count>19 features · 71 examples</span>
+        </header>
+        <p class="ix-blurb">Dark-mode strategies, the light/dark/system toggle, semantic tokens with @theme inline, multi-theme switching and light-dark().</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="core" href="12-dark-mode.html#dark-default"><span class="ix-dot" aria-hidden="true"></span>dark: follows the OS setting<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#dark-class-strategy"><span class="ix-dot" aria-hidden="true"></span>Class strategy: @custom-variant dark<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#dark-data-attribute"><span class="ix-dot" aria-hidden="true"></span>Data-attribute strategy, and this page's variant<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="12-dark-mode.html#three-way-toggle"><span class="ix-dot" aria-hidden="true"></span>Light, dark and system toggle<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="12-dark-mode.html#dark-hairlines"><span class="ix-dot" aria-hidden="true"></span>Hairlines: borders, dividers, outlines<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#dark-inset-ring-shadow"><span class="ix-dot" aria-hidden="true"></span>Inset rings and shadows in dark<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#dark-gradients"><span class="ix-dot" aria-hidden="true"></span>Gradients with dark variants<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="12-dark-mode.html#dark-images-icons"><span class="ix-dot" aria-hidden="true"></span>Images and icons in dark<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#semantic-tokens"><span class="ix-dot" aria-hidden="true"></span>Semantic color tokens with @theme inline<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#multi-theme-switcher"><span class="ix-dot" aria-hidden="true"></span>Live multi-theme switcher<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#custom-theme-variants"><span class="ix-dot" aria-hidden="true"></span>Custom theme variants<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#variant-directive-tokens"><span class="ix-dot" aria-hidden="true"></span>@variant in your own CSS<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#theme-hooks-without-variants"><span class="ix-dot" aria-hidden="true"></span>Theme hooks without @custom-variant<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#color-scheme-utilities"><span class="ix-dot" aria-hidden="true"></span>scheme-*: native controls that match<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="12-dark-mode.html#light-dark-arbitrary"><span class="ix-dot" aria-hidden="true"></span>light-dark() in arbitrary values<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="12-dark-mode.html#light-dark-tokens"><span class="ix-dot" aria-hidden="true"></span>light-dark() tokens in @theme inline<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.1" href="12-dark-mode.html#dark-text-shadow"><span class="ix-dot" aria-hidden="true"></span>Text shadows that adapt<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.3" href="12-dark-mode.html#dark-scrollbars"><span class="ix-dot" aria-hidden="true"></span>Themed scrollbars<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="core" href="12-dark-mode.html#forced-colors-respect"><span class="ix-dot" aria-hidden="true"></span>Respect forced colors<span class="ix-v">core</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">13</span>
+          <h3><a href="13-text-layout.html">Text, forms &amp; layout</a></h3>
+          <span class="ix-count" data-count>29 features · 101 examples</span>
+        </header>
+        <p class="ix-blurb">field-sizing, wrapping, font-stretch, font-features, baseline-last and safe alignment, logical properties, sizing, grids and forms.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="core" href="13-text-layout.html#text-wrap"><span class="ix-dot" aria-hidden="true"></span>Balanced and pretty text wrapping<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#line-clamp-truncate"><span class="ix-dot" aria-hidden="true"></span>line-clamp-* and truncate<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="13-text-layout.html#overflow-wrap"><span class="ix-dot" aria-hidden="true"></span>wrap-break-word, wrap-anywhere, wrap-normal<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#hyphens"><span class="ix-dot" aria-hidden="true"></span>hyphens-auto, hyphens-manual, hyphens-none<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#font-variant-numeric"><span class="ix-dot" aria-hidden="true"></span>tabular-nums and numeric figures<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.0" href="13-text-layout.html#font-stretch"><span class="ix-dot" aria-hidden="true"></span>font-stretch-*<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.2" href="13-text-layout.html#font-features"><span class="ix-dot" aria-hidden="true"></span>font-features-[…]<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.0" href="13-text-layout.html#field-sizing"><span class="ix-dot" aria-hidden="true"></span>field-sizing-content vs field-sizing-fixed<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#appearance-custom-controls"><span class="ix-dot" aria-hidden="true"></span>appearance-none custom controls<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#accent-caret"><span class="ix-dot" aria-hidden="true"></span>accent-* and caret-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#placeholder-file"><span class="ix-dot" aria-hidden="true"></span>placeholder: and file: variants<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#resize"><span class="ix-dot" aria-hidden="true"></span>resize-*<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.2" href="13-text-layout.html#logical-spacing"><span class="ix-dot" aria-hidden="true"></span>Logical spacing and borders<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.2" href="13-text-layout.html#logical-sizing"><span class="ix-dot" aria-hidden="true"></span>Logical sizing: inline-* and block-*<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.2" href="13-text-layout.html#logical-inset"><span class="ix-dot" aria-hidden="true"></span>Logical inset: inset-s-*, inset-e-*, inset-bs-*, inset-be-*<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.2" href="13-text-layout.html#logical-scroll"><span class="ix-dot" aria-hidden="true"></span>Logical scroll offsets<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="4.0" href="13-text-layout.html#size-dynamic"><span class="ix-dot" aria-hidden="true"></span>size-* and dynamic spacing values<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="4.2" href="13-text-layout.html#aspect-ratio"><span class="ix-dot" aria-hidden="true"></span>aspect-8.5/11 and ratio utilities<span class="ix-v">v4.2</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#viewport-sizing"><span class="ix-dot" aria-hidden="true"></span>Viewport units: h-dvh, min-h-svh, h-lvh<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="13-text-layout.html#line-height-sizing"><span class="ix-dot" aria-hidden="true"></span>Line-height sizing: h-lh<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.0" href="13-text-layout.html#grid-dynamic"><span class="ix-dot" aria-hidden="true"></span>Dynamic grid: grid-cols-15, col-span-7<span class="ix-v">v4.0</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#grid-subgrid"><span class="ix-dot" aria-hidden="true"></span>grid-cols-subgrid and grid-rows-subgrid<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.3" href="13-text-layout.html#grid-auto-bare"><span class="ix-dot" aria-hidden="true"></span>Bare auto-rows-12 and auto-cols-16<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.1" href="13-text-layout.html#safe-alignment"><span class="ix-dot" aria-hidden="true"></span>Safe alignment: justify-center-safe, items-center-safe<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="4.1" href="13-text-layout.html#baseline-last"><span class="ix-dot" aria-hidden="true"></span>items-baseline-last and self-baseline-last<span class="ix-v">v4.1</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#scroll-snap"><span class="ix-dot" aria-hidden="true"></span>Scroll snap carousels<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#overscroll-smooth"><span class="ix-dot" aria-hidden="true"></span>overscroll-contain and scroll-smooth<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="core" href="13-text-layout.html#columns-masonry"><span class="ix-dot" aria-hidden="true"></span>columns-* masonry with break-inside-avoid<span class="ix-v">core</span></a></li><li><a class="ix-chip" data-v="4.1" href="13-text-layout.html#bg-size-position"><span class="ix-dot" aria-hidden="true"></span>bg-size-[…], bg-position-[…] and bg-top-left<span class="ix-v">v4.1</span></a></li></ul>
+      </article>
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">14</span>
+          <h3><a href="14-v43-utilities.html">Scrollbars, zoom &amp; tabs</a></h3>
+          <span class="ix-count" data-count>12 features · 42 examples</span>
+        </header>
+        <p class="ix-blurb">scrollbar width and colours, scrollbar-gutter, zoom-*, tab-* and the rest of the 4.3 release.</p>
+        <ul class="ix-chips"><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#scrollbar-width"><span class="ix-dot" aria-hidden="true"></span>Scrollbar width: scrollbar-thin, scrollbar-none<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#scrollbar-color"><span class="ix-dot" aria-hidden="true"></span>Scrollbar colour: scrollbar-thumb-*, scrollbar-track-*<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#scrollbar-gutter"><span class="ix-dot" aria-hidden="true"></span>Scrollbar gutter: scrollbar-gutter-stable<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#zoom"><span class="ix-dot" aria-hidden="true"></span>Zoom: zoom-75, zoom-[1.1]<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#tab-size"><span class="ix-dot" aria-hidden="true"></span>Tab size: tab-2, tab-4, tab-8<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#container-size"><span class="ix-dot" aria-hidden="true"></span>@container-size: size containers<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#variant-stacked-compound"><span class="ix-dot" aria-hidden="true"></span>Stacked and compound @variant<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#default-function"><span class="ix-dot" aria-hidden="true"></span>--default() for functional utilities<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#auto-rows-cols-bare"><span class="ix-dot" aria-hidden="true"></span>Bare auto-rows-12 and auto-cols-16<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#cli-silent"><span class="ix-dot" aria-hidden="true"></span>CLI --silent<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#cli-watch-poll"><span class="ix-dot" aria-hidden="true"></span>CLI --watch --poll<span class="ix-v">v4.3</span></a></li><li><a class="ix-chip" data-v="4.3" href="14-v43-utilities.html#release-map"><span class="ix-dot" aria-hidden="true"></span>What shipped in each 4.3 release<span class="ix-v">v4.3</span></a></li></ul>
+      </article>
+    </div>
+  </section>
+  <section class="ix-group" aria-labelledby="g-migration">
+    <h2 class="ix-group-title" id="g-migration">Migration</h2>
+    <div class="ix-cards">
+      <article class="ix-card">
+        <header class="ix-card-head">
+          <span class="ix-num">15</span>
+          <h3><a href="15-migration.html">Upgrading from v3</a></h3>
+          <span class="ix-count" data-count>0 features · 0 examples</span>
+        </header>
+        <p class="ix-blurb">The upgrade tool, renamed and removed utilities, and every behaviour change with before and after demos.</p>
+        <p class="sc-note">This page is still being written.</p>
+      </article>
+    </div>
+  </section>
+  </section>
+
+  <section class="ix-index" aria-labelledby="run-title" style="gap: 14px">
+    <h2 class="ix-section-title" id="run-title">Run it yourself</h2>
+    <div class="ix-run">
+      <figure class="sc-example">
+        <figcaption>HTML pages: no build step</figcaption>
+        <p>Open any file in <code>html/</code> in a browser. Each page loads the official browser build of Tailwind v4.3.3, so it needs an internet connection the first time.</p>
+        <pre class="sc-code" data-code="bash" data-label="Or serve the folder">npx serve html</pre>
+      </figure>
+      <figure class="sc-example">
+        <figcaption>React app: Vite + Tailwind v4 + Motion</figcaption>
+        <p>Every demo shows its real source file. It also covers what the browser build can't do: <code>@plugin</code>, <code>@reference</code> and <code>@source inline()</code>.</p>
+        <pre class="sc-code" data-code="bash" data-label="Terminal">cd react
+npm install
+npm run dev</pre>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer data-sc-foot></footer>
+<script>
+  // Release filter: show only the feature chips from one release.
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.ix-filter')
+    if (!b) return
+    const v = b.dataset.filter
+    const index = document.getElementById('pages')
+    if (v === 'all') index.removeAttribute('data-filter')
+    else index.setAttribute('data-filter', v)
+    for (const x of document.querySelectorAll('.ix-filter')) x.setAttribute('aria-pressed', String(x === b))
+    for (const card of index.querySelectorAll('.ix-card')) {
+      const shown = card.querySelectorAll(v === 'all' ? '.ix-chip' : `.ix-chip[data-v="${v}"]`).length
+      card.hidden = shown === 0
+      const count = card.querySelector('[data-count]')
+      if (count) {
+        count.dataset.all ??= count.textContent
+        count.textContent = v === 'all' ? count.dataset.all : `${shown} from ${v === 'core' ? 'core' : 'v' + v}`
+      }
+    }
+    for (const g of index.querySelectorAll('.ix-group')) g.hidden = !g.querySelector('.ix-card:not([hidden])')
+  })
+</script>
+</body>
+</html>

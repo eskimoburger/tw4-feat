@@ -1,0 +1,2511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3D transforms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* page-specific v4 CSS (@theme, @utility, @keyframes, …) goes below */
+
+  /* custom camera, hinge, angle and easing tokens */
+  @theme {
+    --perspective-remote: 1800px;
+    --perspective-origin-stage: 50% 20%;
+    --transform-origin-hinge: 0% 50%;
+    --rotate-flip: 180deg;
+    --ease-flip: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* spinning cube: the tilt is baked into the keyframes */
+  @theme {
+    --animate-cube-spin: cube-spin 14s linear infinite;
+    @keyframes cube-spin {
+      from { transform: rotateX(-22deg) rotateY(0deg); }
+      to   { transform: rotateX(-22deg) rotateY(360deg); }
+    }
+  }
+
+  /* product ring */
+  @theme {
+    --animate-ring-spin: ring-spin 20s linear infinite;
+    @keyframes ring-spin {
+      to { transform: rotateY(360deg); }
+    }
+  }
+
+  /* loyalty coin */
+  @theme {
+    --animate-coin: coin 3s linear infinite;
+    @keyframes coin {
+      to { transform: rotateY(360deg); }
+    }
+  }
+
+  /* split-flap digit: hold, flip down, hold, flip back */
+  @theme {
+    --animate-flap: flap 2.4s ease-in-out infinite;
+    @keyframes flap {
+      0%, 20%   { transform: rotateX(0deg); }
+      45%, 70%  { transform: rotateX(-180deg); }
+      95%, 100% { transform: rotateX(0deg); }
+    }
+  }
+
+  /* turntable: animates the individual rotate property, so rotate-x-* classes keep working */
+  @theme {
+    --animate-turntable: turntable 8s linear infinite;
+    @keyframes turntable {
+      from { rotate: y 0deg; }
+      to   { rotate: y 360deg; }
+    }
+  }
+
+  /* scroll-driven coverflow, horizontal */
+  @keyframes cf-tilt {
+    0%   { transform: rotateY(55deg) scale(0.85); }
+    50%  { transform: rotateY(0deg) scale(1.1); }
+    100% { transform: rotateY(-55deg) scale(0.85); }
+  }
+  @utility cf-view {
+    @supports (animation-timeline: view()) {
+      animation: cf-tilt linear both;
+      animation-timeline: view(inline);
+    }
+  }
+
+  /* scroll-driven step cards, vertical */
+  @keyframes step-tilt {
+    0%        { transform: rotateX(-55deg); opacity: 0.25; }
+    35%, 65%  { transform: rotateX(0deg); opacity: 1; }
+    100%      { transform: rotateX(55deg); opacity: 0.25; }
+  }
+  @utility step-view {
+    @supports (animation-timeline: view()) {
+      animation: step-tilt linear both;
+      animation-timeline: view(block);
+    }
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="sc-intro">
+    <p class="sc-eyebrow">Page 09 · Visual</p>
+    <h1>3D transforms</h1>
+    <p class="sc-lede">Tilt, flip, hinge and spin elements in 3D with <code>perspective-*</code>, <code>rotate-x/y/z</code>, <code>translate-z-*</code>, <code>transform-3d</code> and <code>backface-hidden</code>, plus the variables, keyframes and starting styles that make them move. Hover demos also respond to keyboard focus, because v4 only applies <code>hover:</code> on devices that can hover.</p>
+    <nav data-sc-toc aria-label="Features on this page"></nav>
+  </section>
+
+  <!-- ===================== 1. rotate-x / rotate-y / rotate-z ===================== -->
+  <article class="sc-feature" id="rotate-3d-axes">
+    <div class="sc-notes">
+      <h2>3D rotation: <code>rotate-x/y/z</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>rotate-x-*</code>, <code>rotate-y-*</code> and <code>rotate-z-*</code> turn an element around one axis each. They stack into one transform, always applied in the order X, Y, Z, so <code>rotate-x-50 rotate-z-45</code> works in any class order. Put a <code>perspective-*</code> class on the parent, or the result looks squashed instead of deep.</p>
+      <ul class="sc-parts">
+        <li><code>rotate-x-50</code></li>
+        <li><code>-rotate-y-30</code></li>
+        <li><code>rotate-z-45</code></li>
+        <li><code>rotate-x-[0.6rad]</code></li>
+        <li><code>rotate-y-(--ry)</code></li>
+        <li><code>rotate-x-0</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/rotate#rotating-in-3d-space" target="_blank" rel="noopener">Docs: rotate, 3D space</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Each axis on its own, then combined</figcaption>
+        <div class="sc-demo" id="rotate-3d-axes-1">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4">
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 rotate-x-50 place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-x-50</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 -rotate-x-50 place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">-rotate-x-50</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 rotate-y-50 place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-y-50</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 -rotate-y-30 place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">-rotate-y-30</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 rotate-z-45 place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-z-45</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 rotate-x-50 rotate-z-45 place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-x-50 rotate-z-45</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 rotate-y-[0.1turn] place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-y-[0.1turn]</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-normal"><div class="grid size-20 rotate-x-[0.6rad] place-items-center rounded-2xl bg-linear-to-br from-sky-400 to-indigo-600 text-3xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-x-[0.6rad]</code>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="rotate-3d-axes-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Isometric dashboard that lies flat on hover</figcaption>
+        <div class="sc-demo" id="rotate-3d-axes-2">
+          <div class="group grid place-items-center py-14 perspective-distant" tabindex="0">
+            <div class="relative h-36 w-52 rotate-x-51 rotate-z-43 transform-3d rounded-xl bg-white p-4 shadow-2xl ring-1 ring-slate-900/10 transition-transform duration-700 group-hover:rotate-x-0 group-hover:rotate-z-0 group-focus-within:rotate-x-0 group-focus-within:rotate-z-0 motion-reduce:transition-none sm:h-40 sm:w-64 dark:bg-slate-800 dark:ring-white/10">
+              <div class="flex items-center gap-1.5">
+                <span class="size-2 rounded-full bg-rose-400"></span>
+                <span class="size-2 rounded-full bg-amber-400"></span>
+                <span class="size-2 rounded-full bg-emerald-400"></span>
+              </div>
+              <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">Weekly revenue</p>
+              <div class="mt-2 flex h-14 items-end gap-1.5">
+                <span class="h-6 flex-1 rounded-t bg-sky-300 dark:bg-sky-700"></span>
+                <span class="h-9 flex-1 rounded-t bg-sky-300 dark:bg-sky-700"></span>
+                <span class="h-5 flex-1 rounded-t bg-sky-300 dark:bg-sky-700"></span>
+                <span class="h-12 flex-1 rounded-t bg-sky-500"></span>
+                <span class="h-8 flex-1 rounded-t bg-sky-300 dark:bg-sky-700"></span>
+                <span class="h-14 flex-1 rounded-t bg-sky-500"></span>
+              </div>
+              <span class="absolute -top-3 -right-3 translate-z-10 rounded-full bg-emerald-500 px-2 py-1 text-xs font-semibold text-white shadow-lg">+24%</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="rotate-3d-axes-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Pricing cards that start angled and straighten on hover</figcaption>
+        <div class="sc-demo" id="rotate-3d-axes-3">
+          <div class="grid gap-5 sm:grid-cols-3">
+            <div class="group perspective-midrange" tabindex="0">
+              <article class="rotate-y-24 rounded-2xl bg-white p-5 text-slate-900 shadow-xl ring-1 ring-slate-900/10 transition-transform duration-500 group-hover:rotate-y-0 group-focus-within:rotate-y-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                <h3 class="text-sm font-semibold">Starter</h3>
+                <p class="mt-1 text-2xl font-bold">$9<span class="text-sm font-normal text-slate-500 dark:text-slate-400">/mo</span></p>
+                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">3 projects, community support</p>
+              </article>
+            </div>
+            <div class="perspective-midrange">
+              <article class="scale-105 rounded-2xl bg-indigo-600 p-5 text-white shadow-xl ring-1 ring-indigo-900/20">
+                <h3 class="text-sm font-semibold">Pro</h3>
+                <p class="mt-1 text-2xl font-bold">$29<span class="text-sm font-normal text-indigo-200">/mo</span></p>
+                <p class="mt-2 text-xs text-indigo-100">Unlimited projects, priority support</p>
+              </article>
+            </div>
+            <div class="group perspective-midrange" tabindex="0">
+              <article class="-rotate-y-24 rounded-2xl bg-white p-5 text-slate-900 shadow-xl ring-1 ring-slate-900/10 transition-transform duration-500 group-hover:rotate-y-0 group-focus-within:rotate-y-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                <h3 class="text-sm font-semibold">Team</h3>
+                <p class="mt-1 text-2xl font-bold">$79<span class="text-sm font-normal text-slate-500 dark:text-slate-400">/mo</span></p>
+                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">SSO, audit log, 10 seats</p>
+              </article>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="rotate-3d-axes-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Account menu that folds down from its button</figcaption>
+        <div class="sc-demo" id="rotate-3d-axes-4">
+          <div class="h-52">
+            <div class="group relative inline-block perspective-near">
+              <button type="button" class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 shadow ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Account</button>
+              <ul class="absolute top-full left-0 z-10 mt-2 w-44 origin-top -rotate-x-90 rounded-lg bg-white p-1.5 text-sm text-slate-700 opacity-0 shadow-xl ring-1 ring-slate-900/10 transition duration-300 group-hover:rotate-x-0 group-hover:opacity-100 group-focus-within:rotate-x-0 group-focus-within:opacity-100 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-200 dark:ring-white/10">
+                <li><button type="button" class="block w-full rounded px-2 py-1.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Profile</button></li>
+                <li><button type="button" class="block w-full rounded px-2 py-1.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Billing</button></li>
+                <li><button type="button" class="block w-full rounded px-2 py-1.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Sign out</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="rotate-3d-axes-4"></pre>
+      </figure>
+
+      <p class="sc-note"><code>rotate-x-12.5</code> generates nothing, because bare values must be whole degrees. Write <code>rotate-x-[12.5deg]</code> instead. There is no <code>rotate-x-none</code>; use <code>rotate-x-0</code>. Put <code>hover:</code> on a static wrapper such as <code>group</code> and rotate the child: hovering the element that is turning away makes its edge slide out from under the pointer and the card flickers.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 2. perspective-* ===================== -->
+  <article class="sc-feature" id="perspective">
+    <div class="sc-notes">
+      <h2>Camera depth: <code>perspective-*</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Sets the CSS <code>perspective</code> on the element, which gives its children a vanishing point. Smaller numbers feel more dramatic. It only reaches direct children, so deeper levels need <code>transform-3d</code> on the elements in between.</p>
+      <ul class="sc-parts">
+        <li><code>perspective-dramatic</code></li>
+        <li><code>perspective-near</code></li>
+        <li><code>perspective-normal</code></li>
+        <li><code>perspective-midrange</code></li>
+        <li><code>perspective-distant</code></li>
+        <li><code>perspective-none</code></li>
+        <li><code>perspective-[750px]</code></li>
+        <li><code>perspective-(--p)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/perspective" target="_blank" rel="noopener">Docs: perspective</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Perspective ruler: the same tilted tile under every preset</figcaption>
+        <div class="sc-demo" id="perspective-1">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4">
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-dramatic"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-dramatic</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">100px</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-near"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-near</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">300px</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-normal"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-normal</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">500px</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-midrange"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-midrange</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">800px</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-distant"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-distant</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">1200px</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-none"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-none</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">no vanishing point</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-[750px]"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-[750px]</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">arbitrary value</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center perspective-(--cam) [--cam:400px]"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-(--cam)</code>
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">variable, 400px</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="perspective-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Switch the camera on one live card</figcaption>
+        <div class="sc-demo" id="perspective-2">
+          <div class="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
+            <div id="persp-stage" class="flex justify-center py-6 perspective-normal">
+              <div class="grid h-32 w-48 rotate-x-12 rotate-y-35 content-between rounded-xl bg-linear-to-br from-sky-500 to-indigo-600 p-4 text-white shadow-xl">
+                <span class="text-xs font-medium text-sky-100">Q3 report</span>
+                <span>
+                  <span class="block text-2xl font-bold">$48.2k</span>
+                  <span class="block text-xs text-sky-100">+12% vs last quarter</span>
+                </span>
+              </div>
+            </div>
+            <div class="grid gap-3 sm:w-48">
+              <div class="flex flex-wrap gap-1.5 *:rounded-md *:border *:border-slate-300 *:px-2.5 *:py-1 *:text-xs *:font-medium *:text-slate-700 *:hover:bg-white *:aria-pressed:border-sky-600 *:aria-pressed:bg-sky-600 *:aria-pressed:text-white dark:*:border-slate-600 dark:*:text-slate-200 dark:*:hover:bg-slate-800 dark:*:aria-pressed:border-sky-500 dark:*:aria-pressed:bg-sky-500 dark:*:aria-pressed:text-slate-950">
+                <button type="button" data-persp="perspective-dramatic" data-target="persp-stage" aria-pressed="false">dramatic</button>
+                <button type="button" data-persp="perspective-near" data-target="persp-stage" aria-pressed="false">near</button>
+                <button type="button" data-persp="perspective-normal" data-target="persp-stage" aria-pressed="true">normal</button>
+                <button type="button" data-persp="perspective-midrange" data-target="persp-stage" aria-pressed="false">midrange</button>
+                <button type="button" data-persp="perspective-distant" data-target="persp-stage" aria-pressed="false">distant</button>
+                <button type="button" data-persp="perspective-none" data-target="persp-stage" aria-pressed="false">none</button>
+                <button type="button" data-persp="perspective-[750px]" data-target="persp-stage" aria-pressed="false">[750px]</button>
+              </div>
+              <p data-sc-omit class="text-xs text-slate-600 dark:text-slate-400">Class on the stage: <code data-persp-out="persp-stage" class="rounded bg-slate-200 px-1.5 py-0.5 text-slate-800 dark:bg-slate-700 dark:text-slate-100">perspective-normal</code></p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="perspective-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-persp="perspective-near" data-target="stage-id"&gt; swaps the perspective-* class on the stage
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-persp]')
+  if (!btn) return
+  const stage = document.getElementById(btn.dataset.target)
+  for (const c of [...stage.classList]) if (/^perspective-(?!origin)/.test(c)) stage.classList.remove(c)
+  stage.classList.add(btn.dataset.persp)
+  btn.parentElement.querySelectorAll('[data-persp]').forEach((b) =&gt; b.setAttribute('aria-pressed', String(b === btn)))
+  const out = document.querySelector('[data-persp-out="' + btn.dataset.target + '"]')
+  if (out) out.textContent = btn.dataset.persp
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>3D on desktop, flat on phones</figcaption>
+        <div class="sc-demo" id="perspective-3">
+          <div class="grid place-items-center gap-4">
+            <div class="grid place-items-center perspective-midrange max-md:perspective-none">
+              <div class="flex w-60 rotate-y-25 items-center gap-3 rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-900/10 max-md:rotate-y-0 dark:bg-slate-800 dark:ring-white/10">
+                <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-indigo-600 text-sm font-bold text-white">3D</span>
+                <span class="text-sm">
+                  <b class="block text-slate-900 dark:text-slate-100">Depth on desktop</b>
+                  <span class="text-slate-500 dark:text-slate-400">Flat below 768px</span>
+                </span>
+              </div>
+            </div>
+            <p class="text-xs font-medium text-slate-600 dark:text-slate-400">
+              <span class="hidden md:inline">Wide screen: the 3D camera is on</span>
+              <span class="md:hidden">Narrow screen: the 3D camera is off</span>
+            </p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="perspective-3"></pre>
+      </figure>
+
+      <p class="sc-note"><code>perspective-500</code>, <code>perspective-1000</code> and <code>perspective-sm</code> do not exist and generate nothing. Use the five named sizes or an arbitrary value. Elements in the top layer (a <code>popover</code> or <code>dialog.showModal()</code>) do not get perspective from their ancestors, so put a <code>perspective-*</code> wrapper inside them. Resize the window across 768px to flip the last example.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 3. transform-3d / transform-flat ===================== -->
+  <article class="sc-feature" id="transform-style">
+    <div class="sc-notes">
+      <h2>Keep depth: <code>transform-3d</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>transform-3d</code> sets <code>transform-style: preserve-3d</code>, so children live in the same 3D space as their parent instead of being flattened into its plane. Every cube, ring and layer stack needs it. <code>transform-flat</code> is the default and turns it back off.</p>
+      <ul class="sc-parts">
+        <li><code>transform-3d</code></li>
+        <li><code>transform-flat</code></li>
+        <li><code>max-md:transform-flat</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/transform-style" target="_blank" rel="noopener">Docs: transform-style</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The same six-face cube, flat and in 3D</figcaption>
+        <div class="sc-demo" id="transform-style-1">
+          <div class="flex flex-wrap justify-around gap-8">
+            <div class="flex flex-col items-center gap-3">
+              <code class="text-xs text-slate-700 dark:text-slate-300">transform-flat</code>
+              <div class="grid size-40 place-items-center">
+                <div class="relative size-20 rotate-[0.75_1_0.75_45deg] perspective-normal transform-flat *:absolute *:inset-0 *:grid *:place-items-center *:border *:border-white/60 *:bg-sky-600/75 *:text-2xl *:font-bold *:text-white">
+                  <div class="translate-z-10">1</div>
+                  <div class="-translate-z-10 rotate-y-180">2</div>
+                  <div class="translate-x-10 rotate-y-90">3</div>
+                  <div class="-translate-x-10 -rotate-y-90">4</div>
+                  <div class="-translate-y-10 rotate-x-90">5</div>
+                  <div class="translate-y-10 -rotate-x-90">6</div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <code class="text-xs text-slate-700 dark:text-slate-300">transform-3d</code>
+              <div class="grid size-40 place-items-center">
+                <div class="relative size-20 rotate-[0.75_1_0.75_45deg] perspective-normal transform-3d *:absolute *:inset-0 *:grid *:place-items-center *:border *:border-white/60 *:bg-sky-600/75 *:text-2xl *:font-bold *:text-white">
+                  <div class="translate-z-10">1</div>
+                  <div class="-translate-z-10 rotate-y-180">2</div>
+                  <div class="translate-x-10 rotate-y-90">3</div>
+                  <div class="-translate-x-10 -rotate-y-90">4</div>
+                  <div class="-translate-y-10 rotate-x-90">5</div>
+                  <div class="translate-y-10 -rotate-x-90">6</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-style-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Why did my 3D go flat? One extra class on the 3D parent</figcaption>
+        <div class="sc-demo" id="transform-style-2">
+          <div class="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-5">
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">transform-3d</code>
+              <span class="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">control: 3D</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d shadow-lg *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">shadow-lg</code>
+              <span class="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">stays 3D</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d rounded-xl *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rounded-xl</code>
+              <span class="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">stays 3D</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d z-10 *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">z-10</code>
+              <span class="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">stays 3D</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d overflow-hidden *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">overflow-hidden</code>
+              <span class="text-[11px] font-medium text-rose-700 dark:text-rose-400">flattens</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d opacity-90 *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">opacity-90</code>
+              <span class="text-[11px] font-medium text-rose-700 dark:text-rose-400">flattens</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d drop-shadow-lg *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">drop-shadow-lg</code>
+              <span class="text-[11px] font-medium text-rose-700 dark:text-rose-400">flattens</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d isolate *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">isolate</code>
+              <span class="text-[11px] font-medium text-rose-700 dark:text-rose-400">flattens</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d mix-blend-multiply *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">mix-blend-multiply</code>
+              <span class="text-[11px] font-medium text-rose-700 dark:text-rose-400">flattens</span>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <div class="flex justify-center pt-12 perspective-[500px]">
+                <div class="relative size-20 rotate-x-60 rotate-z-45 transform-3d backdrop-blur-sm *:absolute *:inset-0 *:rounded-lg">
+                  <div class="bg-slate-400/90"></div>
+                  <div class="translate-z-8 bg-sky-500/90"></div>
+                  <div class="translate-z-16 bg-fuchsia-500/90"></div>
+                </div>
+              </div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">backdrop-blur-sm</code>
+              <span class="text-[11px] font-medium text-rose-700 dark:text-rose-400">flattens</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-style-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Every level needs it: flatten the slot wrappers and the ring collapses</figcaption>
+        <div class="sc-demo" id="transform-style-3">
+          <div class="group">
+            <label class="mx-auto flex w-fit cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-slate-200">
+              <input type="checkbox" class="size-4 accent-sky-600">
+              <span>Set <code class="rounded bg-slate-200 px-1.5 py-0.5 text-xs dark:bg-slate-700">transform-flat</code> on the slot wrappers</span>
+            </label>
+            <div class="mt-4 py-6 perspective-[700px]">
+              <div class="relative mx-auto h-24 w-20 -rotate-x-12 rotate-y-30 transform-3d">
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d group-has-checked:transform-flat" style="--i:0"><div class="grid size-full translate-z-20 place-items-center rounded-lg bg-rose-500 text-sm font-bold text-white">1</div></div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d group-has-checked:transform-flat" style="--i:1"><div class="grid size-full translate-z-20 place-items-center rounded-lg bg-amber-500 text-sm font-bold text-white">2</div></div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d group-has-checked:transform-flat" style="--i:2"><div class="grid size-full translate-z-20 place-items-center rounded-lg bg-emerald-500 text-sm font-bold text-white">3</div></div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d group-has-checked:transform-flat" style="--i:3"><div class="grid size-full translate-z-20 place-items-center rounded-lg bg-sky-500 text-sm font-bold text-white">4</div></div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d group-has-checked:transform-flat" style="--i:4"><div class="grid size-full translate-z-20 place-items-center rounded-lg bg-violet-500 text-sm font-bold text-white">5</div></div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d group-has-checked:transform-flat" style="--i:5"><div class="grid size-full translate-z-20 place-items-center rounded-lg bg-pink-500 text-sm font-bold text-white">6</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-style-3"></pre>
+      </figure>
+
+      <p class="sc-note">Clip and round the faces (the leaf elements), never the <code>transform-3d</code> parent. <code>transform-3d</code> does not create perspective by itself: it only keeps depth, so you still need a <code>perspective-*</code> ancestor. Checked in Chromium. Use <code>max-md:transform-flat</code> to drop a 3D scene to a plain layout on small screens.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 4. backface-hidden / backface-visible ===================== -->
+  <article class="sc-feature" id="backface-visibility">
+    <div class="sc-notes">
+      <h2>Card faces: <code>backface-hidden</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Decides whether the reverse side of a rotated element is drawn. Put <code>backface-hidden</code> on both faces of a card and only the one facing you shows, which is the whole flip-card trick. <code>backface-visible</code> is the default and lets translucent cube faces show their backs.</p>
+      <ul class="sc-parts">
+        <li><code>backface-hidden</code></li>
+        <li><code>backface-visible</code></li>
+        <li><code>*:backface-hidden</code></li>
+        <li><code>rotate-y-180</code></li>
+        <li><code>group-hover:rotate-y-180</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/backface-visibility" target="_blank" rel="noopener">Docs: backface-visibility</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Team card: flips on hover and on keyboard focus</figcaption>
+        <div class="sc-demo" id="backface-visibility-1">
+          <div class="flex justify-center">
+            <div class="group h-64 w-48 perspective-distant" tabindex="0">
+              <div class="relative size-full transition-transform duration-700 transform-3d group-hover:rotate-y-180 group-focus-within:rotate-y-180 motion-reduce:transition-none">
+                <div class="absolute inset-0 flex flex-col items-center justify-center rounded-2xl bg-white p-4 shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                  <div class="grid size-16 place-items-center rounded-full bg-linear-to-br from-indigo-400 to-fuchsia-500 text-lg font-bold text-white">AC</div>
+                  <p class="mt-3 font-semibold text-slate-900 dark:text-slate-100">Ava Chen</p>
+                  <p class="text-sm text-slate-500 dark:text-slate-400">Design lead</p>
+                </div>
+                <div class="absolute inset-0 flex rotate-y-180 flex-col items-center justify-center rounded-2xl bg-indigo-600 p-4 text-center text-white shadow-lg backface-hidden">
+                  <p class="text-sm">Ships tiny details and keeps the design system honest.</p>
+                  <button type="button" class="mt-3 rounded-full bg-white px-3 py-1 text-sm font-medium text-indigo-700">View profile</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="backface-visibility-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Compact markup with child variants and a springy easing token</figcaption>
+        <div class="sc-demo" id="backface-visibility-2">
+          <div class="flex justify-center">
+            <div class="group h-44 w-60 perspective-distant" tabindex="0">
+              <div class="relative size-full rounded-2xl transition-transform duration-700 ease-flip transform-3d group-hover:rotate-y-180 group-focus-within:rotate-y-180 motion-reduce:transition-none *:absolute *:inset-0 *:flex *:flex-col *:justify-center *:rounded-2xl *:p-5 *:shadow-lg *:backface-hidden *:last:rotate-y-180">
+                <div class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Order #4821</p>
+                  <p class="mt-1 text-lg font-semibold">Shipped</p>
+                </div>
+                <div class="bg-emerald-600 text-white">
+                  <p class="text-xs text-emerald-100">Arrives Thursday</p>
+                  <button type="button" class="mt-3 w-fit rounded-full bg-white px-3 py-1 text-sm font-medium text-emerald-700">Track package</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="backface-visibility-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --ease-flip: cubic-bezier(0.34, 1.56, 0.64, 1);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Spinning loyalty coin, paused on hover <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="backface-visibility-3">Replay</button></figcaption>
+        <div class="sc-demo" id="backface-visibility-3">
+          <div class="flex justify-center py-4">
+            <div class="perspective-[600px]">
+              <div class="relative size-24 transform-3d motion-safe:animate-coin hover:[animation-play-state:paused]">
+                <div class="absolute inset-0 grid place-items-center rounded-full bg-linear-to-br from-amber-300 to-amber-500 text-xl font-bold text-amber-950 ring-4 ring-amber-200/70 backface-hidden">100</div>
+                <div class="absolute inset-0 grid rotate-y-180 place-items-center rounded-full bg-linear-to-br from-amber-600 to-amber-800 text-sm font-bold text-white ring-4 ring-amber-400/60 backface-hidden">VIP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="backface-visibility-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-coin: coin 3s linear infinite;
+  @keyframes coin {
+    to { transform: rotateY(360deg); }
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Split-flap digit: a flap hinged at its bottom edge <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="backface-visibility-4">Replay</button></figcaption>
+        <div class="sc-demo" id="backface-visibility-4">
+          <div class="flex justify-center gap-2 py-2">
+            <div class="h-24 w-16 rounded bg-slate-800 text-center text-6xl leading-24 font-bold text-white">0</div>
+            <div class="perspective-[400px]">
+              <div class="relative h-24 w-16 rounded bg-slate-800 text-6xl font-bold text-white">
+                <div class="absolute inset-x-0 top-0 h-1/2 overflow-hidden rounded-t bg-slate-700 text-center leading-24">8</div>
+                <div class="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden rounded-b bg-slate-700"><div class="absolute inset-x-0 bottom-0 h-24 text-center leading-24">7</div></div>
+                <div class="absolute inset-x-0 top-0 h-1/2 origin-bottom transform-3d motion-safe:animate-flap">
+                  <div class="absolute inset-0 overflow-hidden rounded-t bg-slate-700 text-center leading-24 backface-hidden">7</div>
+                  <div class="absolute inset-0 rotate-x-180 overflow-hidden rounded-b bg-slate-700 backface-hidden"><div class="absolute inset-x-0 bottom-0 h-24 text-center leading-24">8</div></div>
+                </div>
+                <div class="absolute inset-x-0 top-1/2 h-px bg-slate-950/70"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="backface-visibility-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-flap: flap 2.4s ease-in-out infinite;
+  @keyframes flap {
+    0%, 20%   { transform: rotateX(0deg); }
+    45%, 70%  { transform: rotateX(-180deg); }
+    95%, 100% { transform: rotateX(0deg); }
+  }
+}</pre>
+      </figure>
+
+      <p class="sc-note"><code>backface-hidden</code> goes on every face, not on the container. A hidden face is not clickable (the pointer hits whatever is in front), but it is still keyboard-focusable and still read by screen readers, so pair a flip with <code>group-focus-within:</code> as above. Inside a <code>&lt;button&gt;</code> use <code>&lt;span class="block"&gt;</code> faces, because a button cannot contain a <code>&lt;div&gt;</code>. The browser build writes the unprefixed property only; the CLI, Vite and PostCSS builds add vendor prefixes through Lightning CSS. Reduced motion: the coin and flap use <code>motion-safe:</code>, so they stay still.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 5. State variants that drive 3D ===================== -->
+  <article class="sc-feature" id="flip-state-variants">
+    <div class="sc-notes">
+      <h2>State variants that drive a flip</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>A flip is just <code>rotate-y-180</code> behind a variant. In v4 <code>hover:</code> only fires on devices that can hover, so give touch and keyboard users another trigger: <code>focus-within</code>, <code>aria-pressed</code>, <code>peer-checked</code> or a <code>data-*</code> attribute. All of these work without a line of animation code.</p>
+      <ul class="sc-parts">
+        <li><code>group-hover:</code></li>
+        <li><code>group-focus-within:</code></li>
+        <li><code>group-aria-pressed:</code></li>
+        <li><code>peer-checked:</code></li>
+        <li><code>group-data-flipped:</code></li>
+        <li><code>data-[face=right]:</code></li>
+        <li><code>peer-hover:</code></li>
+        <li><code>has-[~:hover]:</code></li>
+        <li><code>*:</code> <code>*:last:</code></li>
+        <li><code>pointer-coarse:</code> <code>pointer-fine:</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#styling-based-on-parent-state" target="_blank" rel="noopener">Docs: parent state</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>One card, three triggers: hover or focus, a toggle button, a checkbox</figcaption>
+        <div class="sc-demo" id="flip-state-variants-1">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div class="group h-36 perspective-distant" tabindex="0">
+              <div class="relative size-full transition-transform duration-700 transform-3d group-hover:rotate-y-180 group-focus-within:rotate-y-180 motion-reduce:transition-none *:absolute *:inset-0 *:grid *:place-items-center *:rounded-xl *:p-3 *:text-center *:text-sm *:font-semibold *:shadow *:backface-hidden *:last:rotate-y-180">
+                <div class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Hover or focus me</div>
+                <div class="bg-indigo-600 text-white">group-hover and group-focus-within</div>
+              </div>
+            </div>
+            <button type="button" aria-pressed="false" data-toggle-pressed class="group h-36 w-full perspective-distant text-left">
+              <span class="relative block size-full transition-transform duration-700 transform-3d group-aria-pressed:rotate-y-180 motion-reduce:transition-none *:absolute *:inset-0 *:grid *:place-items-center *:rounded-xl *:p-3 *:text-center *:text-sm *:font-semibold *:shadow *:backface-hidden *:last:rotate-y-180">
+                <span class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Press me</span>
+                <span class="bg-emerald-600 text-white">group-aria-pressed</span>
+              </span>
+            </button>
+            <label class="block h-36 cursor-pointer rounded-xl perspective-distant has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-sky-500">
+              <input type="checkbox" class="peer sr-only">
+              <span class="relative block size-full transition-transform duration-700 transform-3d peer-checked:rotate-x-180 motion-reduce:transition-none *:absolute *:inset-0 *:grid *:place-items-center *:rounded-xl *:p-3 *:text-center *:text-sm *:font-semibold *:shadow *:backface-hidden *:last:rotate-x-180">
+                <span class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Check me</span>
+                <span class="bg-rose-600 text-white">peer-checked, flipped on X</span>
+              </span>
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="flip-state-variants-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-toggle-pressed aria-pressed="false"&gt; flips its aria-pressed value on every click
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-toggle-pressed]')
+  if (!btn) return
+  btn.setAttribute('aria-pressed', String(btn.getAttribute('aria-pressed') !== 'true'))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Flashcards: a <code>data-flipped</code> attribute on the card</figcaption>
+        <div class="sc-demo" id="flip-state-variants-2">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <button type="button" aria-pressed="false" data-flip-card class="group h-40 w-full perspective-distant text-left">
+              <span class="relative block size-full transition-transform duration-500 transform-3d group-data-flipped:rotate-y-180 motion-reduce:transition-none *:absolute *:inset-0 *:flex *:flex-col *:justify-between *:rounded-xl *:p-4 *:shadow *:backface-hidden *:last:rotate-y-180">
+                <span class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <span class="text-sm font-semibold">What does <code class="rounded bg-slate-200 px-1 text-xs dark:bg-slate-700">transform-3d</code> set?</span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400"><span class="hidden pointer-coarse:inline">Tap to flip</span><span class="hidden pointer-fine:inline">Click to flip</span></span>
+                </span>
+                <span class="bg-sky-600 text-white">
+                  <span class="text-sm"><code class="rounded bg-white/20 px-1 text-xs">transform-style: preserve-3d</code></span>
+                  <span class="text-[11px] text-sky-100">Answer</span>
+                </span>
+              </span>
+            </button>
+            <button type="button" aria-pressed="false" data-flip-card class="group h-40 w-full perspective-distant text-left">
+              <span class="relative block size-full transition-transform duration-500 transform-3d group-data-flipped:rotate-y-180 motion-reduce:transition-none *:absolute *:inset-0 *:flex *:flex-col *:justify-between *:rounded-xl *:p-4 *:shadow *:backface-hidden *:last:rotate-y-180">
+                <span class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <span class="text-sm font-semibold">Which utility hides the back of a rotated face?</span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400"><span class="hidden pointer-coarse:inline">Tap to flip</span><span class="hidden pointer-fine:inline">Click to flip</span></span>
+                </span>
+                <span class="bg-sky-600 text-white">
+                  <span class="text-sm"><code class="rounded bg-white/20 px-1 text-xs">backface-hidden</code></span>
+                  <span class="text-[11px] text-sky-100">Answer</span>
+                </span>
+              </span>
+            </button>
+            <button type="button" aria-pressed="false" data-flip-card class="group h-40 w-full perspective-distant text-left">
+              <span class="relative block size-full transition-transform duration-500 transform-3d group-data-flipped:rotate-y-180 motion-reduce:transition-none *:absolute *:inset-0 *:flex *:flex-col *:justify-between *:rounded-xl *:p-4 *:shadow *:backface-hidden *:last:rotate-y-180">
+                <span class="bg-white text-slate-900 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <span class="text-sm font-semibold">Which class gives a parent its vanishing point?</span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400"><span class="hidden pointer-coarse:inline">Tap to flip</span><span class="hidden pointer-fine:inline">Click to flip</span></span>
+                </span>
+                <span class="bg-sky-600 text-white">
+                  <span class="text-sm"><code class="rounded bg-white/20 px-1 text-xs">perspective-*</code>, for example <code class="rounded bg-white/20 px-1 text-xs">perspective-distant</code></span>
+                  <span class="text-[11px] text-sky-100">Answer</span>
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="flip-state-variants-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-flip-card&gt; toggles data-flipped on itself; group-data-flipped: reads it
+document.addEventListener('click', (e) =&gt; {
+  const card = e.target.closest('[data-flip-card]')
+  if (!card) return
+  const on = card.toggleAttribute('data-flipped')
+  card.setAttribute('aria-pressed', String(on))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Cube face switcher driven by <code>data-face</code></figcaption>
+        <div class="sc-demo" id="flip-state-variants-3">
+          <div class="grid place-items-center gap-6">
+            <div class="py-4 perspective-[600px]">
+              <div class="-rotate-x-12 rotate-y-12 transform-3d">
+                <div id="cube-nav" data-face="front" class="relative size-24 transform-3d transition-transform duration-700 data-[face=back]:rotate-y-180 data-[face=right]:-rotate-y-90 data-[face=left]:rotate-y-90 data-[face=top]:-rotate-x-90 data-[face=bottom]:rotate-x-90 motion-reduce:transition-none *:absolute *:inset-0 *:grid *:place-items-center *:border *:border-white/50 *:text-sm *:font-semibold *:text-white">
+                  <div class="translate-z-12 bg-sky-600">Front</div>
+                  <div class="-translate-z-12 rotate-y-180 bg-sky-800">Back</div>
+                  <div class="translate-x-12 rotate-y-90 bg-indigo-600">Right</div>
+                  <div class="-translate-x-12 -rotate-y-90 bg-indigo-800">Left</div>
+                  <div class="-translate-y-12 rotate-x-90 bg-violet-600">Top</div>
+                  <div class="translate-y-12 -rotate-x-90 bg-violet-800">Bottom</div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-1.5 *:rounded-md *:border *:border-slate-300 *:px-2.5 *:py-1 *:text-xs *:font-medium *:text-slate-700 *:hover:bg-white *:aria-pressed:border-sky-600 *:aria-pressed:bg-sky-600 *:aria-pressed:text-white dark:*:border-slate-600 dark:*:text-slate-200 dark:*:hover:bg-slate-800 dark:*:aria-pressed:border-sky-500 dark:*:aria-pressed:bg-sky-500 dark:*:aria-pressed:text-slate-950">
+              <button type="button" data-cube-to="front" data-target="cube-nav" aria-pressed="true">front</button>
+              <button type="button" data-cube-to="right" data-target="cube-nav" aria-pressed="false">right</button>
+              <button type="button" data-cube-to="back" data-target="cube-nav" aria-pressed="false">back</button>
+              <button type="button" data-cube-to="left" data-target="cube-nav" aria-pressed="false">left</button>
+              <button type="button" data-cube-to="top" data-target="cube-nav" aria-pressed="false">top</button>
+              <button type="button" data-cube-to="bottom" data-target="cube-nav" aria-pressed="false">bottom</button>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="flip-state-variants-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-cube-to="right" data-target="cube-id"&gt; sets data-face on the cube
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-cube-to]')
+  if (!btn) return
+  document.getElementById(btn.dataset.target).dataset.face = btn.dataset.cubeTo
+  btn.parentElement.querySelectorAll('[data-cube-to]').forEach((b) =&gt; b.setAttribute('aria-pressed', String(b === btn)))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Neighbours lean away from the hovered tile</figcaption>
+        <div class="sc-demo" id="flip-state-variants-4">
+          <ul class="flex justify-center gap-1.5 py-4 perspective-[800px] sm:gap-2">
+            <li class="peer flex h-28 w-11 items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-2 text-[10px] font-semibold text-white shadow-lg transition-transform duration-500 has-[~:hover]:rotate-y-45 peer-hover:-rotate-y-45 hover:scale-110 motion-reduce:transition-none sm:h-36 sm:w-20"><span class="hidden sm:inline">Neon Tide</span></li>
+            <li class="peer flex h-28 w-11 items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-2 text-[10px] font-semibold text-white shadow-lg transition-transform duration-500 has-[~:hover]:rotate-y-45 peer-hover:-rotate-y-45 hover:scale-110 motion-reduce:transition-none sm:h-36 sm:w-20"><span class="hidden sm:inline">Low Sun</span></li>
+            <li class="peer flex h-28 w-11 items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-2 text-[10px] font-semibold text-white shadow-lg transition-transform duration-500 has-[~:hover]:rotate-y-45 peer-hover:-rotate-y-45 hover:scale-110 motion-reduce:transition-none sm:h-36 sm:w-20"><span class="hidden sm:inline">Fern</span></li>
+            <li class="peer flex h-28 w-11 items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-2 text-[10px] font-semibold text-white shadow-lg transition-transform duration-500 has-[~:hover]:rotate-y-45 peer-hover:-rotate-y-45 hover:scale-110 motion-reduce:transition-none sm:h-36 sm:w-20"><span class="hidden sm:inline">Glass Lake</span></li>
+            <li class="peer flex h-28 w-11 items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-2 text-[10px] font-semibold text-white shadow-lg transition-transform duration-500 has-[~:hover]:rotate-y-45 peer-hover:-rotate-y-45 hover:scale-110 motion-reduce:transition-none sm:h-36 sm:w-20"><span class="hidden sm:inline">Dusk</span></li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="flip-state-variants-4"></pre>
+      </figure>
+
+      <p class="sc-note">On a touch screen <code>hover:</code>, <code>group-hover:</code> and <code>peer-hover:</code> never fire (verified in mobile emulation: a tap did not flip a hover card, but did flip an <code>aria-pressed</code> one), so always ship a second trigger. <code>peer-checked:</code> only reaches later siblings, so the input must come first. <code>pointer-fine:</code> and <code>pointer-coarse:</code> need <span class="sc-since" data-v="4.1">v4.1</span>. The last example is for a mouse.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 6. translate-z-* ===================== -->
+  <article class="sc-feature" id="translate-z">
+    <div class="sc-notes">
+      <h2>Depth offset: <code>translate-z-*</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Moves an element toward or away from the viewer, using the spacing scale. It writes the standalone <code>translate</code> property, so it combines with <code>translate-x-*</code>, <code>translate-y-*</code> and every rotate or scale utility. The parent needs <code>transform-3d</code> so the layers share one 3D space.</p>
+      <ul class="sc-parts">
+        <li><code>translate-z-12</code></li>
+        <li><code>-translate-z-8</code></li>
+        <li><code>translate-z-px</code></li>
+        <li><code>translate-z-[40px]</code></li>
+        <li><code>translate-z-(--tz)</code></li>
+        <li><code>translate-3d</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/translate#translating-on-the-z-axis" target="_blank" rel="noopener">Docs: translate, z-axis</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Exploded map layers on hover or focus</figcaption>
+        <div class="sc-demo" id="translate-z-1">
+          <div class="group h-72 pt-24 perspective-distant" tabindex="0">
+            <div class="relative mx-auto size-36 rotate-x-60 rotate-z-45 transform-3d *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold *:transition-transform *:duration-500 motion-reduce:*:transition-none">
+              <div class="bg-slate-400/90 text-slate-900 group-hover:-translate-z-8 group-focus-within:-translate-z-8">Base map</div>
+              <div class="translate-z-2 bg-sky-400/90 text-sky-950 group-hover:translate-z-8 group-focus-within:translate-z-8">Traffic</div>
+              <div class="translate-z-4 bg-indigo-500/90 text-white group-hover:translate-z-20 group-focus-within:translate-z-20">Route</div>
+              <div class="translate-z-6 bg-fuchsia-500/90 text-white group-hover:translate-z-32 group-focus-within:translate-z-32">Pins</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="translate-z-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Notification stack: older toasts recede, hover or focus spreads them</figcaption>
+        <div class="sc-demo" id="translate-z-2">
+          <div class="group relative mx-auto h-64 w-full max-w-xs perspective-normal" tabindex="0">
+            <div class="absolute inset-x-0 top-0 h-20 transform-3d *:absolute *:inset-0 *:flex *:items-center *:gap-3 *:rounded-xl *:bg-white *:p-4 *:text-sm *:text-slate-900 *:shadow-lg *:ring-1 *:ring-slate-900/10 *:transition-transform *:duration-500 motion-reduce:*:transition-none dark:*:bg-slate-800 dark:*:text-slate-100 dark:*:ring-white/10">
+              <div>
+                <span class="size-2 shrink-0 rounded-full bg-emerald-500"></span>
+                <span><b class="block">Deploy finished</b><span class="text-xs text-slate-500 dark:text-slate-400">main, 42 seconds ago</span></span>
+              </div>
+              <div class="translate-y-3 -translate-z-6 scale-95 group-hover:translate-y-22 group-hover:translate-z-0 group-hover:scale-100 group-focus-within:translate-y-22 group-focus-within:translate-z-0 group-focus-within:scale-100">
+                <span class="size-2 shrink-0 rounded-full bg-sky-500"></span>
+                <span><b class="block">Build started</b><span class="text-xs text-slate-500 dark:text-slate-400">main, 1 minute ago</span></span>
+              </div>
+              <div class="translate-y-6 -translate-z-12 scale-90 group-hover:translate-y-44 group-hover:translate-z-0 group-hover:scale-100 group-focus-within:translate-y-44 group-focus-within:translate-z-0 group-focus-within:scale-100">
+                <span class="size-2 shrink-0 rounded-full bg-amber-500"></span>
+                <span><b class="block">Tests passed</b><span class="text-xs text-slate-500 dark:text-slate-400">214 of 214, 2 minutes ago</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="translate-z-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Product card with layers at different depths</figcaption>
+        <div class="sc-demo" id="translate-z-3">
+          <div class="group mx-auto w-fit py-4 perspective-[900px]" tabindex="0">
+            <div class="relative w-56 rotate-x-12 -rotate-y-12 transform-3d rounded-2xl bg-white p-5 shadow-xl ring-1 ring-slate-900/10 transition-transform duration-700 group-hover:rotate-y-12 group-focus-within:rotate-y-12 motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+              <div class="grid h-28 translate-z-8 place-items-center rounded-xl bg-linear-to-br from-sky-300 to-indigo-500">
+                <div class="size-14 rounded-full border-4 border-white/80"></div>
+              </div>
+              <h3 class="mt-4 translate-z-6 font-semibold text-slate-900 dark:text-slate-100">Aurora headphones</h3>
+              <p class="translate-z-4 text-sm text-slate-500 dark:text-slate-400">40-hour battery</p>
+              <div class="mt-4 flex translate-z-10 items-center justify-between">
+                <span class="text-lg font-bold text-slate-900 dark:text-slate-100">$149</span>
+                <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">Add to cart</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="translate-z-3"></pre>
+      </figure>
+
+      <p class="sc-note"><code>translate</code> is applied before <code>rotate</code> on the same element, so <code>translate-z-*</code> moves along the parent's z axis, not the element's own rotated normal. That is why a cube side is <code>translate-x-10 rotate-y-90</code> and not <code>rotate-y-90 translate-z-10</code>; nest a rotated wrapper around a <code>translate-z-*</code> child for a ring (see the Keep depth card). Fractions and percentages such as <code>translate-z-1/2</code> generate nothing. <code>translate-3d</code> and <code>scale-3d</code> exist in the engine as the full shorthand but add no visible change by themselves; <code>translate-3d</code> is not in the docs table. A custom <code>transition-[transform]</code> does not cover <code>translate</code>: write <code>transition-[translate]</code>.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 7. origin-* ===================== -->
+  <article class="sc-feature" id="transform-origin">
+    <div class="sc-notes">
+      <h2>Hinges: <code>origin-*</code></h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>Picks the pivot point for every rotate, scale and skew on the element. In 3D it is the hinge: a book cover, door, envelope flap or calendar page turns around an edge instead of its centre. An arbitrary value with a third number sets a pivot in depth.</p>
+      <ul class="sc-parts">
+        <li><code>origin-center</code></li>
+        <li><code>origin-top</code></li>
+        <li><code>origin-left</code></li>
+        <li><code>origin-bottom-right</code></li>
+        <li><code>origin-[33%_75%]</code></li>
+        <li><code>origin-[50%_50%_-5.5rem]</code></li>
+        <li><code>origin-(--o)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/transform-origin" target="_blank" rel="noopener">Docs: transform-origin</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The nine keyword origins: a dashed outline, the same turn, the pivot as a dot</figcaption>
+        <div class="sc-demo" id="transform-origin-1">
+          <div class="mx-auto grid max-w-sm grid-cols-3 gap-x-4 gap-y-6">
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-top-left rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-0 left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-top-left</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-top rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-0 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-top</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-top-right rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-0 left-full size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-top-right</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-left rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-1/2 left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-left</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-center rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-center</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-right rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-1/2 left-full size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-right</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-bottom-left rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-full left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-bottom-left</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-bottom rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-full left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-bottom</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative size-14 rounded-md border border-dashed border-slate-400 dark:border-slate-500">
+                <div class="absolute inset-0 origin-bottom-right rotate-20 rounded-md bg-sky-500/70"></div>
+                <span class="absolute top-full left-full size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500"></span>
+              </div>
+              <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">origin-bottom-right</code>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-origin-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Opening book: the cover hinges on the spine with <code>origin-left</code></figcaption>
+        <div class="sc-demo" id="transform-origin-2">
+          <div class="flex justify-center pl-20">
+            <div class="group h-56 w-36 perspective-distant" tabindex="0">
+              <div class="relative size-full transition-transform duration-700 transform-3d group-hover:translate-x-4 group-focus-within:translate-x-4 motion-reduce:transition-none">
+                <div class="absolute inset-0 rounded-r-lg bg-amber-100 p-4 text-slate-800 shadow-lg">
+                  <p class="text-sm font-semibold">Chapter 1</p>
+                  <p class="mt-2 text-xs text-slate-600">The first field note is always the shortest.</p>
+                </div>
+                <div class="absolute inset-0 origin-left transition-transform duration-700 transform-3d group-hover:-rotate-y-150 group-focus-within:-rotate-y-150 motion-reduce:transition-none">
+                  <div class="absolute inset-0 flex items-end rounded-r-lg bg-rose-700 p-4 font-semibold text-white shadow-lg backface-hidden">Field Notes</div>
+                  <div class="absolute inset-0 rotate-y-180 rounded-l-lg bg-amber-50 p-4 text-xs text-slate-700 backface-hidden">Preface. Write down what you saw, not what you expected.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-origin-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Double doors: <code>origin-left</code> and <code>origin-right</code> on two half panels</figcaption>
+        <div class="sc-demo" id="transform-origin-3">
+          <div class="group relative mx-auto h-56 w-56 perspective-distant" tabindex="0">
+            <div class="absolute inset-0 grid place-items-center rounded-lg bg-yellow-300 text-center text-slate-900">
+              <span><b class="block text-2xl">30% off</b><span class="text-xs">Spring sale, today only</span></span>
+            </div>
+            <div class="absolute inset-y-0 left-0 w-1/2 origin-left rounded-l-lg bg-slate-700 transition-transform duration-700 group-hover:-rotate-y-110 group-focus-within:-rotate-y-110 motion-reduce:transition-none">
+              <span class="absolute top-1/2 right-3 h-8 w-1 -translate-y-1/2 rounded bg-slate-300"></span>
+            </div>
+            <div class="absolute inset-y-0 right-0 w-1/2 origin-right rounded-r-lg bg-slate-600 transition-transform duration-700 group-hover:rotate-y-110 group-focus-within:rotate-y-110 motion-reduce:transition-none">
+              <span class="absolute top-1/2 left-3 h-8 w-1 -translate-y-1/2 rounded bg-slate-300"></span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-origin-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Envelope: a two-faced flap hinged at the top with <code>origin-top</code></figcaption>
+        <div class="sc-demo" id="transform-origin-4">
+          <div class="pt-24">
+            <div class="group relative mx-auto h-36 w-60 perspective-distant" tabindex="0">
+              <div class="absolute inset-0 flex items-end justify-center rounded-lg bg-sky-200 pb-5 text-sm font-semibold text-sky-900">You're invited</div>
+              <div class="absolute inset-x-0 top-0 h-18 origin-top transition-transform duration-700 transform-3d group-hover:rotate-x-180 group-focus-within:rotate-x-180 motion-reduce:transition-none">
+                <div class="absolute inset-0 bg-sky-400 backface-hidden [clip-path:polygon(0_0,100%_0,50%_100%)]"></div>
+                <div class="absolute inset-0 rotate-x-180 bg-sky-300 backface-hidden [clip-path:polygon(0_0,100%_0,50%_100%)]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-origin-4"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A pivot in depth: a ring with no wrapper elements</figcaption>
+        <div class="sc-demo" id="transform-origin-5">
+          <div class="py-8 perspective-[900px]">
+            <div class="relative mx-auto h-28 w-20 -rotate-x-10 rotate-y-20 transform-3d *:absolute *:inset-0 *:origin-[50%_50%_-5.5rem] *:grid *:place-items-center *:rounded-lg *:text-sm *:font-bold *:text-white *:rotate-y-[calc(var(--i)*60deg)]">
+              <div class="bg-rose-500" style="--i:0">1</div>
+              <div class="bg-amber-500" style="--i:1">2</div>
+              <div class="bg-emerald-500" style="--i:2">3</div>
+              <div class="bg-sky-500" style="--i:3">4</div>
+              <div class="bg-violet-500" style="--i:4">5</div>
+              <div class="bg-pink-500" style="--i:5">6</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-origin-5"></pre>
+      </figure>
+
+      <p class="sc-note">The origin is measured from the element's own box, so <code>origin-right</code> on a half-width door is that door's right edge. Keyword origins compile to percentages (<code>origin-left</code> is <code>0</code>, <code>origin-top-right</code> is <code>100% 0</code>), though the docs table prints keyword pairs. Translate ignores the origin; only rotate, scale and skew use it.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 8. perspective-origin-* ===================== -->
+  <article class="sc-feature" id="perspective-origin">
+    <div class="sc-notes">
+      <h2>Vanishing point: <code>perspective-origin-*</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Moves the vanishing point of the <code>perspective-*</code> set on the same element. Nine keyword positions, plus arbitrary and variable forms. Use it to make panels lean toward the content, or to tie a parallax scene to the cursor.</p>
+      <ul class="sc-parts">
+        <li><code>perspective-origin-center</code></li>
+        <li><code>perspective-origin-top-left</code></li>
+        <li><code>perspective-origin-right</code></li>
+        <li><code>perspective-origin-bottom</code></li>
+        <li><code>perspective-origin-[30%_70%]</code></li>
+        <li><code>perspective-origin-(--po)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/perspective-origin" target="_blank" rel="noopener">Docs: perspective-origin</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Vanishing-point picker</figcaption>
+        <div class="sc-demo" id="perspective-origin-1">
+          <div class="flex flex-wrap items-center justify-center gap-6">
+            <div id="po-stage" data-o="center" class="flex h-44 w-60 items-center justify-center gap-3 rounded-xl bg-white/60 ring-1 ring-slate-900/10 perspective-near data-[o=top-left]:perspective-origin-top-left data-[o=top]:perspective-origin-top data-[o=top-right]:perspective-origin-top-right data-[o=left]:perspective-origin-left data-[o=right]:perspective-origin-right data-[o=bottom-left]:perspective-origin-bottom-left data-[o=bottom]:perspective-origin-bottom data-[o=bottom-right]:perspective-origin-bottom-right dark:bg-white/5 dark:ring-white/10">
+              <div class="h-28 w-14 rotate-y-45 rounded-lg bg-linear-to-br from-sky-400 to-indigo-600"></div>
+              <div class="h-28 w-14 rotate-y-45 rounded-lg bg-linear-to-br from-sky-400 to-indigo-600"></div>
+              <div class="h-28 w-14 rotate-y-45 rounded-lg bg-linear-to-br from-sky-400 to-indigo-600"></div>
+            </div>
+            <fieldset class="grid gap-2">
+              <legend class="mb-1 text-xs font-medium text-slate-600 dark:text-slate-400">Vanishing point</legend>
+              <div class="grid w-fit grid-cols-3 gap-3">
+                <input type="radio" name="po" value="top-left" aria-label="top-left" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="top" aria-label="top" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="top-right" aria-label="top-right" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="left" aria-label="left" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="center" aria-label="center" data-po-pick data-target="po-stage" class="size-4 accent-sky-600" checked>
+                <input type="radio" name="po" value="right" aria-label="right" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="bottom-left" aria-label="bottom-left" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="bottom" aria-label="bottom" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+                <input type="radio" name="po" value="bottom-right" aria-label="bottom-right" data-po-pick data-target="po-stage" class="size-4 accent-sky-600">
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="perspective-origin-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;input type="radio" data-po-pick data-target="stage-id" value="top-left"&gt; sets data-o on the stage
+document.addEventListener('change', (e) =&gt; {
+  const radio = e.target.closest('[data-po-pick]')
+  if (!radio) return
+  document.getElementById(radio.dataset.target).dataset.o = radio.value
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Cursor parallax: <code>perspective-origin</code> follows the pointer</figcaption>
+        <div class="sc-demo" id="perspective-origin-2">
+          <div data-parallax class="relative mx-auto h-56 w-full max-w-md cursor-crosshair perspective-midrange perspective-origin-(--po,50%_50%)">
+            <div class="relative size-full transform-3d">
+              <div class="absolute inset-[6%] -translate-z-16 rounded-2xl bg-slate-800 dark:bg-slate-700"></div>
+              <div class="absolute inset-[16%] rounded-xl bg-sky-500/90"></div>
+              <div class="absolute inset-[28%] grid translate-z-16 place-items-center rounded-lg bg-white/95 text-center text-sm font-semibold text-slate-900 shadow-xl">Move the pointer</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="perspective-origin-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// the hero writes its own --po (for example "30% 70%") as the pointer moves
+document.addEventListener('pointermove', (e) =&gt; {
+  const hero = e.target.closest('[data-parallax]')
+  if (!hero) return
+  const r = hero.getBoundingClientRect()
+  const x = ((e.clientX - r.left) / r.width) * 100
+  const y = ((e.clientY - r.top) / r.height) * 100
+  hero.style.setProperty('--po', x.toFixed(1) + '% ' + y.toFixed(1) + '%')
+})
+document.addEventListener('pointerout', (e) =&gt; {
+  const hero = e.target.closest('[data-parallax]')
+  if (hero &amp;&amp; !hero.contains(e.relatedTarget)) hero.style.removeProperty('--po')
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Docked panels that lean toward the content</figcaption>
+        <div class="sc-demo" id="perspective-origin-3">
+          <div class="mx-auto grid max-w-lg grid-cols-[4.5rem_1fr_4.5rem] items-center gap-3 sm:grid-cols-[6rem_1fr_6rem]">
+            <aside class="perspective-near perspective-origin-right *:mb-2 *:rotate-y-18 *:rounded-lg *:bg-white *:p-2 *:text-[11px] *:font-medium *:text-slate-700 *:shadow *:ring-1 *:ring-slate-900/10 dark:*:bg-slate-800 dark:*:text-slate-200 dark:*:ring-white/10">
+              <div>Inbox</div>
+              <div>Reports</div>
+              <div>Billing</div>
+            </aside>
+            <div class="rounded-lg bg-white p-3 shadow ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <p class="text-xs font-semibold text-slate-900 dark:text-slate-100">Overview</p>
+              <div class="mt-2 flex h-12 items-end gap-1">
+                <span class="h-5 flex-1 rounded-t bg-sky-300 dark:bg-sky-700"></span>
+                <span class="h-8 flex-1 rounded-t bg-sky-500"></span>
+                <span class="h-6 flex-1 rounded-t bg-sky-300 dark:bg-sky-700"></span>
+                <span class="h-10 flex-1 rounded-t bg-sky-500"></span>
+              </div>
+              <div class="mt-2 h-1.5 w-3/4 rounded bg-slate-200 dark:bg-slate-600"></div>
+              <div class="mt-1.5 h-1.5 w-1/2 rounded bg-slate-200 dark:bg-slate-600"></div>
+            </div>
+            <aside class="perspective-near perspective-origin-left *:mb-2 *:-rotate-y-18 *:rounded-lg *:bg-white *:p-2 *:text-[11px] *:font-medium *:text-slate-700 *:shadow *:ring-1 *:ring-slate-900/10 dark:*:bg-slate-800 dark:*:text-slate-200 dark:*:ring-white/10">
+              <div>Alerts</div>
+              <div>Team</div>
+              <div>Help</div>
+            </aside>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="perspective-origin-3"></pre>
+      </figure>
+
+      <p class="sc-note">Percentages are relative to the perspective element's own box, so a bigger stage shows a bigger shift. Set it on the wrapper next to <code>perspective-*</code>, never on the rotating child. With <code>perspective-none</code> or a very large perspective the origin barely matters. The docs table prints keyword pairs, but the engine emits percentages (<code>perspective-origin-top-left</code> is <code>0 0</code>).</p>
+    </div>
+  </article>
+
+  <!-- ===================== 9. scale-z-* / scale-3d ===================== -->
+  <article class="sc-feature" id="scale-z">
+    <div class="sc-notes">
+      <h2>Stretch depth: <code>scale-z-*</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Scales an element along z, in percent like <code>scale-x-*</code>. On a <code>transform-3d</code> parent it stretches or squeezes the gaps between everything inside, so one class explodes or collapses a whole layer stack. On a flat element it does nothing visible.</p>
+      <ul class="sc-parts">
+        <li><code>scale-z-300</code></li>
+        <li><code>-scale-z-100</code></li>
+        <li><code>scale-z-[2]</code></li>
+        <li><code>scale-z-(--sz)</code></li>
+        <li><code>scale-3d</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/scale" target="_blank" rel="noopener">Docs: scale</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>One class explodes the stack: <code>group-hover:scale-z-300</code></figcaption>
+        <div class="sc-demo" id="scale-z-1">
+          <div class="group h-72 pt-36 perspective-distant" tabindex="0">
+            <div class="relative mx-auto size-32 rotate-x-60 rotate-z-45 transform-3d transition-transform duration-500 group-hover:scale-z-300 group-focus-within:scale-z-300 motion-reduce:transition-none *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
+              <div class="bg-slate-400/90 text-slate-900">Background</div>
+              <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
+              <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
+              <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scale-z-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Explode and collapse with a button</figcaption>
+        <div class="sc-demo" id="scale-z-2">
+          <div class="grid justify-items-center gap-2">
+            <div id="explode-stage" data-explode="false" class="group h-72 w-full pt-36 perspective-distant">
+              <div class="relative mx-auto size-32 scale-z-10 rotate-x-60 rotate-z-45 transform-3d transition-transform duration-700 group-data-[explode=true]:scale-z-300 motion-reduce:transition-none *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
+                <div class="bg-slate-400/90 text-slate-900">Background</div>
+                <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
+                <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
+                <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+              </div>
+            </div>
+            <button type="button" data-explode-toggle="explode-stage" aria-pressed="false" class="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Explode</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scale-z-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-explode-toggle="stage-id"&gt; flips data-explode on the stage
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-explode-toggle]')
+  if (!btn) return
+  const stage = document.getElementById(btn.dataset.explodeToggle)
+  const open = stage.dataset.explode !== 'true'
+  stage.dataset.explode = String(open)
+  btn.setAttribute('aria-pressed', String(open))
+  btn.textContent = open ? 'Collapse' : 'Explode'
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Depth knob: a slider writes <code>--sz</code></figcaption>
+        <div class="sc-demo" id="scale-z-3">
+          <div id="depth-demo" class="grid gap-3 [--sz:100%]">
+            <div class="h-72 pt-36 perspective-distant">
+              <div class="relative mx-auto size-32 scale-z-(--sz) rotate-x-60 rotate-z-45 transform-3d *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
+                <div class="bg-slate-400/90 text-slate-900">Background</div>
+                <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
+                <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
+                <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+              </div>
+            </div>
+            <label class="mx-auto flex w-full max-w-xs items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
+              <span class="shrink-0">Depth</span>
+              <input type="range" min="100" max="300" step="10" value="100" data-sz-for="depth-demo" class="w-full accent-sky-600">
+              <output class="w-10 shrink-0 text-right">100%</output>
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scale-z-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;input type="range" data-sz-for="id"&gt; writes --sz (a percentage) on that element
+document.addEventListener('input', (e) =&gt; {
+  const range = e.target.closest('[data-sz-for]')
+  if (!range) return
+  document.getElementById(range.dataset.szFor).style.setProperty('--sz', range.value + '%')
+  range.nextElementSibling.textContent = range.value + '%'
+})</pre>
+      </figure>
+
+      <p class="sc-note">Never use <code>scale-z-0</code> as the collapsed state: the whole subtree becomes a singular matrix and vanishes. <code>scale-z-10</code> keeps the layers visible and nearly merged. <code>scale-110</code> sets a z value too but does not use it, so it stays a flat two-axis scale. <code>scale-3d</code> is the full <code>scale</code> shorthand from the docs API table and changes nothing on its own. A fixed <code>translate-z-*</code> on the children plus <code>scale-z-*</code> on the parent is cleaner than animating every child.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 10. (--var) values and calc() ===================== -->
+  <article class="sc-feature" id="css-variable-3d">
+    <div class="sc-notes">
+      <h2>Variables in 3D: <code>(--var)</code> and <code>calc()</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The parenthesis shorthand turns any 3D utility into a variable reader: <code>rotate-x-(--rx)</code>, <code>translate-z-(--tz)</code>, <code>perspective-(--p)</code>. A few lines of script that only call <code>style.setProperty</code> can then drive a whole scene, and Tailwind never has to recompile because the class names do not change.</p>
+      <ul class="sc-parts">
+        <li><code>rotate-x-(--rx)</code></li>
+        <li><code>rotate-y-(--ry)</code></li>
+        <li><code>translate-z-(--tz)</code></li>
+        <li><code>scale-z-(--sz)</code></li>
+        <li><code>perspective-(--p)</code></li>
+        <li><code>rotate-y-[calc(var(--s)*-55deg)]</code></li>
+        <li><code>pointer-fine:rotate-x-(--rx)</code></li>
+        <li><code>bg-radial-[at_var(--gx)_var(--gy)]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/rotate#using-a-custom-value" target="_blank" rel="noopener">Docs: rotate, custom value</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Pointer-tracking tilt card with glare and floating layers</figcaption>
+        <div class="sc-demo" id="css-variable-3d-1">
+          <div class="mx-auto w-full max-w-xs perspective-[1000px]">
+            <div data-tilt class="relative rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 transform-3d [--rx:0deg] [--ry:0deg] [--gx:50%] [--gy:50%] transition-transform duration-150 ease-out pointer-fine:rotate-x-(--rx) pointer-fine:rotate-y-(--ry) motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+              <div class="pointer-events-none absolute inset-0 rounded-2xl bg-radial-[at_var(--gx)_var(--gy)] from-white/60 to-transparent to-60% dark:from-white/15"></div>
+              <h3 class="translate-z-8 text-lg font-semibold text-slate-900 dark:text-white">Aurora Pass</h3>
+              <p class="translate-z-5 text-sm text-slate-500 dark:text-slate-400">Gold member since 2024</p>
+              <span class="mt-5 inline-block translate-z-12 rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">Priority boarding</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="css-variable-3d-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// the card turns toward the pointer; the glare follows --gx and --gy
+document.addEventListener('pointermove', (e) =&gt; {
+  const card = e.target.closest('[data-tilt]')
+  if (!card) return
+  const r = card.parentElement.getBoundingClientRect() // the still wrapper, so the box does not drift
+  const px = (e.clientX - r.left) / r.width
+  const py = (e.clientY - r.top) / r.height
+  card.style.setProperty('--ry', ((px - 0.5) * 24).toFixed(2) + 'deg')
+  card.style.setProperty('--rx', ((0.5 - py) * 24).toFixed(2) + 'deg')
+  card.style.setProperty('--gx', (px * 100).toFixed(1) + '%')
+  card.style.setProperty('--gy', (py * 100).toFixed(1) + '%')
+})
+document.addEventListener('pointerout', (e) =&gt; {
+  const card = e.target.closest('[data-tilt]')
+  if (!card || card.contains(e.relatedTarget)) return
+  ;['--rx', '--ry', '--gx', '--gy'].forEach((v) =&gt; card.style.removeProperty(v))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Coverflow: three variables per card, click one to bring it forward</figcaption>
+        <div class="sc-demo" id="css-variable-3d-2">
+          <div class="relative mx-auto h-52 w-full max-w-lg perspective-[900px] [--step:2.5rem] sm:h-60 sm:[--step:5.5rem]">
+            <button type="button" data-cf-card style="--o:-2;--s:-1;--a:2" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Neon Tide</button>
+            <button type="button" data-cf-card style="--o:-1;--s:-1;--a:1" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Low Sun</button>
+            <button type="button" data-cf-card style="--o:0;--s:0;--a:0" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Fern</button>
+            <button type="button" data-cf-card style="--o:1;--s:1;--a:1" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Glass Lake</button>
+            <button type="button" data-cf-card style="--o:2;--s:1;--a:2" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Dusk</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="css-variable-3d-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// clicking a card makes it the active one: --o is its offset, --s the sign, --a the distance
+document.addEventListener('click', (e) =&gt; {
+  const card = e.target.closest('[data-cf-card]')
+  if (!card) return
+  const cards = [...card.parentElement.querySelectorAll('[data-cf-card]')]
+  const active = cards.indexOf(card)
+  cards.forEach((c, i) =&gt; {
+    const o = i - active
+    c.style.setProperty('--o', o)
+    c.style.setProperty('--s', Math.sign(o))
+    c.style.setProperty('--a', Math.abs(o))
+  })
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>3D playground: sliders write variables, the classes read them</figcaption>
+        <div class="sc-demo" id="css-variable-3d-3">
+          <div class="grid items-center gap-6 sm:grid-cols-[16rem_1fr]">
+            <div id="pg-stage" class="grid h-64 w-full place-items-center perspective-(--p) [--p:600px] [--rx:20deg] [--ry:-30deg] [--rz:0deg] [--tz:0px]">
+              <div class="grid size-28 rotate-x-(--rx) rotate-y-(--ry) rotate-z-(--rz) translate-z-(--tz) place-items-center rounded-xl bg-linear-to-br from-sky-500 to-indigo-600 text-3xl font-bold text-white shadow-xl">F</div>
+            </div>
+            <div data-pg-root data-target="pg-stage" class="grid gap-2 text-xs text-slate-700 dark:text-slate-300">
+              <label class="grid grid-cols-[5.5rem_1fr_3.25rem] items-center gap-2">
+                <span>perspective</span>
+                <input type="range" min="100" max="1500" step="10" value="600" data-pg="--p" data-unit="px" class="w-full accent-sky-600">
+                <output class="text-right tabular-nums">600px</output>
+              </label>
+              <label class="grid grid-cols-[5.5rem_1fr_3.25rem] items-center gap-2">
+                <span>rotate-x</span>
+                <input type="range" min="-90" max="90" step="1" value="20" data-pg="--rx" data-unit="deg" class="w-full accent-sky-600">
+                <output class="text-right tabular-nums">20deg</output>
+              </label>
+              <label class="grid grid-cols-[5.5rem_1fr_3.25rem] items-center gap-2">
+                <span>rotate-y</span>
+                <input type="range" min="-90" max="90" step="1" value="-30" data-pg="--ry" data-unit="deg" class="w-full accent-sky-600">
+                <output class="text-right tabular-nums">-30deg</output>
+              </label>
+              <label class="grid grid-cols-[5.5rem_1fr_3.25rem] items-center gap-2">
+                <span>rotate-z</span>
+                <input type="range" min="-180" max="180" step="1" value="0" data-pg="--rz" data-unit="deg" class="w-full accent-sky-600">
+                <output class="text-right tabular-nums">0deg</output>
+              </label>
+              <label class="grid grid-cols-[5.5rem_1fr_3.25rem] items-center gap-2">
+                <span>translate-z</span>
+                <input type="range" min="-100" max="100" step="1" value="0" data-pg="--tz" data-unit="px" class="w-full accent-sky-600">
+                <output class="text-right tabular-nums">0px</output>
+              </label>
+              <div data-sc-omit class="mt-2">
+                <p class="mb-1 text-[11px] text-slate-500 dark:text-slate-400">The same scene as plain classes:</p>
+                <code data-pg-classes class="block rounded-md bg-slate-200 p-2 text-[11px] break-words text-slate-800 dark:bg-slate-700 dark:text-slate-100">perspective-[600px] rotate-x-[20deg] rotate-y-[-30deg] rotate-z-[0deg] translate-z-[0px]</code>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="css-variable-3d-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// each slider writes one variable on the stage and rebuilds the class readout
+document.addEventListener('input', (e) =&gt; {
+  const slider = e.target.closest('[data-pg]')
+  if (!slider) return
+  const root = slider.closest('[data-pg-root]')
+  document.getElementById(root.dataset.target).style.setProperty(slider.dataset.pg, slider.value + slider.dataset.unit)
+  slider.nextElementSibling.textContent = slider.value + slider.dataset.unit
+  const v = (name) =&gt; root.querySelector('[data-pg="' + name + '"]').value
+  root.querySelector('[data-pg-classes]').textContent =
+    'perspective-[' + v('--p') + 'px] rotate-x-[' + v('--rx') + 'deg] rotate-y-[' + v('--ry') + 'deg] rotate-z-[' + v('--rz') + 'deg] translate-z-[' + v('--tz') + 'px]'
+})</pre>
+      </figure>
+
+      <p class="sc-note">Give every variable a unit and a default (<code>[--rx:0deg]</code>): a unitless or unset variable makes the whole transform invalid, and the element snaps flat. Add a short <code>transition-transform duration-150 ease-out</code> to smooth pointer tracking, and <code>motion-reduce:transition-none</code>. Do not put <code>overflow-hidden</code> on a tilting <code>transform-3d</code> card; round and clip the leaf layers instead. <code>pointer-fine:</code> (<span class="sc-since" data-v="4.1">v4.1</span>) keeps the tilt off touch screens, where there is no hover to track.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 11. 3D keyframe animations ===================== -->
+  <article class="sc-feature" id="keyframes-3d">
+    <div class="sc-notes">
+      <h2>3D loops with <code>@theme</code> keyframes</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Define <code>--animate-*</code> and its <code>@keyframes</code> inside <code>@theme</code> and Tailwind generates an <code>animate-*</code> utility, and only emits the keyframes when the class is used. Keyframes that animate <code>transform</code> or <code>rotate</code> give you spinning cubes, rings and coins.</p>
+      <ul class="sc-parts">
+        <li><code>--animate-cube-spin</code></li>
+        <li><code>motion-safe:animate-cube-spin</code></li>
+        <li><code>motion-reduce:animate-none</code></li>
+        <li><code>hover:[animation-play-state:paused]</code></li>
+        <li><code>animate-[ring-spin_20s_linear_infinite]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/animation#customizing-your-theme" target="_blank" rel="noopener">Docs: animation, theme</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Six-face cube, paused on hover <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="keyframes-3d-1">Replay</button></figcaption>
+        <div class="sc-demo" id="keyframes-3d-1">
+          <div class="py-8 perspective-distant">
+            <div class="relative mx-auto size-32 transform-3d motion-safe:animate-cube-spin motion-reduce:-rotate-x-20 motion-reduce:rotate-y-30 hover:[animation-play-state:paused] *:absolute *:inset-0 *:grid *:place-items-center *:border *:border-white/40 *:text-3xl *:font-bold *:text-white *:odd:bg-sky-600/80 *:even:bg-indigo-600/80">
+              <div class="translate-z-16">1</div>
+              <div class="-translate-z-16 rotate-y-180">2</div>
+              <div class="translate-x-16 rotate-y-90">3</div>
+              <div class="-translate-x-16 -rotate-y-90">4</div>
+              <div class="-translate-y-16 rotate-x-90">5</div>
+              <div class="translate-y-16 -rotate-x-90">6</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="keyframes-3d-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-cube-spin: cube-spin 14s linear infinite;
+  @keyframes cube-spin {
+    from { transform: rotateX(-22deg) rotateY(0deg); }
+    to   { transform: rotateX(-22deg) rotateY(360deg); }
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Rotating product ring, paused on hover <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="keyframes-3d-2">Replay</button></figcaption>
+        <div class="sc-demo" id="keyframes-3d-2">
+          <div class="py-8 perspective-[900px]">
+            <div class="-rotate-x-12 transform-3d">
+              <div class="relative mx-auto h-32 w-24 transform-3d motion-safe:animate-ring-spin hover:[animation-play-state:paused]">
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d" style="--i:0">
+                  <div class="grid size-full translate-z-24 content-center justify-items-center rounded-lg bg-white p-2 text-center shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                    <span class="size-10 rounded-full bg-linear-to-br from-rose-300 to-rose-500"></span>
+                    <span class="mt-2 text-xs font-semibold text-slate-900 dark:text-slate-100">Stoneware mug</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">$18</span>
+                  </div>
+                </div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d" style="--i:1">
+                  <div class="grid size-full translate-z-24 content-center justify-items-center rounded-lg bg-white p-2 text-center shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                    <span class="size-10 rounded-full bg-linear-to-br from-amber-300 to-amber-500"></span>
+                    <span class="mt-2 text-xs font-semibold text-slate-900 dark:text-slate-100">Canvas tote</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">$24</span>
+                  </div>
+                </div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d" style="--i:2">
+                  <div class="grid size-full translate-z-24 content-center justify-items-center rounded-lg bg-white p-2 text-center shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                    <span class="size-10 rounded-full bg-linear-to-br from-emerald-300 to-emerald-500"></span>
+                    <span class="mt-2 text-xs font-semibold text-slate-900 dark:text-slate-100">Wool cap</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">$22</span>
+                  </div>
+                </div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d" style="--i:3">
+                  <div class="grid size-full translate-z-24 content-center justify-items-center rounded-lg bg-white p-2 text-center shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                    <span class="size-10 rounded-full bg-linear-to-br from-sky-300 to-sky-500"></span>
+                    <span class="mt-2 text-xs font-semibold text-slate-900 dark:text-slate-100">Field tee</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">$28</span>
+                  </div>
+                </div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d" style="--i:4">
+                  <div class="grid size-full translate-z-24 content-center justify-items-center rounded-lg bg-white p-2 text-center shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                    <span class="size-10 rounded-full bg-linear-to-br from-violet-300 to-violet-500"></span>
+                    <span class="mt-2 text-xs font-semibold text-slate-900 dark:text-slate-100">Steel bottle</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">$20</span>
+                  </div>
+                </div>
+                <div class="absolute inset-0 rotate-y-[calc(var(--i)*60deg)] transform-3d" style="--i:5">
+                  <div class="grid size-full translate-z-24 content-center justify-items-center rounded-lg bg-white p-2 text-center shadow-lg ring-1 ring-slate-900/10 backface-hidden dark:bg-slate-800 dark:ring-white/10">
+                    <span class="size-10 rounded-full bg-linear-to-br from-pink-300 to-pink-500"></span>
+                    <span class="mt-2 text-xs font-semibold text-slate-900 dark:text-slate-100">Pocket notebook</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">$12</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="keyframes-3d-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-ring-spin: ring-spin 20s linear infinite;
+  @keyframes ring-spin {
+    to { transform: rotateY(360deg); }
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Turntable: keyframes on the <code>rotate</code> property keep your tilt class <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="keyframes-3d-3">Replay</button></figcaption>
+        <div class="sc-demo" id="keyframes-3d-3">
+          <div class="flex justify-center py-6 perspective-[800px]">
+            <div class="relative h-36 w-28 -rotate-x-20 transform-3d motion-safe:animate-turntable *:absolute *:inset-0 *:grid *:place-items-center *:rounded-xl *:p-3 *:text-center *:text-sm *:font-bold *:text-white *:shadow-xl *:backface-hidden *:last:rotate-y-180">
+              <div class="bg-linear-to-br from-indigo-500 to-fuchsia-600">Gold member</div>
+              <div class="bg-linear-to-br from-slate-700 to-slate-900">Aurora Pass</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="keyframes-3d-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-turntable: turntable 8s linear infinite;
+  @keyframes turntable {
+    from { rotate: y 0deg; }
+    to   { rotate: y 360deg; }
+  }
+}</pre>
+      </figure>
+
+      <p class="sc-note">A keyframe that sets <code>transform</code> overrides <code>rotate-x-*</code> and <code>rotate-y-*</code> on the same element, because animations beat normal declarations. Three ways out: bake the tilt into the keyframes (the cube), put the tilt on a parent (the ring), or animate <code>rotate:</code> and <code>translate:</code> instead (the turntable). Always pair loops with <code>motion-safe:</code> so people who ask for less motion get a still scene; the cube falls back to a fixed tilt.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 12. starting: for 3D entrances ===================== -->
+  <article class="sc-feature" id="starting-style-3d">
+    <div class="sc-notes">
+      <h2>3D entrances with <code>starting:</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The <code>starting:</code> variant wraps a utility in <code>@starting-style</code>, so an element that was just inserted or shown can transition from a rotated, transparent state to its resting state with no animation code. Combined with 3D rotation it gives fold-in toasts, swing-open dialogs and unfolding popovers.</p>
+      <ul class="sc-parts">
+        <li><code>starting:-rotate-x-90</code></li>
+        <li><code>starting:rotate-y-90</code></li>
+        <li><code>starting:opacity-0</code></li>
+        <li><code>starting:open:opacity-0</code></li>
+        <li><code>transition-discrete</code></li>
+        <li><code>open:</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#starting-style" target="_blank" rel="noopener">Docs: @starting-style</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Toasts fold down on arrival <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="starting-style-3d-1">Replay</button></figcaption>
+        <div class="sc-demo" id="starting-style-3d-1">
+          <div class="grid min-h-44 content-start justify-items-center gap-4">
+            <button type="button" data-add-toast="toast-stack" class="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Add toast</button>
+            <div id="toast-stack" class="grid w-full max-w-xs gap-2 perspective-[700px]">
+              <div class="origin-top rotate-x-0 rounded-xl bg-white p-4 text-sm text-slate-900 opacity-100 shadow-lg ring-1 ring-slate-900/10 transition duration-500 starting:-rotate-x-90 starting:opacity-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Saved to drafts</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="starting-style-3d-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-add-toast="stack-id"&gt; appends a toast; it enters from its starting: classes
+const messages = ['Invoice paid', 'New comment from Priya', 'Backup completed', 'Deploy finished']
+let count = 0
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-add-toast]')
+  if (!btn) return
+  const stack = document.getElementById(btn.dataset.addToast)
+  const toast = document.createElement('div')
+  toast.className = 'origin-top rotate-x-0 rounded-xl bg-white p-4 text-sm text-slate-900 opacity-100 shadow-lg ring-1 ring-slate-900/10 transition duration-500 starting:-rotate-x-90 starting:opacity-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10'
+  toast.textContent = messages[count++ % messages.length]
+  stack.append(toast)
+  while (stack.children.length &gt; 3) stack.firstElementChild.remove()
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A modal dialog that swings open</figcaption>
+        <div class="sc-demo" id="starting-style-3d-2">
+          <div class="flex justify-center">
+            <button type="button" data-open-dialog="swing-dialog" class="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Open dialog</button>
+            <dialog id="swing-dialog" class="m-auto overflow-visible rounded-2xl bg-transparent p-0 backdrop:bg-slate-950/40">
+              <div class="perspective-near">
+                <div class="w-72 origin-bottom rotate-y-0 rounded-2xl bg-white p-6 text-slate-900 shadow-2xl transition-transform duration-500 starting:rotate-y-90 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100">
+                  <h3 class="text-base font-semibold">Delete project?</h3>
+                  <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">This removes 14 files and cannot be undone.</p>
+                  <form method="dialog" class="mt-5 flex justify-end gap-2">
+                    <button class="rounded-md px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700">Cancel</button>
+                    <button class="rounded-md bg-rose-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-rose-500">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="starting-style-3d-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-open-dialog="id"&gt; opens that &lt;dialog&gt; as a modal
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-open-dialog]')
+  if (btn) document.getElementById(btn.dataset.openDialog).showModal()
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A popover that unfolds, with no JavaScript</figcaption>
+        <div class="sc-demo" id="starting-style-3d-3">
+          <div class="flex justify-center">
+            <button type="button" popovertarget="quick-actions" class="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Quick actions</button>
+            <div id="quick-actions" popover class="m-auto w-64 overflow-visible border-0 bg-transparent p-0 opacity-0 transition-all transition-discrete duration-500 backdrop:bg-slate-950/20 open:opacity-100 starting:open:opacity-0 motion-reduce:transition-none">
+              <div class="perspective-near">
+                <div class="origin-top rotate-x-0 rounded-xl bg-white p-2 text-sm text-slate-800 shadow-2xl ring-1 ring-slate-900/10 transition-transform duration-500 starting:-rotate-x-60 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <p class="px-2 py-1 text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">Quick actions</p>
+                  <button type="button" popovertarget="quick-actions" popovertargetaction="hide" class="block w-full rounded-md px-2 py-1.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700">New file</button>
+                  <button type="button" popovertarget="quick-actions" popovertargetaction="hide" class="block w-full rounded-md px-2 py-1.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Duplicate</button>
+                  <button type="button" popovertarget="quick-actions" popovertargetaction="hide" class="block w-full rounded-md px-2 py-1.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Share link</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="starting-style-3d-3"></pre>
+      </figure>
+
+      <p class="sc-note">Browser support: <code>@starting-style</code> works in Chrome and Edge 117+, Safari 17.5+ and Firefox 129+; the popover attribute is in all current browsers. Without it the element simply appears at its resting state. The resting state has to be explicit in the base classes (<code>rotate-x-0</code>, <code>opacity-100</code>), or there is nothing to transition to. Ancestor perspective does not reach top-layer elements, so each popover and dialog carries its own <code>perspective-near</code> wrapper. Dialogs have no exit animation here; the entrance runs each time <code>showModal()</code> is called.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 13. individual transform properties ===================== -->
+  <article class="sc-feature" id="individual-transforms">
+    <div class="sc-notes">
+      <h2>Separate <code>rotate</code>, <code>scale</code>, <code>translate</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>In v4, <code>rotate-45</code>, <code>scale-110</code> and <code>translate-x-2</code> write the standalone CSS <code>rotate</code>, <code>scale</code> and <code>translate</code> properties instead of one big <code>transform</code>. Each can be transitioned, reset and timed on its own, and an arbitrary <code>rotate</code> value can carry an axis for 3D.</p>
+      <ul class="sc-parts">
+        <li><code>rotate-45</code></li>
+        <li><code>scale-110</code></li>
+        <li><code>translate-x-2</code></li>
+        <li><code>rotate-none</code></li>
+        <li><code>scale-none</code></li>
+        <li><code>translate-none</code></li>
+        <li><code>rotate-[x_45deg]</code></li>
+        <li><code>rotate-[1_1_0_45deg]</code></li>
+        <li><code>transition-[opacity,scale]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#individual-transform-properties" target="_blank" rel="noopener">Docs: upgrade guide</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Which property did each class touch? Live computed values</figcaption>
+        <div class="sc-demo" id="individual-transforms-1">
+          <div class="grid items-center gap-6 sm:grid-cols-[auto_1fr]">
+            <div class="flex justify-center px-8 py-6 perspective-near">
+              <div id="tf-box" class="grid size-20 rotate-45 rotate-x-30 skew-3 scale-110 translate-x-2 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div>
+            </div>
+            <div class="grid gap-3">
+              <div class="flex flex-wrap gap-1.5 *:rounded-md *:border *:border-slate-300 *:px-2.5 *:py-1 *:text-xs *:font-medium *:text-slate-700 *:hover:bg-white *:aria-pressed:border-sky-600 *:aria-pressed:bg-sky-600 *:aria-pressed:text-white dark:*:border-slate-600 dark:*:text-slate-200 dark:*:hover:bg-slate-800 dark:*:aria-pressed:border-sky-500 dark:*:aria-pressed:bg-sky-500 dark:*:aria-pressed:text-slate-950">
+                <button type="button" data-toggle-class="transform-none" data-target="tf-box" aria-pressed="false">transform-none</button>
+                <button type="button" data-toggle-class="rotate-none scale-none translate-none" data-target="tf-box" aria-pressed="false">rotate-none scale-none translate-none</button>
+              </div>
+              <dl data-sc-omit data-readout="tf-box" class="grid grid-cols-[4.5rem_1fr] gap-x-3 gap-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+                <dt>rotate</dt><dd><code data-prop="rotate" class="break-all text-[11px]">…</code></dd>
+                <dt>scale</dt><dd><code data-prop="scale" class="break-all text-[11px]">…</code></dd>
+                <dt>translate</dt><dd><code data-prop="translate" class="break-all text-[11px]">…</code></dd>
+                <dt>transform</dt><dd><code data-prop="transform" class="break-all text-[11px]">…</code></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="individual-transforms-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-toggle-class="a b" data-target="id"&gt; adds or removes those classes on the target
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-toggle-class]')
+  if (!btn) return
+  const target = document.getElementById(btn.dataset.target)
+  const names = btn.dataset.toggleClass.split(' ')
+  const on = !target.classList.contains(names[0])
+  names.forEach((n) =&gt; target.classList.toggle(n, on))
+  btn.setAttribute('aria-pressed', String(on))
+})</pre>
+        <pre class="sc-code" data-code="js" data-label="JS: readout">// [data-readout="id"] lists the computed value of each [data-prop] child for that element
+const refresh = () =&gt; {
+  document.querySelectorAll('[data-readout]').forEach((panel) =&gt; {
+    const cs = getComputedStyle(document.getElementById(panel.dataset.readout))
+    panel.querySelectorAll('[data-prop]').forEach((out) =&gt; {
+      out.textContent = cs.getPropertyValue(out.dataset.prop) || 'none'
+    })
+  })
+}
+refresh()
+window.addEventListener('load', refresh)
+// the browser build rewrites its style tag when a new class appears: read again then
+new MutationObserver(refresh).observe(document.head, { childList: true, subtree: true, characterData: true })
+document.addEventListener('click', (e) =&gt; {
+  if (e.target.closest('[data-toggle-class]')) refresh()
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Independent timing: lift fast, grow medium, twist slowly</figcaption>
+        <div class="sc-demo" id="individual-transforms-2">
+          <div class="group flex flex-wrap justify-center gap-10 py-6" tabindex="0">
+            <div class="flex flex-col items-center gap-3">
+              <div class="size-20 rounded-xl bg-slate-400 transition-transform duration-500 group-hover:-translate-y-4 group-hover:scale-125 group-hover:rotate-12 group-focus-within:-translate-y-4 group-focus-within:scale-125 group-focus-within:rotate-12 motion-reduce:transition-none dark:bg-slate-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">transition-transform<br>one 500ms timing</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="size-20 rounded-xl bg-indigo-500 [transition:translate_150ms,scale_450ms,rotate_900ms] group-hover:-translate-y-4 group-hover:scale-125 group-hover:rotate-12 group-focus-within:-translate-y-4 group-focus-within:scale-125 group-focus-within:rotate-12 motion-reduce:transition-none"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">translate 150ms<br>scale 450ms, rotate 900ms</code>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="individual-transforms-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Axis-angle rotation: one arbitrary class, any axis</figcaption>
+        <div class="sc-demo" id="individual-transforms-3">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4">
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-near"><div class="grid size-20 rotate-[x_45deg] place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-[x_45deg]</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-near"><div class="grid size-20 rotate-x-45 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-x-45<br>same result</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-near"><div class="grid size-20 rotate-[1_1_0_45deg] place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-[1_1_0_45deg]</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="perspective-near"><div class="grid size-20 rotate-[0.75_1_0.75_45deg] place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-[0.75_1_0.75_45deg]</code>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="individual-transforms-3"></pre>
+      </figure>
+
+      <p class="sc-note">Since v4, <code>transform-none</code> no longer clears <code>rotate-45</code>, <code>scale-110</code> or <code>translate-x-2</code>; it only clears <code>rotate-x/y/z</code>, <code>skew-*</code> and arbitrary <code>transform</code> values. Reset the individual properties with <code>rotate-none</code>, <code>scale-none</code> and <code>translate-none</code>. A custom <code>transition-[opacity,transform]</code> no longer animates them either: write <code>transition-[opacity,scale]</code>. On one element the browser applies translate, then rotate, then scale, then <code>transform</code>. <code>rotate-45</code> and <code>rotate-z-45</code> both turn around z but live in different properties.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 14. skew ===================== -->
+  <article class="sc-feature" id="skew">
+    <div class="sc-notes">
+      <h2>Shear: <code>skew-*</code></h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>2D shear utilities. They work as in v3 and still write <code>transform</code>, so they compose with <code>rotate-x/y/z</code> and are cleared by <code>transform-none</code>. The skew helper variables do not inherit, so a child can apply the opposite skew and keep its text upright.</p>
+      <ul class="sc-parts">
+        <li><code>skew-3</code></li>
+        <li><code>-skew-x-12</code></li>
+        <li><code>skew-y-3</code></li>
+        <li><code>skew-[3.142rad]</code></li>
+        <li><code>skew-x-(--sx)</code></li>
+        <li><code>md:-skew-y-2</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/skew" target="_blank" rel="noopener">Docs: skew</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Parallelogram buttons with an upright label</figcaption>
+        <div class="sc-demo" id="skew-1">
+          <div class="flex flex-wrap items-start justify-center gap-8">
+            <div class="flex flex-col items-center gap-3">
+              <button type="button" class="-skew-x-12 rounded bg-indigo-600 px-6 py-3 font-semibold text-white shadow-lg hover:bg-indigo-500"><span class="inline-block skew-x-12">Start free trial</span></button>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">-skew-x-12 + inner skew-x-12</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <button type="button" class="-skew-x-12 rounded border-2 border-indigo-600 px-6 py-3 font-semibold text-indigo-700 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-300 dark:hover:bg-indigo-400/10"><span class="inline-block skew-x-12">See pricing</span></button>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">same, outline style</code>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <button type="button" class="-skew-x-12 rounded bg-slate-700 px-6 py-3 font-semibold text-white shadow-lg dark:bg-slate-600">Slanted label</button>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">no counter-skew</code>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="skew-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Slanted tab strip: the active tab stands upright</figcaption>
+        <div class="sc-demo" id="skew-2">
+          <div role="tablist" class="flex flex-wrap justify-center gap-1">
+            <button type="button" role="tab" data-skew-tab aria-selected="true" class="group -skew-x-12 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 aria-selected:skew-x-0 aria-selected:bg-indigo-600 aria-selected:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:aria-selected:bg-indigo-500"><span class="inline-block skew-x-12 transition duration-200 group-aria-selected:skew-x-0">Overview</span></button>
+            <button type="button" role="tab" data-skew-tab aria-selected="false" class="group -skew-x-12 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 aria-selected:skew-x-0 aria-selected:bg-indigo-600 aria-selected:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:aria-selected:bg-indigo-500"><span class="inline-block skew-x-12 transition duration-200 group-aria-selected:skew-x-0">Billing</span></button>
+            <button type="button" role="tab" data-skew-tab aria-selected="false" class="group -skew-x-12 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 aria-selected:skew-x-0 aria-selected:bg-indigo-600 aria-selected:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:aria-selected:bg-indigo-500"><span class="inline-block skew-x-12 transition duration-200 group-aria-selected:skew-x-0">Team</span></button>
+            <button type="button" role="tab" data-skew-tab aria-selected="false" class="group -skew-x-12 bg-white px-5 py-2 text-sm font-medium text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 aria-selected:skew-x-0 aria-selected:bg-indigo-600 aria-selected:text-white dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 dark:aria-selected:bg-indigo-500"><span class="inline-block skew-x-12 transition duration-200 group-aria-selected:skew-x-0">Settings</span></button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="skew-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// clicking a tab marks it aria-selected and clears its siblings
+document.addEventListener('click', (e) =&gt; {
+  const tab = e.target.closest('[data-skew-tab]')
+  if (!tab) return
+  tab.parentElement.querySelectorAll('[data-skew-tab]').forEach((t) =&gt; t.setAttribute('aria-selected', String(t === tab)))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Skewed section edge with level content</figcaption>
+        <div class="sc-demo" id="skew-3">
+          <div class="overflow-hidden rounded-xl bg-white py-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+            <section class="-skew-y-3 bg-linear-to-r from-slate-900 to-indigo-900 py-12 md:-skew-y-2">
+              <div class="mx-auto max-w-sm skew-y-3 px-6 text-white md:skew-y-2">
+                <h3 class="text-xl font-bold">Ship faster</h3>
+                <p class="mt-1 text-sm text-slate-300">The edge is slanted. The text is level.</p>
+                <button type="button" class="mt-4 rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-slate-900">Get started</button>
+              </div>
+            </section>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="skew-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Skew composes with <code>rotate-x</code> in one transform</figcaption>
+        <div class="sc-demo" id="skew-4">
+          <div class="flex justify-center py-4 perspective-near">
+            <p class="inline-block skew-y-3 -skew-x-6 rotate-x-30 bg-white px-5 py-3 text-lg font-bold text-slate-900 shadow-lg dark:bg-slate-800 dark:text-slate-100">City opens its first 3D library</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="skew-4"></pre>
+      </figure>
+
+      <p class="sc-note">Bare skew values must be whole degrees: <code>skew-x-12.5</code> generates nothing, so write <code>skew-x-[12.5deg]</code>. <code>transform-none</code> removes skew, but <code>rotate-none</code>, <code>scale-none</code> and <code>translate-none</code> do not. The counter-skew trick needs <code>inline-block</code> on the label, since a transform does not apply to a plain inline element.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 15. transform / gpu / cpu / none ===================== -->
+  <article class="sc-feature" id="transform-family">
+    <div class="sc-notes">
+      <h2>The <code>transform-*</code> family</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>The old transform helpers still exist. <code>transform-gpu</code> adds <code>translateZ(0)</code> to the composed rotate-x/y/z and skew transform as a compositing hint, <code>transform-cpu</code> is the plain composition, and <code>transform-none</code> clears <code>transform</code>. An arbitrary value writes any transform list, including a per-element <code>perspective()</code>.</p>
+      <ul class="sc-parts">
+        <li><code>transform-gpu</code></li>
+        <li><code>transform-cpu</code></li>
+        <li><code>transform-none</code></li>
+        <li><code>transform-[perspective(600px)_rotateY(-18deg)]</code></li>
+        <li><code>transform-(--t)</code></li>
+        <li><code>md:transform-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/transform" target="_blank" rel="noopener">Docs: transform</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Per-row perspective with no wrapper element</figcaption>
+        <div class="sc-demo" id="transform-family-1">
+          <ul class="mx-auto grid max-w-sm gap-2">
+            <li class="group" tabindex="0">
+              <div class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm shadow ring-1 ring-slate-900/10 transition-transform duration-300 transform-[perspective(600px)_rotateY(-18deg)] group-hover:transform-[perspective(600px)_rotateY(0deg)] group-focus-within:transform-[perspective(600px)_rotateY(0deg)] motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                <span class="font-medium text-slate-900 dark:text-slate-100">Q3-roadmap.pdf</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">2.4 MB</span>
+              </div>
+            </li>
+            <li class="group" tabindex="0">
+              <div class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm shadow ring-1 ring-slate-900/10 transition-transform duration-300 transform-[perspective(600px)_rotateY(-18deg)] group-hover:transform-[perspective(600px)_rotateY(0deg)] group-focus-within:transform-[perspective(600px)_rotateY(0deg)] motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                <span class="font-medium text-slate-900 dark:text-slate-100">brand-guide.fig</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">18 MB</span>
+              </div>
+            </li>
+            <li class="group" tabindex="0">
+              <div class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm shadow ring-1 ring-slate-900/10 transition-transform duration-300 transform-[perspective(600px)_rotateY(-18deg)] group-hover:transform-[perspective(600px)_rotateY(0deg)] group-focus-within:transform-[perspective(600px)_rotateY(0deg)] motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                <span class="font-medium text-slate-900 dark:text-slate-100">invoice-4821.xlsx</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">96 KB</span>
+              </div>
+            </li>
+            <li class="group" tabindex="0">
+              <div class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm shadow ring-1 ring-slate-900/10 transition-transform duration-300 transform-[perspective(600px)_rotateY(-18deg)] group-hover:transform-[perspective(600px)_rotateY(0deg)] group-focus-within:transform-[perspective(600px)_rotateY(0deg)] motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                <span class="font-medium text-slate-900 dark:text-slate-100">launch-notes.md</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">12 KB</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-family-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>transform-gpu</code> and <code>transform-cpu</code>: the same pixels</figcaption>
+        <div class="sc-demo" id="transform-family-2">
+          <div class="grid items-center gap-6 sm:grid-cols-[auto_1fr]">
+            <div class="flex justify-center gap-6 px-4 py-4 perspective-near">
+              <div class="flex flex-col items-center gap-2">
+                <div id="tfc-gpu" class="size-14 rotate-45 rotate-x-30 rounded-lg bg-sky-500 transform-gpu"></div>
+                <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">transform-gpu</code>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div id="tfc-cpu" class="size-14 rotate-45 rotate-x-30 rounded-lg bg-sky-500 transform-cpu"></div>
+                <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">transform-cpu</code>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div id="tfc-none" class="size-14 rotate-45 rotate-x-30 rounded-lg bg-sky-500 transform-none"></div>
+                <code class="text-center text-[11px] text-slate-700 dark:text-slate-300">transform-none</code>
+              </div>
+            </div>
+            <div data-sc-omit class="grid gap-2 text-xs text-slate-700 dark:text-slate-300">
+              <dl data-readout="tfc-gpu" class="grid grid-cols-[7rem_1fr] gap-x-3">
+                <dt class="font-medium">transform-gpu</dt>
+                <dd><code data-prop="transform" class="break-all text-[11px]">…</code></dd>
+              </dl>
+              <dl data-readout="tfc-cpu" class="grid grid-cols-[7rem_1fr] gap-x-3">
+                <dt class="font-medium">transform-cpu</dt>
+                <dd><code data-prop="transform" class="break-all text-[11px]">…</code></dd>
+              </dl>
+              <dl data-readout="tfc-none" class="grid grid-cols-[7rem_1fr] gap-x-3">
+                <dt class="font-medium">transform-none</dt>
+                <dd><code data-prop="transform" class="break-all text-[11px]">…</code></dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-family-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="Generated CSS">
+.transform-gpu {
+  transform: translateZ(0) var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+}
+.transform-cpu {
+  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+}
+.transform-none {
+  transform: none;
+}</pre>
+        <pre class="sc-code" data-code="js" data-label="JS: readout">// [data-readout="id"] lists the computed value of each [data-prop] child for that element
+const refresh = () =&gt; {
+  document.querySelectorAll('[data-readout]').forEach((panel) =&gt; {
+    const cs = getComputedStyle(document.getElementById(panel.dataset.readout))
+    panel.querySelectorAll('[data-prop]').forEach((out) =&gt; {
+      out.textContent = cs.getPropertyValue(out.dataset.prop) || 'none'
+    })
+  })
+}
+refresh()
+window.addEventListener('load', refresh)
+// the browser build rewrites its style tag when a new class appears: read again then
+new MutationObserver(refresh).observe(document.head, { childList: true, subtree: true, characterData: true })
+document.addEventListener('click', (e) =&gt; {
+  if (e.target.closest('[data-toggle-class]')) refresh()
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What <code>transform-none</code> resets in v4</figcaption>
+        <div class="sc-demo" id="transform-family-3">
+          <div class="flex flex-wrap items-start justify-center gap-8">
+            <div class="flex flex-col items-center gap-3">
+              <div class="grid size-20 skew-y-12 place-items-center rounded-xl bg-sky-500 text-sm font-bold text-white md:transform-none">A</div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">skew-y-12<br>md:transform-none</code>
+              <span class="text-center text-xs text-slate-500 dark:text-slate-400">straight from 768px</span>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="grid size-20 rotate-12 place-items-center rounded-xl bg-rose-500 text-sm font-bold text-white md:transform-none">B</div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-12<br>md:transform-none</code>
+              <span class="text-center text-xs text-slate-500 dark:text-slate-400">still turned: rotate-12 is not in <code>transform</code></span>
+            </div>
+            <div class="flex flex-col items-center gap-3">
+              <div class="grid size-20 rotate-12 place-items-center rounded-xl bg-emerald-500 text-sm font-bold text-white md:rotate-none">C</div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">rotate-12<br>md:rotate-none</code>
+              <span class="text-center text-xs text-slate-500 dark:text-slate-400">straight from 768px</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-family-3"></pre>
+      </figure>
+
+      <p class="sc-note">An arbitrary <code>transform-[…]</code> replaces the whole composed transform on that element, so <code>rotate-x-*</code> and <code>skew-*</code> classes beside it stop having any effect. Computed values show the same matrix for <code>transform-gpu</code> and <code>transform-cpu</code>; only the declared list differs. Resize the window across 768px to see the last example change.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 16. custom 3D theme tokens ===================== -->
+  <article class="sc-feature" id="theme-3d-tokens">
+    <div class="sc-notes">
+      <h2>Your own depths, hinges and angles in <code>@theme</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Name a camera distance, a hinge, an angle or an easing once, and use it as a utility everywhere. <code>--perspective-*</code> is documented. <code>--perspective-origin-*</code>, <code>--transform-origin-*</code> and <code>--rotate-*</code> are not in the theme docs table, but the utilities read them and they work in 4.3.3.</p>
+      <ul class="sc-parts">
+        <li><code>--perspective-remote</code></li>
+        <li><code>--perspective-origin-stage</code></li>
+        <li><code>--transform-origin-hinge</code></li>
+        <li><code>--rotate-flip</code></li>
+        <li><code>--ease-flip</code></li>
+        <li><code>rotate-y-flip</code></li>
+        <li><code>origin-hinge</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/perspective#customizing-your-theme" target="_blank" rel="noopener">Docs: perspective, theme</a></p>
+    </div>
+    <div class="sc-examples">
+      <div class="sc-table-wrap">
+        <table class="sc-table min-w-[40rem]">
+          <thead>
+            <tr><th>Theme variable</th><th>Makes</th><th>Built in</th><th>In the theme docs</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>--perspective-*</code></td>
+              <td><code>perspective-*</code></td>
+              <td><code>dramatic</code> 100px, <code>near</code> 300px, <code>normal</code> 500px, <code>midrange</code> 800px, <code>distant</code> 1200px</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td><code>--perspective-origin-*</code></td>
+              <td><code>perspective-origin-*</code></td>
+              <td>None (the keywords are built into the utility)</td>
+              <td>No, works in 4.3.3</td>
+            </tr>
+            <tr>
+              <td><code>--transform-origin-*</code></td>
+              <td><code>origin-*</code></td>
+              <td>None (the keywords are built into the utility)</td>
+              <td>No, works in 4.3.3</td>
+            </tr>
+            <tr>
+              <td><code>--rotate-*</code></td>
+              <td><code>rotate-*</code>, <code>rotate-x-*</code>, <code>rotate-y-*</code>, <code>rotate-z-*</code></td>
+              <td>None</td>
+              <td>No, works in 4.3.3</td>
+            </tr>
+            <tr>
+              <td><code>--ease-*</code></td>
+              <td><code>ease-*</code></td>
+              <td><code>in</code>, <code>out</code>, <code>in-out</code></td>
+              <td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure class="sc-example">
+        <figcaption>Spring flip: angle, easing and camera all from tokens</figcaption>
+        <div class="sc-demo" id="theme-3d-tokens-1">
+          <div class="flex justify-center">
+            <div class="group h-40 w-40 perspective-remote" tabindex="0">
+              <div class="relative size-full rounded-xl transition-transform duration-700 ease-flip transform-3d group-hover:rotate-y-flip group-focus-within:rotate-y-flip motion-reduce:transition-none *:absolute *:inset-0 *:grid *:place-items-center *:rounded-xl *:text-sm *:font-semibold *:shadow-lg *:backface-hidden *:last:rotate-y-flip">
+                <div class="bg-violet-500 text-white">Hover me</div>
+                <div class="bg-white text-violet-700 ring-1 ring-violet-200 dark:bg-slate-800 dark:text-violet-300 dark:ring-violet-400/30">Spring flip</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="theme-3d-tokens-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --perspective-remote: 1800px;
+  --rotate-flip: 180deg;
+  --ease-flip: cubic-bezier(0.34, 1.56, 0.64, 1);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A door with a named hinge and a named vanishing point</figcaption>
+        <div class="sc-demo" id="theme-3d-tokens-2">
+          <div class="flex justify-center">
+            <div class="group relative h-40 w-40 perspective-remote perspective-origin-stage" tabindex="0">
+              <div class="absolute inset-0 grid place-items-center rounded-xl bg-amber-300 text-center text-sm font-semibold text-slate-900">Welcome in</div>
+              <div class="absolute inset-0 flex origin-hinge items-center justify-end rounded-xl bg-violet-600 pr-4 shadow-lg transition-transform duration-700 group-hover:-rotate-y-110 group-focus-within:-rotate-y-110 motion-reduce:transition-none"><span class="h-10 w-1.5 rounded bg-white/70"></span></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="theme-3d-tokens-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --perspective-remote: 1800px;
+  --perspective-origin-stage: 50% 20%;
+  --transform-origin-hinge: 0% 50%;
+}</pre>
+      </figure>
+
+      <p class="sc-note">Theme variables are CSS variables, so you can read the defaults in your own CSS (<code>var(--perspective-near)</code>) or override them site-wide. Because only <code>--perspective-*</code> and <code>--ease-*</code> are documented for this, treat the other namespaces as an implementation detail that could change.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 17. scroll-driven coverflow ===================== -->
+  <article class="sc-feature" id="scroll-coverflow">
+    <div class="sc-notes">
+      <h2>Scroll-driven tilt with a custom <code>@utility</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Tailwind has no scroll-timeline utilities, but one <code>@keyframes</code> plus one <code>@utility</code> that sets <code>animation-timeline: view()</code> is enough. Cards in a scroll-snap row tilt and scale by their position in the scroller, with perspective on the scroll container and no JavaScript.</p>
+      <ul class="sc-parts">
+        <li><code>@utility cf-view</code></li>
+        <li><code>animation-timeline: view(inline)</code></li>
+        <li><code>snap-x</code> <code>snap-center</code></li>
+        <li><code>perspective-[800px]</code></li>
+        <li><code>supports-[animation-timeline:view()]:*</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#utility-directive" target="_blank" rel="noopener">Docs: @utility</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Album coverflow: scroll sideways <span class="sc-spacer"></span><span class="hidden rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-800 supports-[animation-timeline:view()]:inline dark:text-emerald-300">supported here</span><span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-800 supports-[animation-timeline:view()]:hidden dark:text-amber-300">not supported here</span></figcaption>
+        <div class="sc-demo" id="scroll-coverflow-1">
+          <ul class="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[40%] py-6 perspective-[800px]">
+            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-3 text-xs font-semibold text-white">Neon Tide</li>
+            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-3 text-xs font-semibold text-white">Low Sun</li>
+            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-3 text-xs font-semibold text-white">Fern</li>
+            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-3 text-xs font-semibold text-white">Glass Lake</li>
+            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-3 text-xs font-semibold text-white">Dusk</li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scroll-coverflow-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@keyframes cf-tilt {
+  0%   { transform: rotateY(55deg) scale(0.85); }
+  50%  { transform: rotateY(0deg) scale(1.1); }
+  100% { transform: rotateY(-55deg) scale(0.85); }
+}
+@utility cf-view {
+  @supports (animation-timeline: view()) {
+    animation: cf-tilt linear both;
+    animation-timeline: view(inline);
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Onboarding steps that tilt in as you scroll down <span class="sc-spacer"></span><span class="hidden rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-800 supports-[animation-timeline:view()]:inline dark:text-emerald-300">supported here</span><span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-800 supports-[animation-timeline:view()]:hidden dark:text-amber-300">not supported here</span></figcaption>
+        <div class="sc-demo" id="scroll-coverflow-2">
+          <div class="mx-auto h-72 max-w-xs overflow-y-auto rounded-xl bg-white/50 px-4 py-24 ring-1 ring-slate-900/10 perspective-[700px] dark:bg-white/5 dark:ring-white/10">
+            <article class="step-view mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 1</span>
+              <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Create your workspace</h3>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Pick a name and a region.</p>
+            </article>
+            <article class="step-view mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 2</span>
+              <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Invite your team</h3>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Add teammates by email.</p>
+            </article>
+            <article class="step-view mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 3</span>
+              <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Connect your repository</h3>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Authorize read access to one repo.</p>
+            </article>
+            <article class="step-view rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 4</span>
+              <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Ship the first deploy</h3>
+              <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Push to main and watch it go live.</p>
+            </article>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scroll-coverflow-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@keyframes step-tilt {
+  0%        { transform: rotateX(-55deg); opacity: 0.25; }
+  35%, 65%  { transform: rotateX(0deg); opacity: 1; }
+  100%      { transform: rotateX(55deg); opacity: 0.25; }
+}
+@utility step-view {
+  @supports (animation-timeline: view()) {
+    animation: step-tilt linear both;
+    animation-timeline: view(block);
+  }
+}</pre>
+      </figure>
+
+      <p class="sc-note">Browser support: Chrome and Edge 115+, Safari 26+. Firefox has scroll-driven animations behind a flag at the time of writing, so check caniuse. The <code>@supports</code> inside the utility keeps cards flat and readable elsewhere; without it an unsupported browser would jump every card to the last keyframe. The keyframes animate <code>transform</code>, so do not also put <code>rotate-y-*</code> on the cards. <code>perspective-*</code> goes on the scroll container, whose cards are its direct children. For a version that works everywhere with a little JavaScript, see the variable-driven coverflow above.</p>
+    </div>
+  </article>
+
+  <!-- ===================== 18. zoom-* next to scale-* ===================== -->
+  <article class="sc-feature" id="zoom-vs-scale">
+    <div class="sc-notes">
+      <h2><code>zoom-*</code> next to <code>scale-*</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>New in v4.3: utilities for the CSS <code>zoom</code> property. Unlike <code>scale-*</code> and the 3D transforms, zoom changes the element's layout size, so neighbours move out of the way and text stays crisp. It is not a 3D transform; this card is here to show where each one fits.</p>
+      <ul class="sc-parts">
+        <li><code>zoom-75</code></li>
+        <li><code>zoom-125</code></li>
+        <li><code>zoom-[1.1]</code></li>
+        <li><code>zoom-(--preview-zoom)</code></li>
+        <li><code>hover:zoom-125</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/zoom" target="_blank" rel="noopener">Docs: zoom</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Hover the middle tile: <code>scale-125</code> overlaps, <code>zoom-125</code> reflows</figcaption>
+        <div class="sc-demo" id="zoom-vs-scale-1">
+          <div class="grid gap-6">
+            <div>
+              <p class="mb-2 text-xs text-slate-600 dark:text-slate-400"><code>hover:scale-125</code> paints over its neighbours</p>
+              <div class="flex items-center gap-2">
+                <button type="button" class="rounded-lg bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Mon</button>
+                <button type="button" class="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow transition duration-200 hover:scale-125 focus-visible:scale-125 motion-reduce:transition-none">Tue</button>
+                <button type="button" class="rounded-lg bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Wed</button>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 text-xs text-slate-600 dark:text-slate-400"><code>hover:zoom-125</code> pushes them away</p>
+              <div class="flex items-center gap-2">
+                <button type="button" class="rounded-lg bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Mon</button>
+                <button type="button" class="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white shadow transition-[zoom] duration-200 hover:zoom-125 focus-visible:zoom-125 motion-reduce:transition-none">Tue</button>
+                <button type="button" class="rounded-lg bg-white px-5 py-3 text-sm font-medium text-slate-900 shadow ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Wed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-vs-scale-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Preview a page at a chosen zoom</figcaption>
+        <div class="sc-demo" id="zoom-vs-scale-2">
+          <div class="grid gap-4">
+            <div id="zoom-frame" class="mx-auto w-full max-w-md overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-slate-900/10 [--preview-zoom:100%] dark:bg-slate-800 dark:ring-white/10">
+              <div class="flex items-center gap-1.5 border-b border-slate-200 px-3 py-2 dark:border-slate-700">
+                <span class="size-2 rounded-full bg-rose-400"></span>
+                <span class="size-2 rounded-full bg-amber-400"></span>
+                <span class="size-2 rounded-full bg-emerald-400"></span>
+                <span class="ml-2 rounded bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500 dark:bg-slate-700 dark:text-slate-300">aurora.example/pass</span>
+              </div>
+              <div class="h-44 overflow-auto p-4">
+                <div class="zoom-(--preview-zoom)">
+                  <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Aurora Pass</h3>
+                  <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">One membership for every lounge, with priority boarding on all routes.</p>
+                  <button type="button" class="mt-3 rounded-full bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white">Join today</button>
+                </div>
+              </div>
+            </div>
+            <label class="mx-auto flex w-full max-w-md items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
+              <span class="shrink-0">Zoom</span>
+              <input type="range" min="50" max="150" step="5" value="100" data-zoom-for="zoom-frame" class="w-full accent-sky-600">
+              <output class="w-10 shrink-0 text-right">100%</output>
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-vs-scale-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">// &lt;input type="range" data-zoom-for="id"&gt; writes --preview-zoom (a percentage) on that element
+document.addEventListener('input', (e) =&gt; {
+  const range = e.target.closest('[data-zoom-for]')
+  if (!range) return
+  document.getElementById(range.dataset.zoomFor).style.setProperty('--preview-zoom', range.value + '%')
+  range.nextElementSibling.textContent = range.value + '%'
+})</pre>
+      </figure>
+
+      <p class="sc-note"><code>zoom-*</code> shipped in <span class="sc-since" data-v="4.3">v4.3</span>, and the v4.3 post notes it is now supported in all major browsers. The default <code>transition</code> list covers <code>scale</code> but not <code>zoom</code>, so animate it with <code>transition-[zoom]</code>. Zoom reflows the layout, so reach for it when a preview or a density switch should take real space, and for <code>scale-*</code> when you want a paint-only effect. More on the v4.3 utilities is on the Scrollbars, zoom &amp; tabs page.</p>
+    </div>
+  </article>
+</main>
+
+<footer data-sc-foot></footer>
+<script>
+(() => {
+  'use strict'
+
+  {
+    // <button data-persp="perspective-near" data-target="stage-id"> swaps the perspective-* class on the stage
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-persp]')
+      if (!btn) return
+      const stage = document.getElementById(btn.dataset.target)
+      for (const c of [...stage.classList]) if (/^perspective-(?!origin)/.test(c)) stage.classList.remove(c)
+      stage.classList.add(btn.dataset.persp)
+      btn.parentElement.querySelectorAll('[data-persp]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+      const out = document.querySelector('[data-persp-out="' + btn.dataset.target + '"]')
+      if (out) out.textContent = btn.dataset.persp
+    })
+  }
+
+  {
+    // <button data-toggle-pressed aria-pressed="false"> flips its aria-pressed value on every click
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-toggle-pressed]')
+      if (!btn) return
+      btn.setAttribute('aria-pressed', String(btn.getAttribute('aria-pressed') !== 'true'))
+    })
+  }
+
+  {
+    // <button data-flip-card> toggles data-flipped on itself; group-data-flipped: reads it
+    document.addEventListener('click', (e) => {
+      const card = e.target.closest('[data-flip-card]')
+      if (!card) return
+      const on = card.toggleAttribute('data-flipped')
+      card.setAttribute('aria-pressed', String(on))
+    })
+  }
+
+  {
+    // <button data-cube-to="right" data-target="cube-id"> sets data-face on the cube
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-cube-to]')
+      if (!btn) return
+      document.getElementById(btn.dataset.target).dataset.face = btn.dataset.cubeTo
+      btn.parentElement.querySelectorAll('[data-cube-to]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+    })
+  }
+
+  {
+    // <input type="radio" data-po-pick data-target="stage-id" value="top-left"> sets data-o on the stage
+    document.addEventListener('change', (e) => {
+      const radio = e.target.closest('[data-po-pick]')
+      if (!radio) return
+      document.getElementById(radio.dataset.target).dataset.o = radio.value
+    })
+  }
+
+  {
+    // the hero writes its own --po (for example "30% 70%") as the pointer moves
+    document.addEventListener('pointermove', (e) => {
+      const hero = e.target.closest('[data-parallax]')
+      if (!hero) return
+      const r = hero.getBoundingClientRect()
+      const x = ((e.clientX - r.left) / r.width) * 100
+      const y = ((e.clientY - r.top) / r.height) * 100
+      hero.style.setProperty('--po', x.toFixed(1) + '% ' + y.toFixed(1) + '%')
+    })
+    document.addEventListener('pointerout', (e) => {
+      const hero = e.target.closest('[data-parallax]')
+      if (hero && !hero.contains(e.relatedTarget)) hero.style.removeProperty('--po')
+    })
+  }
+
+  {
+    // <button data-explode-toggle="stage-id"> flips data-explode on the stage
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-explode-toggle]')
+      if (!btn) return
+      const stage = document.getElementById(btn.dataset.explodeToggle)
+      const open = stage.dataset.explode !== 'true'
+      stage.dataset.explode = String(open)
+      btn.setAttribute('aria-pressed', String(open))
+      btn.textContent = open ? 'Collapse' : 'Explode'
+    })
+  }
+
+  {
+    // <input type="range" data-sz-for="id"> writes --sz (a percentage) on that element
+    document.addEventListener('input', (e) => {
+      const range = e.target.closest('[data-sz-for]')
+      if (!range) return
+      document.getElementById(range.dataset.szFor).style.setProperty('--sz', range.value + '%')
+      range.nextElementSibling.textContent = range.value + '%'
+    })
+  }
+
+  {
+    // the card turns toward the pointer; the glare follows --gx and --gy
+    document.addEventListener('pointermove', (e) => {
+      const card = e.target.closest('[data-tilt]')
+      if (!card) return
+      const r = card.parentElement.getBoundingClientRect() // the still wrapper, so the box does not drift
+      const px = (e.clientX - r.left) / r.width
+      const py = (e.clientY - r.top) / r.height
+      card.style.setProperty('--ry', ((px - 0.5) * 24).toFixed(2) + 'deg')
+      card.style.setProperty('--rx', ((0.5 - py) * 24).toFixed(2) + 'deg')
+      card.style.setProperty('--gx', (px * 100).toFixed(1) + '%')
+      card.style.setProperty('--gy', (py * 100).toFixed(1) + '%')
+    })
+    document.addEventListener('pointerout', (e) => {
+      const card = e.target.closest('[data-tilt]')
+      if (!card || card.contains(e.relatedTarget)) return
+      ;['--rx', '--ry', '--gx', '--gy'].forEach((v) => card.style.removeProperty(v))
+    })
+  }
+
+  {
+    // clicking a card makes it the active one: --o is its offset, --s the sign, --a the distance
+    document.addEventListener('click', (e) => {
+      const card = e.target.closest('[data-cf-card]')
+      if (!card) return
+      const cards = [...card.parentElement.querySelectorAll('[data-cf-card]')]
+      const active = cards.indexOf(card)
+      cards.forEach((c, i) => {
+        const o = i - active
+        c.style.setProperty('--o', o)
+        c.style.setProperty('--s', Math.sign(o))
+        c.style.setProperty('--a', Math.abs(o))
+      })
+    })
+  }
+
+  {
+    // each slider writes one variable on the stage and rebuilds the class readout
+    document.addEventListener('input', (e) => {
+      const slider = e.target.closest('[data-pg]')
+      if (!slider) return
+      const root = slider.closest('[data-pg-root]')
+      document.getElementById(root.dataset.target).style.setProperty(slider.dataset.pg, slider.value + slider.dataset.unit)
+      slider.nextElementSibling.textContent = slider.value + slider.dataset.unit
+      const v = (name) => root.querySelector('[data-pg="' + name + '"]').value
+      root.querySelector('[data-pg-classes]').textContent =
+        'perspective-[' + v('--p') + 'px] rotate-x-[' + v('--rx') + 'deg] rotate-y-[' + v('--ry') + 'deg] rotate-z-[' + v('--rz') + 'deg] translate-z-[' + v('--tz') + 'px]'
+    })
+  }
+
+  {
+    // <button data-add-toast="stack-id"> appends a toast; it enters from its starting: classes
+    const messages = ['Invoice paid', 'New comment from Priya', 'Backup completed', 'Deploy finished']
+    let count = 0
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-add-toast]')
+      if (!btn) return
+      const stack = document.getElementById(btn.dataset.addToast)
+      const toast = document.createElement('div')
+      toast.className = 'origin-top rotate-x-0 rounded-xl bg-white p-4 text-sm text-slate-900 opacity-100 shadow-lg ring-1 ring-slate-900/10 transition duration-500 starting:-rotate-x-90 starting:opacity-0 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10'
+      toast.textContent = messages[count++ % messages.length]
+      stack.append(toast)
+      while (stack.children.length > 3) stack.firstElementChild.remove()
+    })
+  }
+
+  {
+    // <button data-open-dialog="id"> opens that <dialog> as a modal
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-open-dialog]')
+      if (btn) document.getElementById(btn.dataset.openDialog).showModal()
+    })
+  }
+
+  {
+    // <button data-toggle-class="a b" data-target="id"> adds or removes those classes on the target
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-toggle-class]')
+      if (!btn) return
+      const target = document.getElementById(btn.dataset.target)
+      const names = btn.dataset.toggleClass.split(' ')
+      const on = !target.classList.contains(names[0])
+      names.forEach((n) => target.classList.toggle(n, on))
+      btn.setAttribute('aria-pressed', String(on))
+    })
+  }
+
+  {
+    // [data-readout="id"] lists the computed value of each [data-prop] child for that element
+    const refresh = () => {
+      document.querySelectorAll('[data-readout]').forEach((panel) => {
+        const cs = getComputedStyle(document.getElementById(panel.dataset.readout))
+        panel.querySelectorAll('[data-prop]').forEach((out) => {
+          out.textContent = cs.getPropertyValue(out.dataset.prop) || 'none'
+        })
+      })
+    }
+    refresh()
+    window.addEventListener('load', refresh)
+    // the browser build rewrites its style tag when a new class appears: read again then
+    new MutationObserver(refresh).observe(document.head, { childList: true, subtree: true, characterData: true })
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-toggle-class]')) refresh()
+    })
+  }
+
+  {
+    // clicking a tab marks it aria-selected and clears its siblings
+    document.addEventListener('click', (e) => {
+      const tab = e.target.closest('[data-skew-tab]')
+      if (!tab) return
+      tab.parentElement.querySelectorAll('[data-skew-tab]').forEach((t) => t.setAttribute('aria-selected', String(t === tab)))
+    })
+  }
+
+  {
+    // <input type="range" data-zoom-for="id"> writes --preview-zoom (a percentage) on that element
+    document.addEventListener('input', (e) => {
+      const range = e.target.closest('[data-zoom-for]')
+      if (!range) return
+      document.getElementById(range.dataset.zoomFor).style.setProperty('--preview-zoom', range.value + '%')
+      range.nextElementSibling.textContent = range.value + '%'
+    })
+  }
+
+})()
+</script>
+</body>
+</html>
