@@ -42,7 +42,7 @@
   <section class="sc-intro">
     <p class="sc-eyebrow">Page 13 · Utilities</p>
     <h1>Text, forms &amp; layout</h1>
-    <p class="sc-lede">The utilities you use every day to wrap text, size form fields, build grids and keep components correct in any writing direction, with what v4.0 to v4.3 added: <code>field-sizing</code>, <code>wrap-anywhere</code>, logical block and inline utilities, safe alignment and bare grid values.</p>
+    <p class="sc-lede">The utilities you use every day to wrap text, size form fields, build grids and keep components correct in any writing direction, with what v4.0 to v4.3 added: <code>field-sizing</code>, <code>wrap-anywhere</code>, logical block and inline utilities, safe alignment, bare grid values such as <code>col-3</code> and <code>row-2</code>, and <code>contain-*</code>.</p>
     <p class="sc-note">Typography demos load Inter, Roboto Flex and EB Garamond from Google Fonts. Without them the browser falls back to another font, and some effects (font width, OpenType features) will not show.</p>
     <nav data-sc-toc aria-label="Features on this page"></nav>
   </section>
@@ -2295,6 +2295,163 @@ addEventListener('resize', measureAll)</pre>
     </div>
   </article>
 
+  <!-- ===================== grid placement shorthands ===================== -->
+  <article class="sc-feature" id="grid-placement">
+    <div class="sc-notes">
+      <h2>Grid placement: <code>col-3</code> and <code>row-2</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>col-&lt;number&gt;</code> and <code>row-&lt;number&gt;</code> set <code>grid-column</code> and <code>grid-row</code> directly, so <code>col-3 row-2</code> puts an item in the third column of the second row. Use them to place items by position instead of source order, or to stack several items in one cell with <code>col-1 row-1</code>. They first shipped in v4.0.10.</p>
+      <ul class="sc-parts">
+        <li><code>col-3</code></li>
+        <li><code>row-2</code></li>
+        <li><code class="whitespace-nowrap">-col-2</code></li>
+        <li><code>col-auto</code></li>
+        <li><code>row-auto</code></li>
+        <li><code>col-(--day)</code></li>
+        <li><code>row-(--slot)</code></li>
+        <li><code>col-[2/span_3]</code></li>
+        <li><code>sm:col-2</code></li>
+      </ul>
+      <p class="sc-note"><code>col-3</code> is <code>grid-column: 3</code>: it starts at line 3 and is one column wide, the same as <code>col-start-3</code>. <code>col-span-*</code> also sets <code>grid-column</code> and comes later in the stylesheet, so <code>col-3 col-span-2</code> loses the <code>3</code>: write <code>col-start-3 col-span-2</code> instead. Negative values count lines from the end: <code class="whitespace-nowrap">-col-2</code> is the last column, but <code class="whitespace-nowrap">-col-1</code> starts at the last line and adds an implicit column. A number past the explicit grid also creates implicit tracks, so use <code>sm:col-2</code> only where the grid really has two columns.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/grid-column" target="_blank" rel="noopener">Docs: grid-column</a> &middot; <a href="https://tailwindcss.com/docs/grid-row" target="_blank" rel="noopener">grid-row</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Page shell placed by cell: <code>col-2 row-1</code>, <code>row-span-full</code></figcaption>
+        <div class="sc-demo" id="grid-placement-1">
+          <div class="mx-auto grid max-w-xl gap-2 text-sm sm:grid-cols-[9rem_1fr] sm:grid-rows-[auto_1fr_auto]">
+            <div class="rounded-lg bg-indigo-300 p-3 font-medium text-indigo-950 sm:col-2 sm:row-1 dark:bg-indigo-400">Header <span class="block font-mono text-xs font-normal">sm:col-2 sm:row-1</span></div>
+            <div class="rounded-lg bg-pink-300 p-3 font-medium text-pink-950 sm:col-1 sm:row-span-full dark:bg-pink-400">Sidebar <span class="block font-mono text-xs font-normal">sm:col-1 sm:row-span-full</span></div>
+            <div class="min-h-24 rounded-lg bg-sky-200 p-3 font-medium text-sky-950 sm:col-2 sm:row-2 dark:bg-sky-800 dark:text-sky-50">Content <span class="block font-mono text-xs font-normal">sm:col-2 sm:row-2</span></div>
+            <div class="rounded-lg bg-amber-300 p-3 font-medium text-amber-950 sm:col-2 sm:row-3 dark:bg-amber-400">Footer <span class="block font-mono text-xs font-normal">sm:col-2 sm:row-3</span></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="grid-placement-1"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The source order is header, sidebar, content, footer. From the <code>sm</code> breakpoint up each region goes to its own cell and the sidebar spans all three rows. Below it the placement classes are off and the regions stack in source order. Without the <code>sm:</code> prefix, <code>col-2</code> on a one-column grid would add a second column.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What each value does in a six-column grid</figcaption>
+        <div class="sc-demo" id="grid-placement-2">
+          <div class="mx-auto grid max-w-md gap-4">
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400"><span class="font-semibold text-slate-900 dark:text-white">col-3</span> &rarr; grid-column: 3</p>
+              <div class="grid">
+                <div class="col-1 row-1 grid grid-cols-6 gap-1 *:h-8 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="col-1 row-1 grid grid-cols-6 gap-1">
+                  <div class="col-3 grid place-items-center rounded px-1 text-xs font-medium bg-indigo-300 text-indigo-950 dark:bg-indigo-400">A</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400"><span class="font-semibold text-slate-900 dark:text-white">-col-2</span> &rarr; grid-column: -2 <span class="text-slate-500 dark:text-slate-400">(from the end)</span></p>
+              <div class="grid">
+                <div class="col-1 row-1 grid grid-cols-6 gap-1 *:h-8 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="col-1 row-1 grid grid-cols-6 gap-1">
+                  <div class="-col-2 grid place-items-center rounded px-1 text-xs font-medium bg-indigo-300 text-indigo-950 dark:bg-indigo-400">A</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400"><span class="font-semibold text-slate-900 dark:text-white">col-start-3 col-span-2</span> &rarr; grid-column: 3 / span 2</p>
+              <div class="grid">
+                <div class="col-1 row-1 grid grid-cols-6 gap-1 *:h-8 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="col-1 row-1 grid grid-cols-6 gap-1">
+                  <div class="col-start-3 col-span-2 grid place-items-center rounded px-1 text-xs font-medium bg-indigo-300 text-indigo-950 dark:bg-indigo-400">A</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400"><span class="font-semibold text-slate-900 dark:text-white">col-[2/span_3]</span> &rarr; grid-column: 2 / span 3</p>
+              <div class="grid">
+                <div class="col-1 row-1 grid grid-cols-6 gap-1 *:h-8 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="col-1 row-1 grid grid-cols-6 gap-1">
+                  <div class="col-[2/span_3] grid place-items-center rounded px-1 text-xs font-medium bg-indigo-300 text-indigo-950 dark:bg-indigo-400">A</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400"><span class="font-semibold text-slate-900 dark:text-white">col-3 col-span-2</span> &rarr; grid-column: span 2 / span 2 <span class="text-slate-500 dark:text-slate-400">(col-span wins)</span></p>
+              <div class="grid">
+                <div class="col-1 row-1 grid grid-cols-6 gap-1 *:h-8 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="col-1 row-1 grid grid-cols-6 gap-1">
+                  <div class="col-3 col-span-2 grid place-items-center rounded px-1 text-xs font-medium bg-amber-300 text-amber-950 dark:bg-amber-400">A</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400"><span class="font-semibold text-slate-900 dark:text-white">col-auto</span> &rarr; grid-column: auto <span class="text-slate-500 dark:text-slate-400">(normal flow)</span></p>
+              <div class="grid">
+                <div class="col-1 row-1 grid grid-cols-6 gap-1 *:h-8 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="col-1 row-1 grid grid-cols-6 gap-1">
+                  <div class="col-auto grid place-items-center rounded px-1 text-xs font-medium bg-emerald-300 text-emerald-950 dark:bg-emerald-400">A</div>
+                  <div class="col-4 grid place-items-center rounded px-1 text-xs font-medium bg-indigo-300 text-indigo-950 dark:bg-indigo-400">B</div>
+                  <div class="col-auto grid place-items-center rounded px-1 text-xs font-medium bg-emerald-300 text-emerald-950 dark:bg-emerald-400">C</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="grid-placement-2"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The dashed cells are a second grid layered in the same cell with <code>col-1 row-1</code> (see the last example). The amber item shows the trap: <code>col-span-2</code> replaces the <code>grid-column</code> that <code>col-3</code> set, so the item starts wherever auto-placement puts it. In the last row the two <code>col-auto</code> items flow normally, one on each side of the item pinned to column 4.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Timetable driven by data: <code>col-(--day)</code> and <code>row-(--slot)</code></figcaption>
+        <div class="sc-demo" id="grid-placement-3">
+          <div class="mx-auto max-w-md">
+            <div data-sc-omit class="mb-4 grid gap-2 text-sm text-slate-700 dark:text-slate-300 sm:grid-cols-2 sm:gap-6">
+              <label class="flex items-center gap-3">
+                <span class="w-10">Day</span>
+                <input type="range" min="1" max="5" value="3" data-var="--day" data-target="gp-mine" aria-label="Day, 1 to 5" class="flex-1 accent-indigo-600 dark:accent-indigo-400">
+                <output class="w-4 text-end font-mono">3</output>
+              </label>
+              <label class="flex items-center gap-3">
+                <span class="w-10">Slot</span>
+                <input type="range" min="1" max="4" value="2" data-var="--slot" data-target="gp-mine" aria-label="Time slot, 1 to 4" class="flex-1 accent-indigo-600 dark:accent-indigo-400">
+                <output class="w-4 text-end font-mono">2</output>
+              </label>
+            </div>
+            <div class="grid grid-cols-5 gap-1 text-center text-xs font-medium text-slate-600 dark:text-slate-400"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span></div>
+            <div class="mt-1 grid">
+              <div class="col-1 row-1 grid grid-cols-5 grid-rows-4 gap-1 *:h-10 *:rounded *:border *:border-dashed *:border-slate-400 dark:*:border-slate-500" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="col-1 row-1 grid grid-cols-5 grid-rows-4 gap-1">
+                <div class="col-(--day) row-(--slot) truncate rounded px-1.5 py-1 text-xs font-medium bg-indigo-300 text-indigo-950 dark:bg-indigo-400" style="--day: 1; --slot: 1">Standup</div>
+                <div class="col-(--day) row-(--slot) truncate rounded px-1.5 py-1 text-xs font-medium bg-emerald-300 text-emerald-950 dark:bg-emerald-400" style="--day: 2; --slot: 3">Workshop</div>
+                <div class="col-(--day) row-(--slot) truncate rounded px-1.5 py-1 text-xs font-medium bg-amber-300 text-amber-950 dark:bg-amber-400" style="--day: 4; --slot: 2">1:1</div>
+                <div id="gp-mine" class="col-(--day) row-(--slot) truncate rounded px-1.5 py-1 text-xs font-medium bg-pink-300 text-pink-950 ring-2 ring-pink-700 dark:bg-pink-400 dark:ring-white" style="--day: 3; --slot: 2">You</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="grid-placement-3"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">Every session carries its position as two CSS variables, and the utilities read them. The sliders are left out of the listing: they write <code>--day</code> and <code>--slot</code> on the pink item with the <code>data-var</code> handler from the line-clamp example. Move it onto another session and the two overlap, because explicit placement never avoids collisions.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Layers in one cell: <code>col-1 row-1</code></figcaption>
+        <div class="sc-demo" id="grid-placement-4">
+          <div class="mx-auto grid max-w-xs overflow-hidden rounded-xl bg-white text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+            <div class="col-1 row-1 aspect-video bg-linear-to-br from-sky-400 via-indigo-500 to-purple-600"></div>
+            <div class="col-1 row-1 grid place-items-center">
+              <span class="grid size-12 place-items-center rounded-full bg-white/90 text-indigo-700 shadow-lg"><svg viewBox="0 0 24 24" class="size-5 fill-current" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg></span>
+            </div>
+            <span class="col-1 row-1 m-2 self-start justify-self-start rounded-full bg-rose-600 px-2 py-0.5 text-xs font-semibold text-white">LIVE</span>
+            <span class="col-1 row-1 m-2 self-end justify-self-end rounded bg-slate-900/80 px-1.5 py-0.5 text-xs font-medium text-white">12:41</span>
+            <div class="p-3">
+              <h3 class="text-sm font-semibold">Designing a calmer dashboard</h3>
+              <p class="text-xs text-slate-600 dark:text-slate-400">Studio Sessions &middot; 4.2k watching</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="grid-placement-4"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">Four items share row 1, column 1, so the badges, duration and play button sit on the thumbnail with no <code>absolute</code> and no <code>relative</code>. The cell is as tall as the thumbnail, and the text block has no placement, so it flows into row 2. This is the short form of <code>col-start-1 row-start-1</code>.</div>
+      </figure>
+
+    </div>
+  </article>
+
   <!-- ===================== subgrid ===================== -->
   <article class="sc-feature" id="grid-subgrid">
     <div class="sc-notes">
@@ -2944,6 +3101,266 @@ document.addEventListener('click', (e) => {
     </div>
   </article>
 
+  <!-- ===================== contain ===================== -->
+  <article class="sc-feature" id="contain">
+    <div class="sc-notes">
+      <h2><code>contain-*</code>: CSS containment</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>contain-*</code> sets the CSS <code>contain</code> property, a promise that an element's insides do not affect the rest of the page, so the browser can skip re-measuring and re-painting them. Some values also change how the box behaves: <code>contain-paint</code> clips overflow, <code>contain-layout</code> makes the box a containing block, and <code>contain-size</code> stops content from sizing it.</p>
+      <ul class="sc-parts">
+        <li><code>contain-none</code></li>
+        <li><code>contain-content</code></li>
+        <li><code>contain-strict</code></li>
+        <li><code>contain-size</code></li>
+        <li><code>contain-inline-size</code></li>
+        <li><code>contain-layout</code></li>
+        <li><code>contain-paint</code></li>
+        <li><code>contain-style</code></li>
+        <li><code>contain-[layout_paint]</code></li>
+        <li><code>md:contain-none</code></li>
+      </ul>
+      <p class="sc-note"><code>contain-size</code>, <code>contain-inline-size</code>, <code>contain-layout</code>, <code>contain-paint</code> and <code>contain-style</code> combine: <code>contain-size contain-layout</code> produces <code>contain: size layout</code> through the <code>--tw-contain-*</code> variables. <code>contain-size</code> and <code>contain-inline-size</code> share one variable, so use only one of them. <code>contain-content</code> (layout, paint, style), <code>contain-strict</code> (size, layout, paint, style) and <code>contain-none</code> are complete values: use them alone. Size containment makes an auto-sized box collapse, so give <code>contain-size</code> and <code>contain-strict</code> a height, grid track or <code>aspect-*</code>.</p>
+      <p class="sc-note"><code>contain</code> works in every current browser (March 2022 and later). <code>contain-inline-size</code> needs Chrome 105, Firefox 101 or Safari 16; a browser that does not know a value drops the declaration and the page still works. The speed-up itself is invisible, so these demos show the layout side effects. The related <code>content-auto</code> utility is on the <a href="03-directives.html#utility-simple">directives page</a>.</p>
+      <p class="sc-meta">Not covered by the Tailwind docs. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/contain" target="_blank" rel="noopener">MDN: contain</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption><code>contain-paint</code> clips a decorative glow to its card</figcaption>
+        <div class="sc-demo" id="contain-1">
+          <div class="mx-auto grid max-w-lg gap-6 sm:grid-cols-2">
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">default: glow spills out</p>
+              <div class="relative rounded-2xl bg-white p-4 text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                <span class="absolute -top-4 -right-4 size-20 rounded-full bg-indigo-500 blur-xl" aria-hidden="true"></span>
+                <h3 class="relative text-sm font-semibold">Weekly report</h3>
+                <p class="relative mt-1 text-sm text-slate-600 dark:text-slate-400">Signups are up 12% on last week.</p>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">contain-paint: clipped</p>
+              <div class="relative rounded-2xl bg-white p-4 text-slate-900 ring-1 ring-slate-200 contain-paint dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                <span class="absolute -top-4 -right-4 size-20 rounded-full bg-indigo-500 blur-xl" aria-hidden="true"></span>
+                <h3 class="relative text-sm font-semibold">Weekly report</h3>
+                <p class="relative mt-1 text-sm text-slate-600 dark:text-slate-400">Signups are up 12% on last week.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-1"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">Nothing inside a <code>contain-paint</code> box paints outside it, and the clip follows the rounded corners. It looks like <code>overflow-clip</code>, with one extra guarantee: the browser knows it can skip painting the whole box when it is off screen.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>contain-layout</code> makes the card its own containing block</figcaption>
+        <div class="sc-demo" id="contain-2">
+          <div class="mx-auto max-w-sm">
+            <div class="relative grid gap-3 rounded-xl border border-dashed border-slate-400 p-3 dark:border-slate-500">
+              <div>
+                <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">default</p>
+                <div class="rounded-lg bg-white p-3 text-sm text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                  <p class="font-medium">Invoice #1042</p>
+                  <p class="text-slate-600 dark:text-slate-400">Due 14 Nov &middot; $1,280.00</p>
+                  <span class="absolute top-2 right-2 rounded-full bg-emerald-700 px-2 py-0.5 text-xs font-medium text-white">Paid</span>
+                </div>
+              </div>
+              <div>
+                <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">contain-layout</p>
+                <div class="rounded-lg bg-white p-3 text-sm text-slate-900 ring-1 ring-slate-200 contain-layout dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                  <p class="font-medium">Invoice #1043</p>
+                  <p class="text-slate-600 dark:text-slate-400">Due 21 Nov &middot; $640.00</p>
+                  <span class="absolute top-2 right-2 rounded-full bg-emerald-700 px-2 py-0.5 text-xs font-medium text-white">Paid</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-2"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">Neither card has <code>relative</code>. The first badge goes to the nearest positioned ancestor, the dashed wrapper. Layout containment makes the second card the containing block for <code>absolute</code> and <code>fixed</code> descendants, so its badge lands in the card's own corner.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>contain-layout</code> also keeps floats inside the box</figcaption>
+        <div class="sc-demo" id="contain-3">
+          <div class="mx-auto grid max-w-xl items-start gap-x-6 gap-y-10 sm:grid-cols-2">
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">default: float hangs out</p>
+              <div class="rounded-lg bg-white p-3 text-sm text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                <div class="float-left me-3 size-20 rounded-lg bg-linear-to-br from-amber-300 to-rose-500"></div>
+                <p class="font-medium">Mia Chen</p>
+                <p class="text-slate-600 dark:text-slate-400">Product designer</p>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">contain-layout: card grows</p>
+              <div class="rounded-lg bg-white p-3 text-sm text-slate-900 ring-1 ring-slate-200 contain-layout dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                <div class="float-left me-3 size-20 rounded-lg bg-linear-to-br from-amber-300 to-rose-500"></div>
+                <p class="font-medium">Mia Chen</p>
+                <p class="text-slate-600 dark:text-slate-400">Product designer</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-3"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">A contained box lays out independently, so floats cannot escape it and margins cannot collapse through it. <code>flow-root</code> gives the same float fix without the other effects.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>contain-inline-size</code>: the caption wraps to the image width</figcaption>
+        <div class="sc-demo" id="contain-4">
+          <div class="mx-auto grid max-w-xl items-start gap-4 sm:grid-cols-2">
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">default</p>
+              <figure class="w-fit max-w-full rounded-xl bg-white p-2 ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
+                <div class="h-24 w-44 rounded-lg bg-linear-to-br from-sky-300 to-indigo-500"></div>
+                <figcaption class="mt-2 text-sm text-slate-700 dark:text-slate-300">Sunrise over the lake at Hallstatt, shot from the north shore with a 35mm lens</figcaption>
+              </figure>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">contain-inline-size</p>
+              <figure class="w-fit max-w-full rounded-xl bg-white p-2 ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
+                <div class="h-24 w-44 rounded-lg bg-linear-to-br from-sky-300 to-indigo-500"></div>
+                <figcaption class="mt-2 text-sm text-slate-700 contain-inline-size dark:text-slate-300">Sunrise over the lake at Hallstatt, shot from the north shore with a 35mm lens</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-4"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">A shrink-to-fit figure is as wide as its widest child. With inline-size containment the caption adds nothing to that width, so the image sets it and the text wraps underneath. It also needs Chrome 105, Firefox 101 or Safari 16.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>contain-size</code>: a sidebar that scrolls instead of stretching the row</figcaption>
+        <div class="sc-demo" id="contain-5">
+          <div class="mx-auto grid max-w-lg gap-6">
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">default: the list sets the row height</p>
+              <div class="grid grid-cols-[1fr_9rem] gap-3">
+                <div class="min-h-28 rounded-lg bg-white p-3 text-sm text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                  <h3 class="font-semibold">Inbox summary</h3>
+                  <p class="mt-1 text-slate-600 dark:text-slate-400">3 unread, 1 flagged for follow-up today.</p>
+                </div>
+                <ul tabindex="0" aria-label="Folders" class="overflow-y-auto rounded-lg bg-white p-1 text-sm text-slate-700 ring-1 ring-slate-200 focus-visible:outline-2 focus-visible:outline-indigo-600 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+                  <li class="rounded-md px-2 py-1.5">Inbox</li>
+                  <li class="rounded-md px-2 py-1.5">Starred</li>
+                  <li class="rounded-md px-2 py-1.5">Snoozed</li>
+                  <li class="rounded-md px-2 py-1.5">Sent</li>
+                  <li class="rounded-md px-2 py-1.5">Drafts</li>
+                  <li class="rounded-md px-2 py-1.5">Archive</li>
+                  <li class="rounded-md px-2 py-1.5">Spam</li>
+                  <li class="rounded-md px-2 py-1.5">Trash</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-400">contain-size: the list scrolls inside the row</p>
+              <div class="grid grid-cols-[1fr_9rem] gap-3">
+                <div class="min-h-28 rounded-lg bg-white p-3 text-sm text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+                  <h3 class="font-semibold">Inbox summary</h3>
+                  <p class="mt-1 text-slate-600 dark:text-slate-400">3 unread, 1 flagged for follow-up today.</p>
+                </div>
+                <ul tabindex="0" aria-label="Folders" class="contain-size overflow-y-auto rounded-lg bg-white p-1 text-sm text-slate-700 ring-1 ring-slate-200 focus-visible:outline-2 focus-visible:outline-indigo-600 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+                  <li class="rounded-md px-2 py-1.5">Inbox</li>
+                  <li class="rounded-md px-2 py-1.5">Starred</li>
+                  <li class="rounded-md px-2 py-1.5">Snoozed</li>
+                  <li class="rounded-md px-2 py-1.5">Sent</li>
+                  <li class="rounded-md px-2 py-1.5">Drafts</li>
+                  <li class="rounded-md px-2 py-1.5">Archive</li>
+                  <li class="rounded-md px-2 py-1.5">Spam</li>
+                  <li class="rounded-md px-2 py-1.5">Trash</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-5"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">A size-contained element is sized as if it were empty, so the list adds nothing to the row height and the summary panel decides it. The list still stretches to fill the row and scrolls. <code>contain-size</code> does not clip by itself, hence <code>overflow-y-auto</code>. Used alone on an auto-height box it collapses to its padding.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>contain-style</code>: a widget's counters stay inside it</figcaption>
+        <div class="sc-demo" id="contain-6">
+          <div class="mx-auto grid max-w-lg gap-6 sm:grid-cols-2">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-400">default: the tip uses up numbers 3 and 4</p>
+              <ol class="space-y-2 text-sm text-slate-900 [counter-reset:step] *:[counter-increment:step] *:before:font-semibold *:before:content-[counter(step)'._'] dark:text-slate-100">
+                <li>Create a workspace</li>
+                <li>Invite your team
+                  <ul class="mt-1 rounded-lg bg-amber-100 p-2 text-xs text-amber-950 *:[counter-increment:step] *:before:font-semibold *:before:content-[counter(step)'._'] dark:bg-amber-900 dark:text-amber-50">
+                    <li>Use groups</li>
+                    <li>Set roles</li>
+                  </ul>
+                </li>
+                <li>Publish your first board</li>
+              </ol>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-400">contain-style: the tip counts on its own</p>
+              <ol class="space-y-2 text-sm text-slate-900 [counter-reset:step] *:[counter-increment:step] *:before:font-semibold *:before:content-[counter(step)'._'] dark:text-slate-100">
+                <li>Create a workspace</li>
+                <li>Invite your team
+                  <ul class="mt-1 rounded-lg bg-amber-100 p-2 text-xs text-amber-950 *:[counter-increment:step] *:before:font-semibold *:before:content-[counter(step)'._'] contain-style dark:bg-amber-900 dark:text-amber-50">
+                    <li>Use groups</li>
+                    <li>Set roles</li>
+                  </ul>
+                </li>
+                <li>Publish your first board</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-6"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The tip numbers its items with the same CSS counter as the page. Without containment its two items take numbers 3 and 4 and the last step becomes 5. Style containment scopes <code>counter-increment</code> and <code>counter-set</code> to the box. It also scopes <code>quotes</code>, and little else. If your browser does not scope counters yet, both lists look the same.</div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Combining values, and resetting them with <code>md:contain-none</code></figcaption>
+        <div class="sc-demo" id="contain-7">
+          <div class="mx-auto grid max-w-lg gap-2 sm:grid-cols-2">
+            <div data-contain class="relative h-16 rounded-lg bg-white p-2 text-slate-900 ring-1 ring-slate-200 contain-layout dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+              <code class="block text-xs font-semibold">contain-layout</code>
+              <output data-sc-omit aria-live="off" class="mt-1 block font-mono text-xs text-slate-600 dark:text-slate-400"></output>
+            </div>
+            <div data-contain class="relative h-16 rounded-lg bg-white p-2 text-slate-900 ring-1 ring-slate-200 contain-size contain-layout dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+              <code class="block text-xs font-semibold">contain-size contain-layout</code>
+              <output data-sc-omit aria-live="off" class="mt-1 block font-mono text-xs text-slate-600 dark:text-slate-400"></output>
+            </div>
+            <div data-contain class="relative h-16 rounded-lg bg-white p-2 text-slate-900 ring-1 ring-slate-200 contain-content dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+              <code class="block text-xs font-semibold">contain-content</code>
+              <output data-sc-omit aria-live="off" class="mt-1 block font-mono text-xs text-slate-600 dark:text-slate-400"></output>
+            </div>
+            <div data-contain class="relative h-16 rounded-lg bg-white p-2 text-slate-900 ring-1 ring-slate-200 contain-strict dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+              <code class="block text-xs font-semibold">contain-strict</code>
+              <output data-sc-omit aria-live="off" class="mt-1 block font-mono text-xs text-slate-600 dark:text-slate-400"></output>
+            </div>
+            <div data-contain class="relative h-16 rounded-lg bg-white p-2 text-slate-900 ring-1 ring-slate-200 contain-[layout_paint] dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+              <code class="block text-xs font-semibold">contain-[layout_paint]</code>
+              <output data-sc-omit aria-live="off" class="mt-1 block font-mono text-xs text-slate-600 dark:text-slate-400"></output>
+            </div>
+            <div data-contain class="relative h-16 rounded-lg bg-white p-2 text-slate-900 ring-1 ring-slate-200 contain-strict md:contain-none dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-700">
+              <code class="block text-xs font-semibold">contain-strict md:contain-none</code>
+              <output data-sc-omit aria-live="off" class="mt-1 block font-mono text-xs text-slate-600 dark:text-slate-400"></output>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="contain-7"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Print the computed contain value of every tile (the readout is not part of the HTML listing)
+const readContain = () => {
+  document.querySelectorAll('[data-contain]').forEach((tile) => {
+    tile.querySelector('output').textContent = 'contain: ' + getComputedStyle(tile).contain
+  })
+}
+// The Tailwind browser build compiles after load, so read again whenever it updates its &lt;style&gt;
+new MutationObserver(readContain).observe(document.head, { childList: true, subtree: true, characterData: true })
+addEventListener('resize', readContain)
+readContain()</pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">Each tile reads back what the browser computed from its classes. The utilities merge into one value (<code>size layout</code>), the shorthand keywords show up as written, and the last tile switches from <code>strict</code> to <code>none</code> when the window passes the <code>md</code> breakpoint. Every tile has a fixed height because several of them contain size.</div>
+      </figure>
+
+    </div>
+  </article>
+
   <!-- ===================== bg-size / bg-position ===================== -->
   <article class="sc-feature" id="bg-size-position">
     <div class="sc-notes">
@@ -3160,14 +3577,23 @@ document.addEventListener('click', (e) => {
     })
   }
 
+  // Print the computed contain value of every tile (the readout is not part of the HTML listing)
+  const readContain = () => {
+    document.querySelectorAll('[data-contain]').forEach((tile) => {
+      tile.querySelector('output').textContent = 'contain: ' + getComputedStyle(tile).contain
+    })
+  }
+
   const refresh = () => {
     measureAll()
     checkWidthAxis()
     pinBottom()
+    readContain()
   }
   document.fonts.load('1em "Roboto Flex"').then(refresh, refresh)
   addEventListener('load', refresh)
   addEventListener('resize', measureAll)
+  addEventListener('resize', readContain)
   // The Tailwind browser build compiles after load and again whenever a class changes: measure after each update
   let frame
   new MutationObserver(() => {

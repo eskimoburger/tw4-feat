@@ -114,7 +114,7 @@
   <section class="sc-intro">
     <p class="sc-eyebrow">Page 01 · Foundations</p>
     <h1>Setup &amp; engine</h1>
-    <p class="sc-lede">Every way to install Tailwind v4.3, how it finds your classes, the one-off value syntax you will use every day, and how cascade layers, prefix and important fit into existing CSS. It ends with the engine and the editor tooling.</p>
+    <p class="sc-lede">Every way to install Tailwind v4.3, how it finds your classes and how to debug that, the one-off value syntax you will use every day, and how cascade layers, prefix and important fit into existing CSS. It ends with the engine and the editor tooling.</p>
     <nav data-sc-toc aria-label="Features on this page"></nav>
   </section>
 
@@ -1131,6 +1131,179 @@ module.exports = {
         <pre class="sc-code" data-code="css" data-label="app.css">@import "tailwindcss";
 @source not inline("container");</pre>
         <div class="p-3"><p class="sc-note">Code-only: use it when another library already defines <code>.container</code> and you do not want Tailwind's own <code>container</code> utility next to it. Do not confuse it with <code>@source not "path"</code>, which excludes files instead of class names.</p></div>
+      </figure>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="debug-detection">
+    <div class="sc-notes">
+      <h2>Debug content detection with <code>DEBUG=*</code></h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>When a class is missing from your CSS, run the build with the <code>DEBUG</code> environment variable set to <code>*</code>. Since v4.1.6 Tailwind then prints a timing report and writes a log with every <code>@source</code> entry, the sources it settled on and each file it read. If your file is not in that log, Tailwind never looked at it.</p>
+      <ul class="sc-parts">
+        <li><code>DEBUG=*</code></li>
+        <li><code>DEBUG=tailwindcss</code></li>
+        <li><code>DEBUG=tailwindcss:oxide</code></li>
+        <li><code>DEBUG=-tailwindcss</code></li>
+        <li><code>tailwindcss-&lt;pid&gt;.log</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://github.com/tailwindlabs/tailwindcss/releases/tag/v4.1.6" target="_blank" rel="noopener">Release notes: v4.1.6</a> · <a href="https://tailwindcss.com/docs/detecting-classes-in-source-files" target="_blank" rel="noopener">Docs: detecting classes in source files</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Which <code>DEBUG</code> value turns on what (checked with the v4.3.3 CLI)</figcaption>
+        <div class="sc-demo" id="debug-detection-1">
+          <div class="mx-auto max-w-xl overflow-hidden rounded-xl bg-white text-slate-900 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                  <tr>
+                    <th class="px-3 py-2 font-medium">DEBUG value</th>
+                    <th class="p-2 text-center font-medium">Timing report</th>
+                    <th class="p-2 text-center font-medium">Scanner log file</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                  <tr><td class="px-3 py-2 font-mono">*</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">tailwindcss:oxide</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">tailwindcss</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">1 or true <span class="font-sans text-slate-600 dark:text-slate-400">(v4.1.12+)</span></td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">-tailwindcss</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">0, false or unset</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p class="mx-auto mt-3 max-w-xl text-xs text-slate-600 dark:text-slate-300">The timing report goes to the terminal. The scanner log goes to a file, and the command prints its path. Values follow the usual <code class="font-mono">DEBUG</code> convention: a comma list names the tools to debug, and a leading minus turns one off.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="debug-detection-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Turn it on</figcaption>
+        <pre class="sc-code" data-code="bash" data-label="macOS, Linux, Git Bash">DEBUG=* npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css</pre>
+        <pre class="sc-code" data-code="bash" data-label="PowerShell">$env:DEBUG = "*"
+npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css</pre>
+        <pre class="sc-code" data-code="bash" data-label="Windows cmd">set DEBUG=*
+npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css</pre>
+        <pre class="sc-code" data-code="bash" data-label="Vite, Next.js and other build tools">DEBUG=* npm run build</pre>
+        <div class="p-3"><p class="sc-note">Code-only: <code>DEBUG</code> is an environment variable of the process that runs your build, so a web page cannot set it. Checked with the CLI. The Vite, PostCSS and webpack plugins read the same variable and share the same scanner. In cmd, put <code>set</code> on its own line: <code>set DEBUG=* &amp;&amp; …</code> stores a trailing space in the value, which turns debugging off. The flag is not in the docs. It comes from the v4.1.6 changelog.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What the terminal prints (real output) <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="debug-detection-3">Replay</button></figcaption>
+        <div class="sc-demo" id="debug-detection-3">
+          <div class="mx-auto max-w-xl overflow-hidden rounded-xl bg-slate-950 font-mono text-xs text-slate-100 shadow-lg ring-1 ring-black/10">
+            <div class="flex items-center gap-1.5 bg-slate-900 px-4 py-2.5">
+              <i class="size-2.5 rounded-full bg-rose-500"></i><i class="size-2.5 rounded-full bg-amber-400"></i><i class="size-2.5 rounded-full bg-emerald-500"></i>
+              <span class="ms-3 text-slate-400">my-app</span>
+            </div>
+            <div class="space-y-3 p-4 leading-relaxed">
+              <p class="wrap-anywhere"><span class="text-emerald-400">$</span> DEBUG=* npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css</p>
+              <p class="text-slate-400 transition-opacity delay-200 duration-300 starting:opacity-0 motion-reduce:transition-none">≈ tailwindcss v4.3.3</p>
+              <p class="wrap-anywhere transition-opacity delay-300 duration-300 starting:opacity-0 motion-reduce:transition-none"><span class="text-slate-400">[DEBUG]</span> Writing debug info to: <span class="text-sky-300">`/home/you/my-app/tailwindcss-32541.log`</span></p>
+              <p class="text-emerald-400 transition-opacity delay-500 duration-300 starting:opacity-0 motion-reduce:transition-none">Done in 29ms</p>
+              <div class="whitespace-pre-wrap wrap-anywhere text-slate-300 transition-opacity delay-700 duration-300 starting:opacity-0 motion-reduce:transition-none"><p>[29.59ms] [@tailwindcss/cli] (initial build)</p><p>[20.04ms]   ↳ Setup compiler</p><p>[ 0.90ms]   ↳ Scan for candidates</p><p>[ 4.86ms]   ↳ Build CSS</p><p>[ 1.91ms]   ↳ Write output</p></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="debug-detection-3"></pre>
+        <div class="p-3"><p class="sc-note">Paths are shortened to <code>/home/you/my-app</code>. In v4.3.3 the log is named <code>tailwindcss-&lt;pid&gt;.log</code> and sits in the folder you ran the command from. Read the exact path from the line the command prints, because the name is not a documented interface. Since v4.1.6 <code>.log</code> files are not scanned for classes, so the log never feeds back into your CSS. Delete it when you are done, or add <code>tailwindcss-*.log</code> to <code>.gitignore</code>.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Read the log, then check a file</figcaption>
+        <div class="sc-demo" id="debug-detection-4">
+          <div class="group mx-auto max-w-2xl">
+            <fieldset class="flex flex-wrap gap-1 rounded-xl bg-slate-200 p-1 text-sm font-medium dark:bg-slate-800">
+              <legend class="sr-only">Highlight one part of the log</legend>
+              <label class="cursor-pointer rounded-lg px-3 py-1.5 text-slate-700 transition-colors has-checked:bg-white has-checked:text-slate-950 has-checked:shadow-xs has-focus-visible:ring-2 has-focus-visible:ring-sky-500 motion-reduce:transition-none dark:text-slate-300 dark:has-checked:bg-slate-600 dark:has-checked:text-white">
+                <input type="radio" name="debug-part" id="debug-part-all" class="sr-only" checked>Whole log
+              </label>
+              <label class="cursor-pointer rounded-lg px-3 py-1.5 text-slate-700 transition-colors has-checked:bg-white has-checked:text-slate-950 has-checked:shadow-xs has-focus-visible:ring-2 has-focus-visible:ring-sky-500 motion-reduce:transition-none dark:text-slate-300 dark:has-checked:bg-slate-600 dark:has-checked:text-white">
+                <input type="radio" name="debug-part" id="debug-part-prov" class="sr-only">Provided sources
+              </label>
+              <label class="cursor-pointer rounded-lg px-3 py-1.5 text-slate-700 transition-colors has-checked:bg-white has-checked:text-slate-950 has-checked:shadow-xs has-focus-visible:ring-2 has-focus-visible:ring-sky-500 motion-reduce:transition-none dark:text-slate-300 dark:has-checked:bg-slate-600 dark:has-checked:text-white">
+                <input type="radio" name="debug-part" id="debug-part-opt" class="sr-only">Optimized sources
+              </label>
+              <label class="cursor-pointer rounded-lg px-3 py-1.5 text-slate-700 transition-colors has-checked:bg-white has-checked:text-slate-950 has-checked:shadow-xs has-focus-visible:ring-2 has-focus-visible:ring-sky-500 motion-reduce:transition-none dark:text-slate-300 dark:has-checked:bg-slate-600 dark:has-checked:text-white">
+                <input type="radio" name="debug-part" id="debug-part-read" class="sr-only">Files read
+              </label>
+            </fieldset>
+
+            <ol id="debug-log" class="mt-3 space-y-0.5 rounded-xl bg-slate-950 p-3 font-mono text-[11px] leading-5 text-slate-200 motion-reduce:[&_li]:transition-none [&_li]:transition-opacity group-has-[#debug-part-prov:checked]:[&_li:not([data-kind=provided])]:opacity-40 group-has-[#debug-part-opt:checked]:[&_li:not([data-kind=optimized])]:opacity-40 group-has-[#debug-part-read:checked]:[&_li:not([data-kind=read])]:opacity-40">
+              <li data-kind="provided" class="rounded px-1.5 text-sky-300">Provided sources:</li>
+              <li data-kind="provided" class="rounded px-1.5 wrap-anywhere">Source: PublicSourceEntry { base: "/home/you/my-app", pattern: "**/*", negated: false }</li>
+              <li data-kind="provided" class="rounded px-1.5 wrap-anywhere">Source: PublicSourceEntry { base: "/home/you/my-app/src", pattern: "../shared", negated: false }</li>
+              <li data-kind="provided" class="rounded px-1.5 wrap-anywhere">Source: PublicSourceEntry { base: "/home/you/my-app/src", pattern: "../lib", negated: true }</li>
+              <li data-kind="provided" class="rounded px-1.5 wrap-anywhere">Source: PublicSourceEntry { base: "/home/you/my-app/src", pattern: "input.css", negated: false }</li>
+              <li data-kind="optimized" class="mt-2 rounded px-1.5 text-sky-300">Optimized sources:</li>
+              <li data-kind="optimized" class="rounded px-1.5 wrap-anywhere">Source: Auto { base: "/home/you/my-app" }</li>
+              <li data-kind="optimized" class="rounded px-1.5 wrap-anywhere">Source: Auto { base: "/home/you/my-app/shared" }</li>
+              <li data-kind="optimized" class="rounded px-1.5 wrap-anywhere">Source: Ignored { base: "/home/you/my-app/lib", pattern: "/**/*" }</li>
+              <li data-kind="optimized" class="rounded px-1.5 wrap-anywhere">Source: Pattern { base: "/home/you/my-app/src", pattern: "/input.css" }</li>
+              <li data-kind="read" data-path="shared/card.html" class="mt-2 rounded px-1.5 wrap-anywhere data-hit:bg-sky-500/40 data-hit:text-white">Reading "/home/you/my-app/shared/card.html"</li>
+              <li data-kind="read" data-path="src/Button.jsx" class="rounded px-1.5 wrap-anywhere data-hit:bg-sky-500/40 data-hit:text-white">Reading "/home/you/my-app/src/Button.jsx"</li>
+              <li data-kind="read" data-path="src/index.html" class="rounded px-1.5 wrap-anywhere data-hit:bg-sky-500/40 data-hit:text-white">Reading "/home/you/my-app/src/index.html"</li>
+              <li data-kind="read" class="mt-2 rounded px-1.5 wrap-anywhere">Reading 2 file(s)</li>
+              <li data-kind="read" data-path="src/input.css" data-css class="rounded px-1.5 wrap-anywhere data-hit:bg-sky-500/40 data-hit:text-white">Reading "/home/you/my-app/src/input.css"</li>
+              <li data-kind="read" data-path="src/app.css" data-css class="rounded px-1.5 wrap-anywhere data-hit:bg-sky-500/40 data-hit:text-white">Reading "/home/you/my-app/src/app.css"</li>
+            </ol>
+
+            <div class="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+              <label for="debug-path" class="text-xs font-medium text-slate-700 dark:text-slate-300">Is this file in the log?</label>
+              <input id="debug-path" type="text" data-input="log-check" data-out="debug-out" autocomplete="off" spellcheck="false" placeholder="src/index.html" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+              <div class="mt-2 flex flex-wrap gap-2">
+                <button type="button" data-act="log-pick" data-target="debug-path" data-path="src/index.html" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 transition hover:bg-slate-50 active:scale-95 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700">src/index.html</button>
+                <button type="button" data-act="log-pick" data-target="debug-path" data-path="shared/card.html" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 transition hover:bg-slate-50 active:scale-95 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700">shared/card.html</button>
+                <button type="button" data-act="log-pick" data-target="debug-path" data-path="lib/button.html" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 transition hover:bg-slate-50 active:scale-95 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700">lib/button.html</button>
+                <button type="button" data-act="log-pick" data-target="debug-path" data-path="ignored/page.html" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 transition hover:bg-slate-50 active:scale-95 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700">ignored/page.html</button>
+                <button type="button" data-act="log-pick" data-target="debug-path" data-path="node_modules/pkg/card.html" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 transition hover:bg-slate-50 active:scale-95 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700">node_modules/pkg/card.html</button>
+                <button type="button" data-act="log-pick" data-target="debug-path" data-path="src/app.css" class="rounded-lg border border-slate-300 bg-white px-2.5 py-1 font-mono text-xs text-slate-800 transition hover:bg-slate-50 active:scale-95 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-700">src/app.css</button>
+              </div>
+              <p id="debug-out" class="mt-3 min-h-10 text-sm" aria-live="polite">Pick a file or type a path.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="debug-detection-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="src/input.css (the stylesheet that produced this log)">@import "tailwindcss";
+@source "../shared";
+@source not "../lib";</pre>
+        <pre class="sc-code" data-code="js" data-label="JS" data-fns="logCheck,logPick">// Looks the path up in the Reading lines of the log above</pre>
+        <div class="p-3"><p class="sc-note">A real log from the v4.3.3 CLI on a small project where <code>ignored/</code> is in <code>.gitignore</code>. It also holds timestamps, span enter and exit lines, and two entries for the <code>node</code> binary (the CLI excludes its own executable). Those are trimmed here. Under "Provided sources" are the entries you wrote plus the implicit ones: the project root, and the stylesheet itself. The second <code>Reading</code> group comes from a separate pass that reads CSS files for theme variables, not for classes.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A class is missing: what the log tells you</figcaption>
+        <div class="sc-demo" id="debug-detection-5">
+          <div class="overflow-hidden rounded-xl bg-white text-xs text-slate-900 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+            <div class="hidden gap-4 bg-slate-100 px-3 py-2 font-medium text-slate-600 sm:grid sm:grid-cols-[1.1fr_1.1fr_1fr] dark:bg-slate-700 dark:text-slate-300" aria-hidden="true"><span>What you see</span><span>In the log</span><span>Fix</span></div>
+            <ul class="divide-y divide-slate-200 dark:divide-slate-700">
+              <li class="grid gap-2 px-3 py-2.5 sm:grid-cols-[1.1fr_1.1fr_1fr] sm:gap-4">
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">What you see</span>Classes in <code class="font-mono">ignored/page.html</code> have no CSS</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">In the log</span>No <code class="font-mono">Reading</code> line for the file</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">Fix</span><code class="font-mono">@source "../ignored";</code></p>
+              </li>
+              <li class="grid gap-2 px-3 py-2.5 sm:grid-cols-[1.1fr_1.1fr_1fr] sm:gap-4">
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">What you see</span>A component library in <code class="font-mono">node_modules</code> is unstyled</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">In the log</span>No <code class="font-mono">Reading</code> lines under <code class="font-mono">node_modules</code></p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">Fix</span><code class="font-mono">@source "../node_modules/pkg";</code></p>
+              </li>
+              <li class="grid gap-2 px-3 py-2.5 sm:grid-cols-[1.1fr_1.1fr_1fr] sm:gap-4">
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">What you see</span>Your <code class="font-mono">@source not</code> rule matched more than you meant</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">In the log</span>The folder shows as <code class="font-mono">Ignored</code> under Optimized sources</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">Fix</span>Narrow or remove the <code class="font-mono">@source not</code> line</p>
+              </li>
+              <li class="grid gap-2 px-3 py-2.5 sm:grid-cols-[1.1fr_1.1fr_1fr] sm:gap-4">
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">What you see</span>The file is read, but <code class="font-mono">bg-${color}-500</code> is missing</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">In the log</span>A <code class="font-mono">Reading</code> line for the file</p>
+                <p><span class="text-[10px] font-semibold tracking-wide text-slate-600 uppercase sm:hidden dark:text-slate-400 block">Fix</span>Write full class names, or add <code class="font-mono">@source inline("bg-red-500")</code></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="debug-detection-5"></pre>
+        <div class="p-3"><p class="sc-note">All four rows come from real runs of the v4.3.3 CLI on the project above. The last one matters because the file is scanned and the class still never appears: the full class name is not in the source text. See "Automatic content detection" for the dynamic class name trap.</p></div>
       </figure>
     </div>
   </article>
@@ -2429,7 +2602,7 @@ module.exports = {
     <div class="sc-notes">
       <h2>Browser requirements</h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>v4 relies on <code>@property</code>, <code>color-mix()</code> and cascade layers for core features, so it targets Safari 16.4, Chrome 111 and Firefox 128 or newer. Older browsers should stay on v3.4. A few utilities need even newer browsers and are opt-in.</p>
+      <p>v4 relies on <code>@property</code>, <code>color-mix()</code> and cascade layers for core features, so it targets Safari 16.4, Chrome 111 and Firefox 128 or newer. Since v4.1, older browsers get best-effort fallbacks (next card), but if they must look exactly right, stay on v3.4. A few utilities need even newer browsers and are opt-in.</p>
       <ul class="sc-parts">
         <li>Chrome 111</li>
         <li>Safari 16.4</li>
@@ -2474,7 +2647,7 @@ module.exports = {
             <div class="rounded-xl bg-white p-3 shadow-xs ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-600 dark:text-slate-300">Safari</p><p class="text-2xl font-bold text-slate-900 tabular-nums dark:text-white">16.4</p><p class="text-[11px] text-slate-600 dark:text-slate-400">March 2023</p></div>
             <div class="rounded-xl bg-white p-3 shadow-xs ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-600 dark:text-slate-300">Firefox</p><p class="text-2xl font-bold text-slate-900 tabular-nums dark:text-white">128</p><p class="text-[11px] text-slate-600 dark:text-slate-400">July 2024</p></div>
           </div>
-          <p class="mt-3 text-center text-xs text-slate-600 dark:text-slate-300">Below these versions, stay on Tailwind v3.4.</p>
+          <p class="mt-3 text-center text-xs text-slate-600 dark:text-slate-300">Below these versions, v4.1 and later render with fallbacks (next card). If exact rendering matters there, stay on Tailwind v3.4.</p>
         </div>
         <pre class="sc-code" data-code="html" data-from="browser-requirements-2"></pre>
       </figure>
@@ -2499,6 +2672,143 @@ module.exports = {
         </div>
         <pre class="sc-code" data-code="html" data-from="browser-requirements-3"></pre>
         <div class="p-3"><p class="sc-note">These are not part of the baseline. <code>@starting-style</code> needs Chrome 117, Safari 17.5 or Firefox 129, and <code>text-wrap: balance</code> needs Chrome 114, Safari 17.5 or Firefox 121. <code>field-sizing</code> is the newest of the three. If your target browsers lack a feature, skip the utility and check Can I use before relying on it.</p></div>
+      </figure>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="older-browser-fallbacks">
+    <div class="sc-notes">
+      <h2>Fallbacks for older browsers</h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>In v4.0, colours, shadows and gradients could vanish in browsers stuck on Safari 15. Since v4.1 Tailwind writes its own fallbacks, so those browsers still render a usable page. Modern browsers skip every one of them, and v4 is still designed for Safari 16.4, Chrome 111 and Firefox 128 or newer.</p>
+      <ul class="sc-parts">
+        <li><code>@layer properties</code></li>
+        <li><code>@supports (color: color-mix(in lab, red, red))</code></li>
+        <li><code>@supports (background-image: linear-gradient(in lab, red, red))</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/blog/tailwindcss-v4-1#improved-compatibility-with-older-browsers" target="_blank" rel="noopener">Blog: improved compatibility with older browsers</a> · <a href="https://tailwindcss.com/docs/compatibility#browser-support" target="_blank" rel="noopener">Docs: browser support</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Which branch does your browser take?</figcaption>
+        <div class="sc-demo" id="older-browser-fallbacks-1">
+          <ul class="mx-auto max-w-xl divide-y divide-slate-200 rounded-xl bg-white px-4 text-slate-900 shadow-xs ring-1 ring-black/5 dark:divide-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+            <li class="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:gap-3" data-fb="props">
+              <span data-fb-badge class="self-start rounded-full bg-slate-200 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-800 data-[state=fallback]:bg-amber-200 data-[state=fallback]:text-amber-950 data-[state=modern]:bg-emerald-100 data-[state=modern]:text-emerald-900 sm:w-32 sm:shrink-0 dark:bg-slate-700 dark:text-slate-100 dark:data-[state=fallback]:bg-amber-400/20 dark:data-[state=fallback]:text-amber-200 dark:data-[state=modern]:bg-emerald-950 dark:data-[state=modern]:text-emerald-200">checking</span>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold">Defaults for the <code class="font-mono text-xs">--tw-*</code> variables behind shadows, transforms, filters and gradients</p>
+                <p class="mt-0.5 font-mono text-[11px] wrap-anywhere text-slate-600 dark:text-slate-300">@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b))))</p>
+                <p data-fb-out class="mt-1 text-xs text-slate-700 dark:text-slate-300">…</p>
+              </div>
+            </li>
+            <li class="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:gap-3" data-fb="mix">
+              <span data-fb-badge class="self-start rounded-full bg-slate-200 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-800 data-[state=fallback]:bg-amber-200 data-[state=fallback]:text-amber-950 data-[state=modern]:bg-emerald-100 data-[state=modern]:text-emerald-900 sm:w-32 sm:shrink-0 dark:bg-slate-700 dark:text-slate-100 dark:data-[state=fallback]:bg-amber-400/20 dark:data-[state=fallback]:text-amber-200 dark:data-[state=modern]:bg-emerald-950 dark:data-[state=modern]:text-emerald-200">checking</span>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold">Opacity modifiers such as <code class="font-mono text-xs">bg-sky-500/50</code></p>
+                <p class="mt-0.5 font-mono text-[11px] wrap-anywhere text-slate-600 dark:text-slate-300">@supports (color: color-mix(in lab, red, red))</p>
+                <p data-fb-out class="mt-1 text-xs text-slate-700 dark:text-slate-300">…</p>
+              </div>
+            </li>
+            <li class="flex flex-col gap-2 py-3 sm:flex-row sm:items-start sm:gap-3" data-fb="grad">
+              <span data-fb-badge class="self-start rounded-full bg-slate-200 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-800 data-[state=fallback]:bg-amber-200 data-[state=fallback]:text-amber-950 data-[state=modern]:bg-emerald-100 data-[state=modern]:text-emerald-900 sm:w-32 sm:shrink-0 dark:bg-slate-700 dark:text-slate-100 dark:data-[state=fallback]:bg-amber-400/20 dark:data-[state=fallback]:text-amber-200 dark:data-[state=modern]:bg-emerald-950 dark:data-[state=modern]:text-emerald-200">checking</span>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold">Gradient colour spaces such as <code class="font-mono text-xs">bg-linear-to-r/oklch</code></p>
+                <p class="mt-0.5 font-mono text-[11px] wrap-anywhere text-slate-600 dark:text-slate-300">@supports (background-image: linear-gradient(in lab, red, red))</p>
+                <p data-fb-out class="mt-1 text-xs text-slate-700 dark:text-slate-300">…</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="older-browser-fallbacks-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS" data-fns="tailwindSheet,fallbackProbe">// Runs the same @supports tests that Tailwind's compiled CSS uses to pick a branch</pre>
+        <div class="p-3"><p class="sc-note">The three conditions are copied from the CSS that the v4.3.3 compiler writes. In a current browser the first row skips its block and the other two take the modern path. Open this page in a browser without these features and the answers flip.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Gradients: the modern bar, and what an old browser draws</figcaption>
+        <div class="sc-demo" id="older-browser-fallbacks-2">
+          <div class="mx-auto max-w-lg space-y-4 text-slate-900 dark:text-slate-100">
+            <div>
+              <p class="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 font-mono text-xs"><span>bg-linear-to-r/oklch</span><span class="text-slate-600 dark:text-slate-300">blends in oklch</span></p>
+              <div class="h-10 rounded-lg bg-linear-to-r/oklch from-blue-500 to-yellow-300"></div>
+            </div>
+            <div>
+              <p class="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 font-mono text-xs"><span>bg-linear-to-r</span><span class="text-slate-600 dark:text-slate-300">v4 default: blends in oklab</span></p>
+              <div class="h-10 rounded-lg bg-linear-to-r from-blue-500 to-yellow-300"></div>
+            </div>
+            <div>
+              <p class="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 font-mono text-xs"><span>bg-linear-to-r/srgb</span><span class="font-semibold text-amber-800 dark:text-amber-300">what an old browser draws for all three</span></p>
+              <div class="h-10 rounded-lg bg-linear-to-r/srgb from-blue-500 to-yellow-300"></div>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">A browser without gradient colour spaces ignores <code class="font-mono">in oklch</code> and <code class="font-mono">in oklab</code> and blends in sRGB, its default. The ends match and only the middle changes.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="older-browser-fallbacks-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Opacity modifiers: the modern colour and the inlined fallback</figcaption>
+        <div class="sc-demo" id="older-browser-fallbacks-3">
+          <div class="mx-auto max-w-lg space-y-4 text-slate-900 dark:text-slate-100">
+            <div>
+              <p class="mb-1 font-mono text-xs">color-mix(in oklab, …): <code>bg-sky-500/20</code> to <code>/80</code></p>
+              <div class="flex overflow-hidden rounded-lg ring-1 ring-black/10 bg-[conic-gradient(#cbd5e1_25%,#f8fafc_0_50%,#cbd5e1_0_75%,#f8fafc_0)] bg-size-[16px_16px] dark:bg-[conic-gradient(#475569_25%,#1e293b_0_50%,#475569_0_75%,#1e293b_0)]">
+                <div class="h-12 flex-1 bg-sky-500/20"></div>
+                <div class="h-12 flex-1 bg-sky-500/30"></div>
+                <div class="h-12 flex-1 bg-sky-500/50"></div>
+                <div class="h-12 flex-1 bg-sky-500/80"></div>
+              </div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-xs">plain colour, what an old browser gets: <code>#00a5ef33</code> to <code>#00a5efcc</code></p>
+              <div class="flex overflow-hidden rounded-lg ring-1 ring-black/10 bg-[conic-gradient(#cbd5e1_25%,#f8fafc_0_50%,#cbd5e1_0_75%,#f8fafc_0)] bg-size-[16px_16px] dark:bg-[conic-gradient(#475569_25%,#1e293b_0_50%,#475569_0_75%,#1e293b_0)]">
+                <div class="h-12 flex-1 bg-[#00a5ef33]"></div>
+                <div class="h-12 flex-1 bg-[#00a5ef4d]"></div>
+                <div class="h-12 flex-1 bg-[#00a5ef80]"></div>
+                <div class="h-12 flex-1 bg-[#00a5efcc]"></div>
+              </div>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">The two rows look the same. The fallback is the same colour at the same opacity, written without the <code class="font-mono">color-mix()</code> syntax an old browser cannot parse.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="older-browser-fallbacks-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What the compiler writes</figcaption>
+        <pre class="sc-code" data-code="css" data-label="Output of @tailwindcss/cli 4.3.3 --optimize, trimmed">/* 1. Defaults for the --tw-* variables, for browsers without @property */
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or
+    ((-moz-orient: inline) and (not (color: rgb(from red r g b)))) {
+    *, :before, :after, ::backdrop {
+      --tw-translate-x: 0;
+      --tw-gradient-from: #0000;
+      --tw-shadow: 0 0 #0000;
+      /* … */
+    }
+  }
+}
+
+/* 2. Opacity modifier: a plain colour first, color-mix() where supported */
+.bg-sky-500\/50 {
+  background-color: #00a5ef80;
+}
+@supports (color: color-mix(in lab, red, red)) {
+  .bg-sky-500\/50 {
+    background-color: color-mix(in oklab, var(--color-sky-500) 50%, transparent);
+  }
+}
+
+/* 3. Gradient: the colour space is only added where supported */
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+}
+@supports (background-image: linear-gradient(in lab, red, red)) {
+  .bg-linear-to-r {
+    --tw-gradient-position: to right in oklab;
+  }
+}</pre>
+        <div class="p-3"><p class="sc-note">Code-only: this is the compiled output of the CLI, trimmed and re-wrapped. The ordinary <code>@property</code> rules still follow it for modern browsers. The browser build that runs this page skips the optimizer, so its plain colour is <code>color-mix(in srgb, oklch(…) 50%, transparent)</code> instead of a hex value. Run the compiler with <code>--optimize</code> to see the hex.</p></div>
       </figure>
     </div>
   </article>
@@ -2940,6 +3250,76 @@ module.exports = {
     document.getElementById(button.dataset.out).textContent = 'Press a button to try again.'
   }
 
+  /* ---------- debugging content detection ---------- */
+
+  // Looks the path up in the Reading lines of the log above
+  function logCheck(input) {
+    const out = document.getElementById(input.dataset.out)
+    const path = input.value.trim().replace(/^\.\//, '')
+    const rows = [...document.querySelectorAll('#debug-log [data-path]')]
+    rows.forEach((row) => row.toggleAttribute('data-hit', row.dataset.path === path))
+    const row = rows.find((r) => r.dataset.path === path)
+    const why = {
+      'lib/button.html': 'Not read. The log lists lib under Ignored, because of @source not "../lib".',
+      'ignored/page.html': 'Not read. The folder is in .gitignore, and no @source line brings it back.',
+      'node_modules/pkg/card.html': 'Not read. node_modules is skipped unless you add an @source line for it.',
+    }
+    if (!path) out.textContent = 'Pick a file or type a path.'
+    else if (row && row.hasAttribute('data-css')) out.textContent = 'Read, but only to find theme variables. CSS files are not scanned for classes.'
+    else if (row) out.textContent = 'Read. Tailwind extracted the class names in this file.'
+    else out.textContent = why[path] || 'Not in the log, so Tailwind never read it. Check .gitignore, @source not and the file type, or add an @source line.'
+  }
+
+  function logPick(button) {
+    const input = document.getElementById(button.dataset.target)
+    input.value = button.dataset.path
+    logCheck(input)
+  }
+
+  /* ---------- older-browser fallbacks ---------- */
+
+  // Runs the same @supports tests that Tailwind's compiled CSS uses to pick a branch
+  function fallbackProbe() {
+    const checks = {
+      props: {
+        test: '((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b))))',
+        fallbackWhen: true,
+        modern: 'Skipped. This browser has @property, so the registered variables supply their own defaults.',
+        fallback: 'Applied. This browser has no @property, so the block sets every variable to its default.',
+      },
+      mix: {
+        test: '(color: color-mix(in lab, red, red))',
+        fallbackWhen: false,
+        modern: 'Modern path. Opacity modifiers use color-mix(in oklab, …).',
+        fallback: 'Fallback. The plain colour written before the @supports block is used.',
+      },
+      grad: {
+        test: '(background-image: linear-gradient(in lab, red, red))',
+        fallbackWhen: false,
+        modern: 'Modern path. The gradient blends in the colour space the class names.',
+        fallback: 'Fallback. The gradient drops the colour space and blends in sRGB, the browser default.',
+      },
+    }
+    // How many variables this page's own stylesheet gives a default, inside the @layer properties block
+    const style = tailwindSheet()
+    const layer = style && style.sheet && [...style.sheet.cssRules].find((r) => r.constructor.name === 'CSSLayerBlockRule' && r.name === 'properties')
+    const block = layer && [...layer.cssRules].find((r) => r.constructor.name === 'CSSSupportsRule')
+    const count = block && block.cssRules[0] ? block.cssRules[0].style.length : 0
+    document.querySelectorAll('[data-fb]').forEach((li) => {
+      const check = checks[li.dataset.fb]
+      let supported = false
+      try {
+        supported = CSS.supports(check.test)
+      } catch (e) {}
+      const fallback = supported === check.fallbackWhen
+      const badge = li.querySelector('[data-fb-badge]')
+      badge.dataset.state = fallback ? 'fallback' : 'modern'
+      badge.textContent = fallback ? 'fallback active' : 'modern path'
+      const extra = li.dataset.fb === 'props' && count ? ` This page's stylesheet has ${count} defaults in that block.` : ''
+      li.querySelector('[data-fb-out]').textContent = (fallback ? check.fallback : check.modern) + extra
+    })
+  }
+
   /* ---------- CSS variables, type hints, bare values, arbitrary properties ---------- */
 
   function brandPick(button) {
@@ -3179,11 +3559,13 @@ module.exports = {
     'xray-add': xrayAdd,
     'perf-new': perfNew,
     'perf-known': perfKnown,
+    'log-pick': logPick,
   }
   const INPUTS = {
     'theme-live': themeLive,
     sidebar: sidebarResize,
     'prefix-convert': prefixConvert,
+    'log-check': logCheck,
   }
 
   document.addEventListener('click', (e) => {
@@ -3203,7 +3585,7 @@ module.exports = {
 
   /* ---------- fill the JS listings with the real source of the functions above ---------- */
 
-  const FUNCTIONS = { tailwindSheet, ruleSelectors, timeCompile, logRow, meterAdd, meterReset, prettyCss, themeLive, themePreset, feedAdd, feedCount, feedReset, proofRun, rampDraw, tryClass, resetClasses, brandPick, sidebarResize, readComputed, fluidWatch, currentTab, gutterWatch, hoverPadWatch, padReadout, layerInspect, toggleHidden, preflightProbe, placeholderProbe, dragStart, dragEnd, prefixConvert, xrayCount, xrayAdd, perfNew, perfKnown, browserProbe }
+  const FUNCTIONS = { tailwindSheet, ruleSelectors, timeCompile, logRow, meterAdd, meterReset, prettyCss, themeLive, themePreset, feedAdd, feedCount, feedReset, proofRun, rampDraw, tryClass, resetClasses, brandPick, sidebarResize, readComputed, fluidWatch, currentTab, gutterWatch, hoverPadWatch, padReadout, layerInspect, toggleHidden, preflightProbe, placeholderProbe, dragStart, dragEnd, prefixConvert, xrayCount, xrayAdd, perfNew, perfKnown, browserProbe, logCheck, logPick, fallbackProbe }
   const VARS = { METER, FEED, XRAY }
 
   function sourceOf(fn) {
@@ -3251,6 +3633,7 @@ module.exports = {
     const textarea = document.getElementById('cdn-theme-src')
     textarea.value = prettyCss(textarea.value)
     browserProbe()
+    fallbackProbe()
     fluidWatch()
     gutterWatch()
     hoverPadWatch()
@@ -3264,6 +3647,7 @@ module.exports = {
       placeholderProbe()
       xrayCount()
       layerInspect()
+      fallbackProbe()
       setTimeout(layerInspect, 400)
       setTimeout(xrayCount, 400)
     })

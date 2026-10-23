@@ -2073,6 +2073,196 @@ document.addEventListener('click', (e) =&gt; {
     </div>
   </article>
 
+  <!-- ===================== 15b. transform-box ===================== -->
+  <article class="sc-feature" id="transform-box">
+    <div class="sc-notes">
+      <h2>Pivot box: <code>transform-box</code> utilities</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Sets the box that <code>origin-*</code> keywords and percentages are measured against. An SVG shape starts with the whole viewBox, so <code>origin-center</code> turns it around the middle of the drawing; add <code>transform-fill</code> and it turns around the shape itself. On HTML elements the choice is the border box or the content box. These five utilities are in the engine but not on a docs page yet.</p>
+      <ul class="sc-parts">
+        <li><code>transform-view</code></li>
+        <li><code>transform-fill</code></li>
+        <li><code>transform-stroke</code></li>
+        <li><code>transform-content</code></li>
+        <li><code>transform-border</code></li>
+        <li><code>transform-fill origin-center</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/transform-origin" target="_blank" rel="noopener">Docs: transform-origin</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform-box" target="_blank" rel="noopener">MDN: transform-box</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The same <code>rotate-30 origin-top-left</code> under three reference boxes</figcaption>
+        <div class="sc-demo" id="transform-box-1">
+          <div class="mx-auto grid max-w-md grid-cols-3 gap-3 sm:gap-5">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="w-full rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <svg viewBox="0 0 120 120" class="block w-full overflow-visible" aria-hidden="true">
+                  <rect width="120" height="120" rx="4" stroke-dasharray="4 3" class="fill-none stroke-slate-300 dark:stroke-slate-600"></rect>
+                  <rect x="50" y="30" width="40" height="40" rx="6" stroke-dasharray="3 3" class="fill-none stroke-slate-400 dark:stroke-slate-500"></rect>
+                  <rect x="50" y="30" width="40" height="40" rx="6" stroke-width="16" class="origin-top-left rotate-30 transform-view fill-sky-500/80 stroke-indigo-300/80 dark:stroke-indigo-700/80"></rect>
+                  <circle cx="0" cy="0" r="4.5" stroke-width="1.5" class="fill-rose-500 stroke-white dark:stroke-slate-900"></circle>
+                </svg>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-view</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">the whole viewBox (default)</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="w-full rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <svg viewBox="0 0 120 120" class="block w-full overflow-visible" aria-hidden="true">
+                  <rect width="120" height="120" rx="4" stroke-dasharray="4 3" class="fill-none stroke-slate-300 dark:stroke-slate-600"></rect>
+                  <rect x="50" y="30" width="40" height="40" rx="6" stroke-dasharray="3 3" class="fill-none stroke-slate-400 dark:stroke-slate-500"></rect>
+                  <rect x="50" y="30" width="40" height="40" rx="6" stroke-width="16" class="origin-top-left rotate-30 transform-fill fill-sky-500/80 stroke-indigo-300/80 dark:stroke-indigo-700/80"></rect>
+                  <circle cx="50" cy="30" r="4.5" stroke-width="1.5" class="fill-rose-500 stroke-white dark:stroke-slate-900"></circle>
+                </svg>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-fill</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">the shape's own box</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="w-full rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <svg viewBox="0 0 120 120" class="block w-full overflow-visible" aria-hidden="true">
+                  <rect width="120" height="120" rx="4" stroke-dasharray="4 3" class="fill-none stroke-slate-300 dark:stroke-slate-600"></rect>
+                  <rect x="50" y="30" width="40" height="40" rx="6" stroke-dasharray="3 3" class="fill-none stroke-slate-400 dark:stroke-slate-500"></rect>
+                  <rect x="50" y="30" width="40" height="40" rx="6" stroke-width="16" class="origin-top-left rotate-30 transform-stroke fill-sky-500/80 stroke-indigo-300/80 dark:stroke-indigo-700/80"></rect>
+                  <circle cx="42" cy="22" r="4.5" stroke-width="1.5" class="fill-rose-500 stroke-white dark:stroke-slate-900"></circle>
+                </svg>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-stroke</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">the shape plus its stroke</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-box-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="Generated CSS">
+.transform-view    { transform-box: view-box; }
+.transform-fill    { transform-box: fill-box; }
+.transform-stroke  { transform-box: stroke-box; }
+.transform-content { transform-box: content-box; }
+.transform-border  { transform-box: border-box; }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A spinner that is not in the middle of its drawing</figcaption>
+        <div class="sc-demo" id="transform-box-2">
+          <div class="mx-auto grid max-w-md grid-cols-3 gap-3 sm:gap-5">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="w-full rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <svg viewBox="0 0 120 120" class="block w-full overflow-visible" aria-hidden="true">
+                  <circle cx="88" cy="60" r="14" fill="none" stroke-width="5" class="stroke-slate-200 dark:stroke-slate-700"></circle>
+                  <circle cx="88" cy="60" r="14" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="52 100" class="origin-center stroke-indigo-500 motion-safe:animate-spin dark:stroke-indigo-400"></circle>
+                  <circle cx="60" cy="60" r="3.5" class="fill-rose-500"></circle>
+                </svg>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">origin-center</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">orbits the middle of the viewBox</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="w-full rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <svg viewBox="0 0 120 120" class="block w-full overflow-visible" aria-hidden="true">
+                  <circle cx="88" cy="60" r="14" fill="none" stroke-width="5" class="stroke-slate-200 dark:stroke-slate-700"></circle>
+                  <circle cx="88" cy="60" r="14" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="52 100" class="origin-center transform-fill stroke-indigo-500 motion-safe:animate-spin dark:stroke-indigo-400"></circle>
+                  <circle cx="88" cy="60" r="3.5" class="fill-rose-500"></circle>
+                </svg>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-fill origin-center</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">spins in place</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="w-full rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <svg viewBox="0 0 120 120" class="block w-full overflow-visible" aria-hidden="true">
+                  <circle cx="88" cy="60" r="14" fill="none" stroke-width="5" class="stroke-slate-200 dark:stroke-slate-700"></circle>
+                  <circle cx="88" cy="60" r="14" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="52 100" class="origin-[88px_60px] stroke-indigo-500 motion-safe:animate-spin dark:stroke-indigo-400"></circle>
+                  <circle cx="88" cy="60" r="3.5" class="fill-rose-500"></circle>
+                </svg>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">origin-[88px_60px]</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">a pivot typed in by hand</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-box-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>On HTML: the pivot sits in the padding or in the content</figcaption>
+        <div class="sc-demo" id="transform-box-3">
+          <div class="grid gap-8 sm:grid-cols-2">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="relative h-52 w-full max-w-64">
+                <div class="absolute inset-0 m-auto h-20 w-48 rounded-xl border border-dashed border-slate-400 dark:border-slate-500"></div>
+                <div class="absolute inset-0 m-auto flex h-20 w-48 origin-center rotate-30 flex-col justify-between rounded-xl bg-white py-3 pr-3 pl-20 text-left text-slate-900 shadow-lg ring-1 ring-slate-900/10 transform-border dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <span class="absolute inset-y-0 left-0 grid w-16 place-items-center rounded-l-xl bg-emerald-100 dark:bg-emerald-900/60">
+                    <svg viewBox="0 0 24 24" class="size-6 fill-none stroke-emerald-600 dark:stroke-emerald-400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+                  </span>
+                  <p class="text-sm font-semibold">Invoice paid</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">Acme · $1,240</p>
+                  <span class="absolute top-1/2 left-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-800"></span>
+                </div>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-border origin-center</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">pivot: centre of the whole card (default)</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="relative h-52 w-full max-w-64">
+                <div class="absolute inset-0 m-auto h-20 w-48 rounded-xl border border-dashed border-slate-400 dark:border-slate-500"></div>
+                <div class="absolute inset-0 m-auto flex h-20 w-48 origin-center rotate-30 flex-col justify-between rounded-xl bg-white py-3 pr-3 pl-20 text-left text-slate-900 shadow-lg ring-1 ring-slate-900/10 transform-content dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
+                  <span class="absolute inset-y-0 left-0 grid w-16 place-items-center rounded-l-xl bg-emerald-100 dark:bg-emerald-900/60">
+                    <svg viewBox="0 0 24 24" class="size-6 fill-none stroke-emerald-600 dark:stroke-emerald-400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+                  </span>
+                  <p class="text-sm font-semibold">Invoice paid</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">Acme · $1,240</p>
+                  <span class="absolute top-1/2 left-[calc(50%+34px)] size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-800"></span>
+                </div>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-content origin-center</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">pivot: centre of the text area</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-box-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>3D door: hinge on the card edge, or on the edge of its padding (hover or focus)</figcaption>
+        <div class="sc-demo" id="transform-box-4">
+          <div class="grid gap-8 sm:grid-cols-2">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="group relative h-40 w-full max-w-56 perspective-distant" tabindex="0">
+                <div class="absolute inset-0 grid place-items-center rounded-lg bg-slate-100 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">Q3 invoices</div>
+                <div class="absolute inset-0 origin-left rounded-lg bg-indigo-600 py-4 pr-4 pl-12 text-left text-white shadow-lg transition-transform duration-500 transform-border group-hover:-rotate-y-55 group-focus-within:-rotate-y-55 motion-reduce:transition-none">
+                  <span class="absolute inset-y-0 left-0 border-l-2 border-dashed border-rose-300"></span>
+                  <div class="pl-3">
+                    <p class="font-semibold">Receipts</p>
+                    <p class="mt-1 text-sm text-indigo-100">12 files</p>
+                  </div>
+                </div>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-border origin-left</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">hinge: outer left edge</span>
+            </div>
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="group relative h-40 w-full max-w-56 perspective-distant" tabindex="0">
+                <div class="absolute inset-0 grid place-items-center rounded-lg bg-slate-100 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">Q3 invoices</div>
+                <div class="absolute inset-0 origin-left rounded-lg bg-indigo-600 py-4 pr-4 pl-12 text-left text-white shadow-lg transition-transform duration-500 transform-content group-hover:-rotate-y-55 group-focus-within:-rotate-y-55 motion-reduce:transition-none">
+                  <span class="absolute inset-y-0 left-12 border-l-2 border-dashed border-rose-300"></span>
+                  <div class="pl-3">
+                    <p class="font-semibold">Receipts</p>
+                    <p class="mt-1 text-sm text-indigo-100">12 files</p>
+                  </div>
+                </div>
+              </div>
+              <code class="text-[11px] break-words text-slate-700 dark:text-slate-300">transform-content origin-left</code>
+              <span class="text-[11px] text-slate-600 dark:text-slate-400">hinge: where the padding ends</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="transform-box-4"></pre>
+      </figure>
+
+      <p class="sc-note"><code>transform-box</code> only picks where <code>origin-*</code> measures from. It changes nothing unless the element also turns, scales or spins, and the origin is a keyword or percentage; an <code>origin-[88px_60px]</code> point is typed in directly. It is not inherited, so put it on the element that has the transform. SVG shapes start at <code>transform-view</code>, with a pivot at the top-left corner of the viewBox. On SVG, <code>transform-content</code> acts like <code>transform-fill</code> and <code>transform-border</code> like <code>transform-stroke</code>. HTML elements start at <code>transform-border</code>; there <code>transform-fill</code> and <code>transform-content</code> both mean the content box, while <code>transform-stroke</code> and <code>transform-view</code> mean the border box. Checked in Chromium. These classes do not touch the <code>transform</code> property, so they are unrelated to <code>transform-gpu</code> and <code>transform-none</code>. Every current browser supports <code>transform-box</code>. With reduced motion on, the spinners stay still.</p>
+    </div>
+  </article>
+
   <!-- ===================== 16. custom 3D theme tokens ===================== -->
   <article class="sc-feature" id="theme-3d-tokens">
     <div class="sc-notes">
