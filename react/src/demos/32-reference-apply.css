@@ -1,0 +1,108 @@
+/*
+ * Component classes written in plain CSS, using Tailwind from the inside.
+ *
+ * @reference loads the app stylesheet (theme, custom variants, custom
+ * utilities, plugins) so that @apply and @variant can look things up, and
+ * emits NONE of it. Compare with `@import "../index.css"`, which would copy
+ * all of Tailwind (about 50 kB of preflight, theme and utilities) into this
+ * file's output a second time.
+ *
+ * It is the same mechanism Vue and Svelte <style> blocks and CSS Modules use.
+ * Everything is wrapped in @layer components, so a utility written in markup
+ * (p-8, rounded-full ...) still beats these classes. Unlayered CSS would not
+ * lose, ever.
+ */
+@reference "../index.css";
+
+@layer components {
+  /* ------------------------------------------------------------------
+     Callout: one class, a data-tone attribute for the colour
+     ------------------------------------------------------------------ */
+  .ra-callout {
+    @apply grid gap-1 rounded-card border border-s-4 border-line border-s-accent bg-accent-soft/60 p-4 text-sm text-ink;
+
+    /* dark mode written once, with the project's own dark variant */
+    @variant dark {
+      @apply bg-accent-soft/40;
+    }
+  }
+  .ra-callout[data-tone='success'] {
+    @apply border-s-v43 bg-v43/10;
+  }
+  .ra-callout[data-tone='warning'] {
+    @apply border-s-v42 bg-v42/10;
+  }
+  .ra-callout[data-tone='danger'] {
+    @apply border-s-red-600 bg-red-500/10;
+
+    @variant dark {
+      @apply border-s-red-400;
+    }
+  }
+  .ra-callout__title {
+    @apply m-0 font-display text-[15px] font-semibold;
+  }
+  .ra-callout__body {
+    @apply m-0 text-pretty text-muted;
+  }
+  .ra-callout__link {
+    @apply font-medium text-ink underline decoration-current/40 underline-offset-4;
+
+    @variant hover {
+      @apply decoration-current;
+    }
+    @variant focus-visible {
+      @apply rounded-sm outline-2 outline-offset-2 outline-accent;
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Button: states are @variant blocks, not hover:/active: in markup
+     ------------------------------------------------------------------ */
+  .ra-btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-transparent px-4 py-2 text-sm font-semibold transition-[background-color,border-color,box-shadow,translate] duration-150;
+
+    @variant hover {
+      @apply -translate-y-px shadow-md;
+    }
+    @variant active {
+      @apply translate-y-0 shadow-none;
+    }
+    @variant focus-visible {
+      @apply outline-2 outline-offset-2 outline-accent;
+    }
+    @variant disabled {
+      @apply pointer-events-none opacity-50;
+    }
+    @variant motion-reduce {
+      @apply transition-none;
+    }
+  }
+  .ra-btn--primary {
+    @apply bg-sky-700 text-white;
+
+    @variant hover {
+      @apply bg-sky-800;
+    }
+  }
+  .ra-btn--outline {
+    @apply border-line bg-surface text-ink;
+
+    @variant hover {
+      @apply border-accent;
+    }
+  }
+  .ra-btn--danger {
+    @apply bg-red-700 text-white;
+
+    @variant hover {
+      @apply bg-red-800;
+    }
+  }
+  .ra-btn[data-size='sm'] {
+    @apply gap-1.5 px-3 py-1 text-xs;
+  }
+  .ra-btn[data-size='lg'] {
+    @apply px-6 py-3 text-base;
+  }
+}

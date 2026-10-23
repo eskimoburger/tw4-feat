@@ -1,5 +1,5 @@
 import { Component, useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, LayoutGroup, MotionConfig, motion } from 'motion/react'
+import { AnimatePresence, LayoutGroup, MotionConfig, motion, stagger } from 'motion/react'
 import pkg from '../package.json'
 import { cn } from './lib/cn'
 import { useHashRoute } from './lib/useHashRoute'
@@ -280,7 +280,8 @@ function PrevNext({ prev, next }) {
 /* ==========================================================================
    Views
    ========================================================================== */
-const listVariants = { hidden: {}, show: { transition: { staggerChildren: 0.04 } } }
+// Motion 14: delayChildren: stagger() replaces the deprecated staggerChildren
+const listVariants = { hidden: {}, show: { transition: { delayChildren: stagger(0.04) } } }
 const itemVariants = {
   hidden: { opacity: 0, y: 14 },
   show: { opacity: 1, y: 0, transition: { type: 'spring', duration: 0.5, bounce: 0.12 } },
@@ -312,8 +313,8 @@ function Home() {
           Tailwind v4 Field Guide
         </h1>
         <p className="m-0 text-[17px] text-pretty text-muted">
-          Every feature of Tailwind CSS v4, built as a live React component with Motion and shown next to its real source. Pick a demo, read the code,
-          change it, watch it update.
+          Tailwind CSS v4 features, each built as a live React component, animated with Motion and shown next to its real source. Pick a demo, read the
+          code, change it, watch it update.
         </p>
       </header>
 
@@ -428,6 +429,7 @@ export default function App() {
   const [theme, setTheme] = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
   const mainRef = useRef(null)
+  const sideRef = useRef(null)
   const firstRoute = useRef(true)
   const demo = route ? registry.byId.get(route) : null
   const activeId = demo ? demo.id : ''
@@ -439,6 +441,16 @@ export default function App() {
     window.scrollTo(0, 0)
     if (firstRoute.current) firstRoute.current = false
     else mainRef.current?.focus({ preventScroll: true })
+
+    // the sidebar scrolls on its own: keep the current demo's link inside it
+    const side = sideRef.current
+    const link = side?.querySelector('[aria-current="page"]')
+    if (side && link) {
+      const box = side.getBoundingClientRect()
+      const at = link.getBoundingClientRect()
+      if (at.top < box.top) side.scrollTop -= box.top - at.top + 12
+      else if (at.bottom > box.bottom) side.scrollTop += at.bottom - box.bottom + 12
+    }
   }, [route, demo])
 
   useEffect(() => {
@@ -462,7 +474,7 @@ export default function App() {
         <TopBar theme={theme} setTheme={setTheme} menuOpen={menuOpen} setMenuOpen={setMenuOpen} groups={registry.groups} activeId={activeId} />
         <div className="mx-auto grid w-full max-w-[1320px] flex-1 gap-8 pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] lg:grid-cols-[15rem_minmax(0,1fr)]">
           <aside className="hidden lg:block">
-            <div className="sticky top-14 max-h-[calc(100dvh-3.5rem)] overflow-y-auto py-8 pr-2">
+            <div ref={sideRef} className="sticky top-14 max-h-[calc(100dvh-3.5rem)] overflow-y-auto py-8 pr-2">
               <NavList groups={registry.groups} activeId={activeId} scope="side" />
             </div>
           </aside>

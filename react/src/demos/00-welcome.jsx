@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { motion, stagger } from 'motion/react'
 import pkg from '../../package.json'
 import { Code } from '../components/Code'
 import { Example } from '../components/Feature'
@@ -36,7 +36,7 @@ const card = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: 'spring', duration: 0.7, bounce: 0.2, when: 'beforeChildren', staggerChildren: 0.08 },
+    transition: { type: 'spring', duration: 0.7, bounce: 0.2, when: 'beforeChildren', delayChildren: stagger(0.08) },
   },
 }
 const part = {

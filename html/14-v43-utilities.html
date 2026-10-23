@@ -1,0 +1,1820 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scrollbars, zoom &amp; tabs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* page-specific v4 CSS (@theme, @utility, @keyframes, …) goes below */
+
+  /* ---- scrollbar-color: a theme token becomes scrollbar-thumb-brand and scrollbar-track-brand/15 ---- */
+  @theme {
+    --color-brand: oklch(0.62 0.19 260);
+  }
+
+  /* ---- demo helper for the gutter cards (not a Tailwind utility): a classic 14px scrollbar in Chromium and
+          Safari even on overlay-scrollbar systems, so the reserved gutter is visible ---- */
+  .demo-bar::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+  }
+  .demo-bar::-webkit-scrollbar-track {
+    background: rgb(100 116 139 / 0.18);
+  }
+  .demo-bar::-webkit-scrollbar-thumb {
+    background: rgb(100 116 139 / 0.75);
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: content-box;
+  }
+
+  /* ---- @variant: stacked (hover:focus) and compound (hover, focus) inside component CSS ---- */
+  .cta-stacked {
+    background: var(--color-sky-600);
+    @variant hover:focus {
+      background: var(--color-emerald-600);
+    }
+  }
+  .cta-compound {
+    background: var(--color-sky-600);
+    @variant hover, focus {
+      background: var(--color-emerald-600);
+    }
+  }
+  .chat-scroll {
+    @apply scrollbar-thin scrollbar-thumb-slate-400;
+    @variant hover, focus-within {
+      @apply scrollbar-thumb-sky-500;
+    }
+  }
+  .card-edge {
+    border: 2px solid var(--color-slate-300);
+    @variant hover {
+      border-color: var(--color-sky-500);
+    }
+    @variant dark {
+      border-color: var(--color-slate-700);
+    }
+    @variant dark:hover {
+      border-color: var(--color-amber-400);
+    }
+  }
+
+  /* ---- --default() in functional utilities (named tab-stop-* so it does not shadow the built-in tab-<n>) ---- */
+  @utility tab-stop-* {
+    tab-size: --value(integer, --default(4));
+  }
+  @utility tilt-* {
+    rotate: calc(--value(integer, --default(3)) * 1deg);
+  }
+  @utility type-* {
+    font-size: calc(--value(integer) * 1px);
+    line-height: --modifier(number, --default(1.4));
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="sc-intro">
+    <p class="sc-eyebrow">Page 14 · New in v4.3</p>
+    <h1>Scrollbars, zoom &amp; tabs</h1>
+    <p class="sc-lede">Tailwind v4.3 added utilities for <code>scrollbar-width</code>, <code>scrollbar-color</code>, <code>scrollbar-gutter</code>, <code>zoom</code> and <code>tab-size</code>, plus size containers, stacked and compound <code>@variant</code> and <code>--default()</code>; the 4.3.x patches added CLI flags and bare grid track sizes. Scroll, resize and hover the demos: every utility on this page runs live.</p>
+    <nav data-sc-toc aria-label="Features on this page"></nav>
+  </section>
+
+  <!-- ===================== 1. scrollbar-width ===================== -->
+  <article class="sc-feature" id="scrollbar-width">
+    <div class="sc-notes">
+      <h2>Scrollbar width: <code>scrollbar-thin</code>, <code>scrollbar-none</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Three utilities for the CSS <code>scrollbar-width</code> keywords. <code>scrollbar-thin</code> asks for a slimmer bar, <code>scrollbar-none</code> hides it while the box still scrolls, and <code>scrollbar-auto</code> is the default. They do not set <code>overflow</code>, so add <code>overflow-auto</code> yourself.</p>
+      <ul class="sc-parts">
+        <li><code>scrollbar-auto</code></li>
+        <li><code>scrollbar-thin</code></li>
+        <li><code>scrollbar-none</code></li>
+        <li><code>md:scrollbar-auto</code></li>
+        <li><code>hover:scrollbar-thin</code></li>
+        <li><code>pointer-fine:scrollbar-thin</code></li>
+        <li><code>pointer-coarse:scrollbar-none</code></li>
+      </ul>
+      <p class="sc-note">Only the keywords <code>auto</code>, <code>thin</code> and <code>none</code> exist, no lengths. Chrome and Edge 121+ and Firefox 64+ support them; check <a href="https://caniuse.com/css-scrollbar" target="_blank" rel="noopener">caniuse.com/css-scrollbar</a> for Safari. macOS, iOS and Android draw overlay bars that take no layout space, so the readouts under the demos print the measured bar width (0px there).</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/scrollbar-width" target="_blank" rel="noopener">Docs: scrollbar-width</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Support inbox with a thin scrollbar</figcaption>
+        <div class="sc-demo" id="scrollbar-width-1">
+          <div class="mx-auto w-full max-w-sm">
+            <ul class="h-64 divide-y divide-slate-100 overflow-y-auto overscroll-contain rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 scrollbar-thin dark:divide-white/5 dark:bg-slate-900 dark:ring-white/10">
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-sky-100 text-xs font-semibold text-sky-800 dark:bg-sky-900 dark:text-sky-100">MC</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Maya Chen</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Can we move the demo to 3pm?</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">9:41</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100">DA</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Diego Alvarez</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">The build is green, shipping the patch now.</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">9:12</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-amber-100 text-xs font-semibold text-amber-900 dark:bg-amber-900 dark:text-amber-100">PN</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Priya Nair</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Invoice 1042 still shows as unpaid on my side.</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">8:55</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-rose-100 text-xs font-semibold text-rose-800 dark:bg-rose-900 dark:text-rose-100">TB</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Tomás Berg</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Two seats left on the team plan, want them?</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">Tue</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-violet-100 text-xs font-semibold text-violet-800 dark:bg-violet-900 dark:text-violet-100">SR</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Sofia Rossi</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Thanks for the quick fix, all working again.</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">Tue</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-sky-100 text-xs font-semibold text-sky-800 dark:bg-sky-900 dark:text-sky-100">JW</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Jonas Weber</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Is there a way to export everything as CSV?</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">Mon</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100">AO</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Amara Okafor</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Could you add Hana to the project as a viewer?</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">Mon</time>
+              </li>
+              <li class="flex items-center gap-3 p-3 hover:bg-slate-50 dark:hover:bg-white/5">
+                <span class="grid size-9 shrink-0 place-items-center rounded-full bg-amber-100 text-xs font-semibold text-amber-900 dark:bg-amber-900 dark:text-amber-100">LW</span>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Liam Walsh</p>
+                  <p class="truncate text-sm text-slate-600 dark:text-slate-400">Our renewal is next week, who should I talk to?</p>
+                </div>
+                <time class="text-xs text-slate-500 dark:text-slate-400">Sun</time>
+              </li>
+            </ul>
+            <p data-sc-omit data-measure="bar-y" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            <p data-sc-omit class="sc-note mt-3"><code>overscroll-contain</code> stops the page from scrolling when the list reaches its end, a good habit for any scroll box inside a page.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-width-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>scrollbar-auto</code>, <code>scrollbar-thin</code>, <code>scrollbar-none</code> side by side</figcaption>
+        <div class="sc-demo" id="scrollbar-width-2">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-auto</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-auto dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <p>v2.4.0: Added a dark theme to the billing page.</p>
+                <p>Fixed invoice PDFs missing the VAT number.</p>
+                <p>Search now ignores accents and capital letters.</p>
+                <p>Exports finish about twice as fast on large teams.</p>
+                <p>Removed the old CSV importer. Use Imports instead.</p>
+              </div>
+              <p data-sc-omit data-measure="bar-y" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-thin</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-thin dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <p>v2.4.0: Added a dark theme to the billing page.</p>
+                <p>Fixed invoice PDFs missing the VAT number.</p>
+                <p>Search now ignores accents and capital letters.</p>
+                <p>Exports finish about twice as fast on large teams.</p>
+                <p>Removed the old CSV importer. Use Imports instead.</p>
+              </div>
+              <p data-sc-omit data-measure="bar-y" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-none</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-none dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <p>v2.4.0: Added a dark theme to the billing page.</p>
+                <p>Fixed invoice PDFs missing the VAT number.</p>
+                <p>Search now ignores accents and capital letters.</p>
+                <p>Exports finish about twice as fast on large teams.</p>
+                <p>Removed the old CSV importer. Use Imports instead.</p>
+              </div>
+              <p data-sc-omit data-measure="bar-y" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-width-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS (optional readout)">
+// the bar's width is the difference between the outer and the inner box
+const bar = box.offsetWidth - box.clientWidth</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Filter chips with a hidden scrollbar and a fade</figcaption>
+        <div class="sc-demo" id="scrollbar-width-3">
+          <div class="mx-auto max-w-lg">
+            <div class="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 mask-r-from-90% scrollbar-none">
+              <button type="button" class="shrink-0 snap-start rounded-full bg-slate-900 px-3.5 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">All</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Design</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Engineering</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Product</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Marketing</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Sales</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Support</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Finance</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">People</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Legal</button>
+              <button type="button" class="shrink-0 snap-start rounded-full bg-white px-3.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-900/10 hover:bg-slate-100 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-white/20">Security</button>
+            </div>
+            <p data-sc-omit class="mt-3 text-sm text-slate-600 dark:text-slate-400">Swipe, or hold Shift and use the wheel. With no visible bar, the right-edge fade and the snap points tell people there is more.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-width-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Input-aware bars: thin for a mouse, hidden for touch</figcaption>
+        <div class="sc-demo" id="scrollbar-width-4">
+<pre class="mx-auto h-44 max-w-lg overflow-auto rounded-xl bg-slate-900 dark:ring-1 dark:ring-white/15 p-4 font-mono text-xs/6 whitespace-pre text-slate-100 pointer-fine:scrollbar-thin pointer-coarse:scrollbar-none">$ npm run build
+&gt; shop@2.4.0 build
+&gt; tailwindcss -i src/in.css -o dist/out.css --minify
+≈ tailwindcss v4.3.3
+Done in 32ms
+&gt; vite build
+✓ 128 modules transformed.
+dist/index.html                   0.46 kB │ gzip:  0.30 kB
+dist/assets/index-4f2a9c1b.css   18.20 kB │ gzip:  4.31 kB
+dist/assets/index-9b7d03e2.js   142.88 kB │ gzip: 46.02 kB
+✓ built in 1.84s
+$ npm run preview
+Local:   http://localhost:4173/
+Network: use --host to expose</pre>
+          <p data-sc-omit data-measure="pointer" class="mx-auto mt-3 max-w-lg font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+          <p data-sc-omit class="sc-note mx-auto mt-3 max-w-lg"><code>pointer-fine:</code> and <code>pointer-coarse:</code> arrived in v4.1. A mouse reports a fine pointer, a finger a coarse one. On a phone the OS already shows a brief scroll indicator, so hiding the bar loses little.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-width-4"></pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 2. scrollbar-color ===================== -->
+  <article class="sc-feature" id="scrollbar-color">
+    <div class="sc-notes">
+      <h2>Scrollbar colour: <code>scrollbar-thumb-*</code>, <code>scrollbar-track-*</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Colour utilities for the draggable thumb and the track behind it. They accept the whole colour system: palette names, <code>/opacity</code> modifiers, <code>[#hex]</code>, <code>(--var)</code>, <code>current</code> and your own <code>@theme</code> colours. Set only one and the other is transparent.</p>
+      <ul class="sc-parts">
+        <li><code>scrollbar-thumb-sky-700</code></li>
+        <li><code>scrollbar-track-sky-100</code></li>
+        <li><code>scrollbar-thumb-slate-900/60</code></li>
+        <li><code>scrollbar-thumb-[#0f766e]</code></li>
+        <li><code>scrollbar-thumb-(--my-thumb)</code></li>
+        <li><code>scrollbar-thumb-current</code></li>
+        <li><code>hover:scrollbar-thumb-*</code></li>
+        <li><code>dark:scrollbar-track-*</code></li>
+      </ul>
+      <p class="sc-note">Each utility sets a registered custom property plus the <code>scrollbar-color</code> shorthand. <code>hover:</code> fires while the pointer is anywhere over the box, not only over the thumb, and only on devices that can hover. Colours are applied by the browser: no rounded or padded thumbs. Same browser support as <code>scrollbar-width</code>; for Safari check caniuse.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/scrollbar-color" target="_blank" rel="noopener">Docs: scrollbar-color</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Trail guide card with light and dark colours</figcaption>
+        <div class="sc-demo" id="scrollbar-color-1">
+          <div class="mx-auto h-64 w-full max-w-sm overflow-auto rounded-xl bg-white p-6 text-sm/6 text-slate-600 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-sky-700 scrollbar-track-sky-100 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10 dark:scrollbar-thumb-sky-400 dark:scrollbar-track-slate-700">
+            <div class="space-y-4">
+              <p>Cedar Ridge is a 6 km loop that starts behind the visitor centre and climbs 280 metres through mixed forest.</p>
+              <p>The first kilometre is paved and suitable for strollers. After the footbridge the path narrows and gets rooty, so allow extra time.</p>
+              <p>Water is only available at the trailhead. There is no signal on the ridge, so download the map before you leave.</p>
+              <p>In spring the lower meadow floods. The signed detour adds 400 metres but keeps your feet dry.</p>
+              <p>Dogs are welcome on a leash. Please carry out everything you carry in.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-color-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Dark code panel that brightens on hover</figcaption>
+        <div class="sc-demo" id="scrollbar-color-2">
+<pre class="mx-auto h-56 max-w-lg overflow-auto rounded-xl bg-slate-900 dark:ring-1 dark:ring-white/15 p-4 font-mono text-xs/6 text-slate-100 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-900 hover:scrollbar-thumb-slate-400">import { createServer } from 'node:http'
+import { readFile } from 'node:fs/promises'
+
+const server = createServer(async (req, res) =&gt; {
+  const file = req.url === '/' ? '/index.html' : req.url
+  try {
+    const body = await readFile(new URL('.' + file, import.meta.url))
+    res.writeHead(200, { 'cache-control': 'public, max-age=31536000, immutable' })
+    res.end(body)
+  } catch {
+    res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }).end('Not found')
+  }
+})
+
+server.listen(3000, () =&gt; console.log('Listening on http://localhost:3000, press Ctrl+C to stop the server'))</pre>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-color-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Opacity modifiers over a gradient: a "glass" transcript</figcaption>
+        <div class="sc-demo" id="scrollbar-color-3">
+          <div class="mx-auto max-w-sm rounded-2xl bg-linear-to-br from-sky-300 to-indigo-400 p-3 dark:from-sky-800 dark:to-indigo-900">
+            <div class="h-64 space-y-3 overflow-y-auto rounded-xl bg-white/70 p-4 backdrop-blur scrollbar-thin scrollbar-thumb-slate-900/60 scrollbar-track-slate-900/10 dark:bg-slate-900/60 dark:scrollbar-thumb-white/40 dark:scrollbar-track-white/10">
+              <div class="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-slate-800 dark:bg-white/10 dark:text-slate-100">Hi! I can't log in to my account.</div>
+              <div class="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-sky-700 px-3 py-2 text-sm text-white">Sorry about that. Which email did you sign up with?</div>
+              <div class="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-slate-800 dark:bg-white/10 dark:text-slate-100">maya@example.com</div>
+              <div class="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-sky-700 px-3 py-2 text-sm text-white">Thanks. I can see two failed attempts from a new device.</div>
+              <div class="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-slate-800 dark:bg-white/10 dark:text-slate-100">Yes, I got a new laptop last week.</div>
+              <div class="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-sky-700 px-3 py-2 text-sm text-white">That explains it. I'll send a reset link now, it expires in 30 minutes.</div>
+              <div class="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-slate-800 dark:bg-white/10 dark:text-slate-100">Got it. Is two-factor still on?</div>
+              <div class="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-sky-700 px-3 py-2 text-sm text-white">Yes. You'll be asked for your authenticator code after the reset.</div>
+              <div class="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-slate-800 dark:bg-white/10 dark:text-slate-100">Perfect, that worked!</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-color-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Custom values: <code>[#hex]</code> and <code>(--var)</code> with a live theme switch</figcaption>
+        <div class="sc-demo" id="scrollbar-color-4">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="mb-2 flex h-6 items-center font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-thumb-[#0f766e]</p>
+              <div class="h-40 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-[#0f766e] scrollbar-track-[#ccfbf1] dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10 dark:scrollbar-thumb-[#5eead4] dark:scrollbar-track-[#134e4a]">
+                <p>Invoice 1038: paid in full.</p>
+                <p>Invoice 1039: paid in full.</p>
+                <p>Invoice 1040: due in 12 days.</p>
+                <p>Invoice 1041: due in 19 days.</p>
+                <p>Invoice 1042: draft, not sent.</p>
+                <p>Invoice 1043: draft, not sent.</p>
+              </div>
+            </div>
+            <div>
+              <div data-sc-omit class="mb-2 flex items-center gap-2" role="group" aria-label="Scrollbar theme">
+                <span class="mr-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">--sb-thumb</span>
+                <button type="button" data-act="swatch" data-thumb="#14b8a6" data-track="rgb(20 184 166 / 0.18)" aria-label="Teal" aria-pressed="true" class="size-6 rounded-full bg-teal-500 ring-2 ring-transparent ring-offset-2 ring-offset-slate-200 aria-pressed:ring-slate-900 dark:ring-offset-slate-900 dark:aria-pressed:ring-white"></button>
+                <button type="button" data-act="swatch" data-thumb="#f43f5e" data-track="rgb(244 63 94 / 0.18)" aria-label="Rose" aria-pressed="false" class="size-6 rounded-full bg-rose-500 ring-2 ring-transparent ring-offset-2 ring-offset-slate-200 aria-pressed:ring-slate-900 dark:ring-offset-slate-900 dark:aria-pressed:ring-white"></button>
+                <button type="button" data-act="swatch" data-thumb="#f59e0b" data-track="rgb(245 158 11 / 0.18)" aria-label="Amber" aria-pressed="false" class="size-6 rounded-full bg-amber-500 ring-2 ring-transparent ring-offset-2 ring-offset-slate-200 aria-pressed:ring-slate-900 dark:ring-offset-slate-900 dark:aria-pressed:ring-white"></button>
+                <button type="button" data-act="swatch" data-thumb="#8b5cf6" data-track="rgb(139 92 246 / 0.18)" aria-label="Violet" aria-pressed="false" class="size-6 rounded-full bg-violet-500 ring-2 ring-transparent ring-offset-2 ring-offset-slate-200 aria-pressed:ring-slate-900 dark:ring-offset-slate-900 dark:aria-pressed:ring-white"></button>
+              </div>
+              <div data-swatch-box style="--sb-thumb: #14b8a6; --sb-track: rgb(20 184 166 / 0.18)" class="h-40 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-(--sb-thumb) scrollbar-track-(--sb-track) dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <p>Invoice 1038: paid in full.</p>
+                <p>Invoice 1039: paid in full.</p>
+                <p>Invoice 1040: due in 12 days.</p>
+                <p>Invoice 1041: due in 19 days.</p>
+                <p>Invoice 1042: draft, not sent.</p>
+                <p>Invoice 1043: draft, not sent.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-color-4"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+document.addEventListener('click', (e) =&gt; {
+  const swatch = e.target.closest('[data-act="swatch"]')
+  if (!swatch) return
+  const box = swatch.closest('.sc-demo').querySelector('[data-swatch-box]')
+  box.style.setProperty('--sb-thumb', swatch.dataset.thumb)
+  box.style.setProperty('--sb-track', swatch.dataset.track)
+  for (const b of swatch.parentElement.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b === swatch))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Thumb only, <code>current</code>, and a theme token</figcaption>
+        <div class="sc-demo" id="scrollbar-color-5">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">thumb only: track is transparent</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-thumb-rose-500 dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <p>Draft saved at 10:02.</p>
+                <p>Draft saved at 10:07.</p>
+                <p>Draft saved at 10:12.</p>
+                <p>Draft saved at 10:17.</p>
+                <p>Draft saved at 10:22.</p>
+                <p>Draft saved at 10:27.</p>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">current: follows the text colour</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-400 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-current scrollbar-track-transparent hover:text-sky-500 dark:bg-slate-900 dark:ring-white/10">
+                <div class="text-slate-700 dark:text-slate-300">
+                  <p>Draft saved at 10:02.</p>
+                  <p>Draft saved at 10:07.</p>
+                  <p>Draft saved at 10:12.</p>
+                  <p>Draft saved at 10:17.</p>
+                  <p>Draft saved at 10:22.</p>
+                  <p>Draft saved at 10:27.</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">brand: your own @theme colour</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-brand scrollbar-track-brand/15 dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <p>Draft saved at 10:02.</p>
+                <p>Draft saved at 10:07.</p>
+                <p>Draft saved at 10:12.</p>
+                <p>Draft saved at 10:17.</p>
+                <p>Draft saved at 10:22.</p>
+                <p>Draft saved at 10:27.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-color-5"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --color-brand: oklch(0.62 0.19 260);
+}</pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 3. scrollbar-gutter ===================== -->
+  <article class="sc-feature" id="scrollbar-gutter">
+    <div class="sc-notes">
+      <h2>Scrollbar gutter: <code>scrollbar-gutter-stable</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Reserve the space a scrollbar would use before it appears, so content does not jump sideways when a list grows or a dialog locks scrolling. <code>scrollbar-gutter-stable</code> reserves it on the scrollbar side, <code>scrollbar-gutter-both</code> on both sides, <code>scrollbar-gutter-auto</code> only when a bar is shown.</p>
+      <ul class="sc-parts">
+        <li><code>scrollbar-gutter-auto</code></li>
+        <li><code>scrollbar-gutter-stable</code></li>
+        <li><code>scrollbar-gutter-both</code></li>
+        <li><code>md:scrollbar-gutter-stable</code></li>
+      </ul>
+      <p class="sc-note"><code>both</code> is <code>stable both-edges</code>. It needs an <code>overflow</code> other than <code>visible</code>, and <code>scrollbar-gutter-stable</code> on <code>&lt;html&gt;</code> is the usual fix for a page that jumps when a modal sets <code>overflow-hidden</code>. Chrome 94+, Firefox 97+ and Safari 18.2+ support it. It only matters with classic scrollbars; overlay bars take no space.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/scrollbar-gutter#reserving-space-for-the-scrollbar" target="_blank" rel="noopener">Docs: scrollbar-gutter</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Inbox pane: the list grows and the layout shifts, or does not</figcaption>
+        <div class="sc-demo" id="scrollbar-gutter-1">
+          <div data-sc-omit class="mb-4 flex flex-wrap gap-2">
+            <button type="button" class="sc-btn" data-act="add-rows">Add 5 messages</button>
+            <button type="button" class="sc-btn" data-act="reset-rows">Reset</button>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-gutter-auto</p>
+              <div data-pane class="demo-bar h-44 space-y-2 overflow-y-auto rounded-lg bg-white p-2 ring-1 ring-slate-900/10 scrollbar-gutter-auto dark:bg-slate-900 dark:ring-white/10">
+                <div class="rounded-md bg-sky-100 px-3 py-2 text-sm text-sky-900 dark:bg-sky-900/50 dark:text-sky-100">Deploy 1042 passed</div>
+                <div class="rounded-md bg-sky-100 px-3 py-2 text-sm text-sky-900 dark:bg-sky-900/50 dark:text-sky-100">New comment on PR 318</div>
+              </div>
+              <p data-sc-omit data-measure="content-width" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-gutter-stable</p>
+              <div data-pane class="demo-bar h-44 space-y-2 overflow-y-auto rounded-lg bg-white p-2 ring-1 ring-slate-900/10 scrollbar-gutter-stable dark:bg-slate-900 dark:ring-white/10">
+                <div class="rounded-md bg-sky-100 px-3 py-2 text-sm text-sky-900 dark:bg-sky-900/50 dark:text-sky-100">Deploy 1042 passed</div>
+                <div class="rounded-md bg-sky-100 px-3 py-2 text-sm text-sky-900 dark:bg-sky-900/50 dark:text-sky-100">New comment on PR 318</div>
+              </div>
+              <p data-sc-omit data-measure="content-width" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+          </div>
+          <p data-sc-omit class="sc-note mt-4">Press "Add 5 messages": in the left pane every row gets narrower once the scrollbar appears, in the right pane nothing moves. The panes use <code>demo-bar</code>, a helper from this page's CSS (shown below) that draws a classic 14px bar in Chromium and Safari so the gutter is visible even with overlay scrollbars. It is not a Tailwind class; leave it out in real code. Firefox ignores it, so there the numbers above are the proof.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-gutter-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS (demo helper, not a utility)">
+.demo-bar::-webkit-scrollbar { width: 14px; height: 14px; }
+.demo-bar::-webkit-scrollbar-track { background: rgb(100 116 139 / 0.18); }
+.demo-bar::-webkit-scrollbar-thumb {
+  background: rgb(100 116 139 / 0.75);
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background-clip: content-box;
+}</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+const SUBJECTS = ['Build 1043 started', 'Ada commented on PR 320', 'Release notes drafted', 'Staging is back up', 'Review requested on PR 322']
+
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-act="add-rows"], [data-act="reset-rows"]')
+  if (!btn) return
+  for (const pane of btn.closest('.sc-demo').querySelectorAll('[data-pane]')) {
+    if (btn.dataset.act === 'reset-rows') {
+      while (pane.children.length &gt; 2) pane.lastElementChild.remove()
+      continue
+    }
+    for (const text of SUBJECTS) {
+      const row = pane.firstElementChild.cloneNode()
+      row.textContent = text
+      pane.append(row)
+    }
+  }
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Scroll lock for a dialog: the page must not jump</figcaption>
+        <div class="sc-demo" id="scrollbar-gutter-2">
+          <div data-sc-omit class="mb-4 flex flex-wrap items-center gap-2">
+            <button type="button" class="sc-btn" data-act="lock" aria-pressed="false">Lock page scroll</button>
+            <span class="text-xs text-slate-600 dark:text-slate-400">what <code>overflow-hidden</code> on the page does when a modal opens</span>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-gutter-auto</p>
+              <div data-pane class="demo-bar h-48 overflow-y-auto rounded-lg bg-white px-4 py-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-gutter-auto dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <h4 class="text-center text-base font-semibold text-slate-900 dark:text-white">Order #1042</h4>
+                <p class="mt-2">Two ceramic mugs, one linen tote and a desk plant. Packed on Monday and handed to the carrier on Tuesday morning.</p>
+                <p class="mt-2">Tracking updates usually appear within a few hours. If nothing changes after two days, contact support with the order number.</p>
+                <p class="mt-2">Returns are free within 30 days. Print the label from your account page and drop the parcel at any pickup point.</p>
+              </div>
+              <p data-sc-omit data-measure="content-width" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-gutter-stable</p>
+              <div data-pane class="demo-bar h-48 overflow-y-auto rounded-lg bg-white px-4 py-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-gutter-stable dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10">
+                <h4 class="text-center text-base font-semibold text-slate-900 dark:text-white">Order #1042</h4>
+                <p class="mt-2">Two ceramic mugs, one linen tote and a desk plant. Packed on Monday and handed to the carrier on Tuesday morning.</p>
+                <p class="mt-2">Tracking updates usually appear within a few hours. If nothing changes after two days, contact support with the order number.</p>
+                <p class="mt-2">Returns are free within 30 days. Print the label from your account page and drop the parcel at any pickup point.</p>
+              </div>
+              <p data-sc-omit data-measure="content-width" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-gutter-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-act="lock"]')
+  if (!btn) return
+  const locked = btn.getAttribute('aria-pressed') !== 'true'
+  btn.setAttribute('aria-pressed', String(locked))
+  btn.textContent = locked ? 'Unlock page scroll' : 'Lock page scroll'
+  for (const pane of btn.closest('.sc-demo').querySelectorAll('[data-pane]')) {
+    pane.classList.toggle('overflow-hidden', locked)
+    pane.classList.toggle('overflow-y-auto', !locked)
+  }
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>stable</code> leaves a column off-centre, <code>both</code> centres it</figcaption>
+        <div class="sc-demo" id="scrollbar-gutter-3">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-gutter-stable</p>
+              <div class="relative">
+                <div class="demo-bar h-36 overflow-y-auto rounded-lg bg-white ring-1 ring-slate-900/10 scrollbar-gutter-stable dark:bg-slate-900 dark:ring-white/10">
+                  <div class="mx-auto my-4 w-28 rounded-md bg-amber-100 px-2 py-3 text-center text-sm font-medium text-amber-900 dark:bg-amber-500/20 dark:text-amber-100">Centred column</div>
+                </div>
+                <span data-sc-omit class="pointer-events-none absolute inset-y-0 left-1/2 w-px bg-rose-500"></span>
+              </div>
+              <p data-sc-omit data-measure="center-offset" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">scrollbar-gutter-both</p>
+              <div class="relative">
+                <div class="demo-bar h-36 overflow-y-auto rounded-lg bg-white ring-1 ring-slate-900/10 scrollbar-gutter-both dark:bg-slate-900 dark:ring-white/10">
+                  <div class="mx-auto my-4 w-28 rounded-md bg-amber-100 px-2 py-3 text-center text-sm font-medium text-amber-900 dark:bg-amber-500/20 dark:text-amber-100">Centred column</div>
+                </div>
+                <span data-sc-omit class="pointer-events-none absolute inset-y-0 left-1/2 w-px bg-rose-500"></span>
+              </div>
+              <p data-sc-omit data-measure="center-offset" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+          </div>
+          <p data-sc-omit class="sc-note mt-4">The red line is the middle of each box. With <code>stable</code> the reserved strip sits on one side only, so the content area, and the column in it, is shifted by half a bar width.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-gutter-3"></pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 4. zoom ===================== -->
+  <article class="sc-feature" id="zoom">
+    <div class="sc-notes">
+      <h2>Zoom: <code>zoom-75</code>, <code>zoom-[1.1]</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Utilities for the CSS <code>zoom</code> property. Unlike <code>scale-*</code>, zoom changes the element's layout size: neighbours move, text wraps again, and padding and borders scale with it. A bare number is a percentage, so <code>zoom-75</code> is <code>zoom: 75%</code>.</p>
+      <ul class="sc-parts">
+        <li><code>zoom-&lt;number&gt;</code></li>
+        <li><code>zoom-75</code></li>
+        <li><code>zoom-150</code></li>
+        <li><code>zoom-[1.1]</code></li>
+        <li><code>zoom-(--ui-zoom)</code></li>
+        <li><code>hover:zoom-110</code></li>
+        <li><code>md:zoom-125</code></li>
+      </ul>
+      <p class="sc-note">Chrome and Safari have supported <code>zoom</code> for years and Firefox since version 126 (2024). It takes whole numbers only, so use <code>zoom-[1.5]</code> rather than <code>zoom-1.5</code>. In Chromium it does not animate, so use <code>scale-*</code> with a transition for motion. Use zoom to resize a component's footprint, scale to transform it without moving anything else.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/zoom" target="_blank" rel="noopener">Docs: zoom</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption><code>zoom</code> vs <code>scale</code>: what happens to the neighbour</figcaption>
+        <div class="sc-demo" id="zoom-1">
+          <div data-sc-omit class="mb-4 flex flex-wrap items-center gap-2" role="group" aria-label="Zoom level">
+            <span class="mr-1 font-mono text-xs text-slate-700 dark:text-slate-300">level</span>
+            <button type="button" class="sc-btn" data-act="zoom-level" data-level="50" aria-pressed="false">50</button>
+            <button type="button" class="sc-btn" data-act="zoom-level" data-level="100" aria-pressed="false">100</button>
+            <button type="button" class="sc-btn" data-act="zoom-level" data-level="150" aria-pressed="true">150</button>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <div class="flex min-h-28 items-start rounded-lg bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+                <div class="zoom-150 grid h-16 w-24 shrink-0 place-items-center rounded-md bg-sky-700 text-sm font-semibold text-white">zoom</div>
+                <div class="relative size-8 shrink-0 bg-slate-900 dark:bg-white"></div>
+              </div>
+              <p data-sc-omit data-measure="footprint" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <div class="flex min-h-28 items-start rounded-lg bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+                <div class="grid h-16 w-24 shrink-0 origin-top-left scale-150 place-items-center rounded-md bg-rose-700 text-sm font-semibold text-white">scale</div>
+                <div class="relative size-8 shrink-0 bg-slate-900 dark:bg-white"></div>
+              </div>
+              <p data-sc-omit data-measure="footprint" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+const LEVELS = { 50: ['zoom-50', 'scale-50'], 100: ['zoom-100', 'scale-100'], 150: ['zoom-150', 'scale-150'] }
+
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-act="zoom-level"]')
+  if (!btn) return
+  const demo = btn.closest('.sc-demo')
+  const [zoom, scale] = LEVELS[btn.dataset.level]
+  const [zoomBox, scaleBox] = demo.querySelectorAll('[class*="zoom-"], [class*="scale-"]')
+  zoomBox.className = zoomBox.className.replace(/zoom-\d+/, zoom)
+  scaleBox.className = scaleBox.className.replace(/scale-\d+/, scale)
+  for (const b of btn.parentElement.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b === btn))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Slide thumbnails: a 1280×720 slide at <code>zoom-20</code></figcaption>
+        <div class="sc-demo" id="zoom-2">
+          <div class="flex flex-wrap gap-3">
+            <div class="overflow-hidden rounded-lg ring-1 ring-slate-900/15 dark:ring-white/20">
+              <div class="zoom-20 h-[720px] w-[1280px] bg-white p-14 text-slate-900">
+                <h3 class="text-6xl font-bold">Q3 revenue</h3>
+                <p class="mt-2 text-3xl text-slate-600">Up 18% on last quarter</p>
+                <div class="mt-10 grid grid-cols-3 gap-8">
+                  <div class="rounded-3xl bg-sky-100 p-8"><p class="text-3xl text-sky-900">New customers</p><p class="mt-3 text-7xl font-bold text-sky-950">1,284</p></div>
+                  <div class="rounded-3xl bg-emerald-100 p-8"><p class="text-3xl text-emerald-900">Renewals</p><p class="mt-3 text-7xl font-bold text-emerald-950">94%</p></div>
+                  <div class="rounded-3xl bg-amber-100 p-8"><p class="text-3xl text-amber-900">Average deal</p><p class="mt-3 text-7xl font-bold text-amber-950">$3.2k</p></div>
+                </div>
+                <div class="mt-10 flex h-52 items-end gap-5">
+                  <div class="h-20 flex-1 rounded-xl bg-sky-300"></div>
+                  <div class="h-28 flex-1 rounded-xl bg-sky-300"></div>
+                  <div class="h-24 flex-1 rounded-xl bg-sky-300"></div>
+                  <div class="h-36 flex-1 rounded-xl bg-sky-400"></div>
+                  <div class="h-32 flex-1 rounded-xl bg-sky-400"></div>
+                  <div class="h-44 flex-1 rounded-xl bg-sky-500"></div>
+                  <div class="h-52 flex-1 rounded-xl bg-sky-600"></div>
+                </div>
+              </div>
+            </div>
+            <div class="overflow-hidden rounded-lg ring-1 ring-slate-900/15 dark:ring-white/20">
+              <div class="zoom-20 h-[720px] w-[1280px] bg-slate-900 p-14 text-white">
+                <h3 class="text-6xl font-bold">Roadmap</h3>
+                <p class="mt-2 text-3xl text-slate-300">What ships next</p>
+                <div class="mt-12 space-y-8">
+                  <div class="flex items-center gap-6"><span class="w-48 text-3xl text-slate-300">Search</span><span class="h-14 w-[55%] rounded-full bg-emerald-400"></span></div>
+                  <div class="flex items-center gap-6"><span class="w-48 text-3xl text-slate-300">Billing</span><span class="ml-[18%] h-14 w-[48%] rounded-full bg-sky-400"></span></div>
+                  <div class="flex items-center gap-6"><span class="w-48 text-3xl text-slate-300">Imports</span><span class="ml-[40%] h-14 w-[35%] rounded-full bg-violet-400"></span></div>
+                  <div class="flex items-center gap-6"><span class="w-48 text-3xl text-slate-300">Mobile app</span><span class="ml-[58%] h-14 w-[30%] rounded-full bg-amber-400"></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="overflow-hidden rounded-lg ring-1 ring-slate-900/15 dark:ring-white/20">
+              <div class="zoom-20 h-[720px] w-[1280px] bg-linear-to-br from-indigo-600 to-sky-500 p-14 text-white">
+                <h3 class="text-6xl font-bold">Meet the team</h3>
+                <p class="mt-2 text-3xl text-sky-100">Twelve people, four time zones</p>
+                <div class="mt-12 grid grid-cols-4 gap-10">
+                  <div class="text-center"><div class="mx-auto size-40 rounded-full bg-white/30"></div><p class="mt-4 text-3xl font-semibold">Maya</p></div>
+                  <div class="text-center"><div class="mx-auto size-40 rounded-full bg-white/30"></div><p class="mt-4 text-3xl font-semibold">Diego</p></div>
+                  <div class="text-center"><div class="mx-auto size-40 rounded-full bg-white/30"></div><p class="mt-4 text-3xl font-semibold">Priya</p></div>
+                  <div class="text-center"><div class="mx-auto size-40 rounded-full bg-white/30"></div><p class="mt-4 text-3xl font-semibold">Tomás</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p data-sc-omit class="sc-note mt-4">The wrappers have no width or height of their own: zoom shrinks the slide's layout box to 256×144, so each tile is exactly thumbnail-sized.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The same slide with <code>scale-20</code> needs a sized, clipped wrapper</figcaption>
+        <div class="sc-demo" id="zoom-3">
+          <div class="flex flex-wrap items-start gap-4">
+            <div class="h-36 w-64 overflow-hidden rounded-lg ring-1 ring-slate-900/15 dark:ring-white/20">
+              <div class="h-[720px] w-[1280px] origin-top-left scale-20 bg-white p-14 text-slate-900">
+                <h3 class="text-6xl font-bold">Q3 revenue</h3>
+                <p class="mt-2 text-3xl text-slate-600">Up 18% on last quarter</p>
+                <div class="mt-10 grid grid-cols-3 gap-8">
+                  <div class="rounded-3xl bg-sky-100 p-8"><p class="text-3xl text-sky-900">New customers</p><p class="mt-3 text-7xl font-bold text-sky-950">1,284</p></div>
+                  <div class="rounded-3xl bg-emerald-100 p-8"><p class="text-3xl text-emerald-900">Renewals</p><p class="mt-3 text-7xl font-bold text-emerald-950">94%</p></div>
+                  <div class="rounded-3xl bg-amber-100 p-8"><p class="text-3xl text-amber-900">Average deal</p><p class="mt-3 text-7xl font-bold text-amber-950">$3.2k</p></div>
+                </div>
+                <div class="mt-10 flex h-52 items-end gap-5">
+                  <div class="h-20 flex-1 rounded-xl bg-sky-300"></div>
+                  <div class="h-28 flex-1 rounded-xl bg-sky-300"></div>
+                  <div class="h-24 flex-1 rounded-xl bg-sky-300"></div>
+                  <div class="h-36 flex-1 rounded-xl bg-sky-400"></div>
+                  <div class="h-32 flex-1 rounded-xl bg-sky-400"></div>
+                  <div class="h-44 flex-1 rounded-xl bg-sky-500"></div>
+                  <div class="h-52 flex-1 rounded-xl bg-sky-600"></div>
+                </div>
+              </div>
+            </div>
+            <p class="max-w-56 text-sm text-slate-700 dark:text-slate-300">Looks the same, but the slide still takes 1280×720 in layout. Without <code class="font-mono text-xs">h-36 w-64 overflow-hidden</code> on the wrapper the page would be 720px taller.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Document viewer with a zoom slider</figcaption>
+        <div class="sc-demo" id="zoom-4">
+          <div data-sc-omit class="mb-3 flex flex-wrap items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+            <label for="zoom-range">Zoom</label>
+            <input id="zoom-range" type="range" min="50" max="150" step="25" value="100" data-range="zoom" class="w-48 accent-sky-600">
+            <output class="font-mono text-xs">zoom-100</output>
+          </div>
+          <div class="h-64 overflow-auto rounded-xl bg-slate-200 p-4 scrollbar-thin dark:bg-slate-950">
+            <article class="zoom-100 w-[26rem] rounded bg-white p-6 text-sm text-slate-800 shadow">
+              <h4 class="text-base font-semibold">Invoice #1042</h4>
+              <p class="text-slate-600">Northwind Studio · due 14 Nov</p>
+              <table class="mt-4 w-full text-left">
+                <thead>
+                  <tr class="border-b border-slate-300 text-xs text-slate-600 uppercase"><th class="py-1 font-medium">Item</th><th class="py-1 font-medium">Qty</th><th class="py-1 text-right font-medium">Total</th></tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-slate-200"><td class="py-1.5">Brand workshop</td><td>1</td><td class="text-right">$1,800</td></tr>
+                  <tr class="border-b border-slate-200"><td class="py-1.5">Logo variants</td><td>3</td><td class="text-right">$900</td></tr>
+                  <tr class="border-b border-slate-200"><td class="py-1.5">Hosting, annual</td><td>1</td><td class="text-right">$240</td></tr>
+                  <tr class="font-semibold"><td class="py-1.5" colspan="2">Total</td><td class="text-right">$2,940</td></tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-4"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Tailwind compiles from class attribute changes, so write whole class names
+const ZOOM = { 50: 'zoom-50', 75: 'zoom-75', 100: 'zoom-100', 125: 'zoom-125', 150: 'zoom-150' }
+
+document.addEventListener('input', (e) =&gt; {
+  if (!e.target.matches('[data-range="zoom"]')) return
+  const demo = e.target.closest('.sc-demo')
+  const doc = demo.querySelector('article')
+  doc.className = doc.className.replace(/zoom-\d+/, ZOOM[e.target.value])
+  demo.querySelector('output').textContent = ZOOM[e.target.value]
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Hover: zoom snaps and reflows, scale animates</figcaption>
+        <div class="sc-demo" id="zoom-5">
+          <div class="space-y-6">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">hover:zoom-110 (no animation, neighbours move)</p>
+              <div class="flex flex-wrap items-start gap-3">
+                <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 hover:zoom-110 dark:bg-slate-800 dark:ring-white/10">
+                  <div class="aspect-square rounded-lg bg-linear-to-br from-amber-200 to-orange-300"></div>
+                  <p class="mt-2 text-xs font-medium text-slate-900 dark:text-white">Ceramic mug</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">$18</p>
+                </div>
+                <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 hover:zoom-110 dark:bg-slate-800 dark:ring-white/10">
+                  <div class="aspect-square rounded-lg bg-linear-to-br from-emerald-200 to-teal-300"></div>
+                  <p class="mt-2 text-xs font-medium text-slate-900 dark:text-white">Linen tote</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">$24</p>
+                </div>
+                <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 hover:zoom-110 dark:bg-slate-800 dark:ring-white/10">
+                  <div class="aspect-square rounded-lg bg-linear-to-br from-lime-200 to-green-300"></div>
+                  <p class="mt-2 text-xs font-medium text-slate-900 dark:text-white">Desk plant</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">$32</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">hover:scale-105 with a transition (animates, nothing moves)</p>
+              <div class="flex flex-wrap items-start gap-3">
+                <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 transition-transform duration-200 hover:scale-105 motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                  <div class="aspect-square rounded-lg bg-linear-to-br from-amber-200 to-orange-300"></div>
+                  <p class="mt-2 text-xs font-medium text-slate-900 dark:text-white">Ceramic mug</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">$18</p>
+                </div>
+                <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 transition-transform duration-200 hover:scale-105 motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                  <div class="aspect-square rounded-lg bg-linear-to-br from-emerald-200 to-teal-300"></div>
+                  <p class="mt-2 text-xs font-medium text-slate-900 dark:text-white">Linen tote</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">$24</p>
+                </div>
+                <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 transition-transform duration-200 hover:scale-105 motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
+                  <div class="aspect-square rounded-lg bg-linear-to-br from-lime-200 to-green-300"></div>
+                  <p class="mt-2 text-xs font-medium text-slate-900 dark:text-white">Desk plant</p>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">$32</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-5"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Value syntaxes: bare number, arbitrary, variable, responsive</figcaption>
+        <div class="sc-demo" id="zoom-6">
+          <div class="flex flex-wrap items-start gap-3">
+            <div class="zoom-75 w-36 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <p class="font-mono text-xs text-sky-700 dark:text-sky-300">zoom-75</p>
+              <p class="mt-1 text-sm text-slate-800 dark:text-slate-100">Compact card</p>
+            </div>
+            <div class="zoom-[1.1] w-36 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <p class="font-mono text-xs text-sky-700 dark:text-sky-300">zoom-[1.1]</p>
+              <p class="mt-1 text-sm text-slate-800 dark:text-slate-100">A little larger</p>
+            </div>
+            <div style="--ui-zoom: 1.25" class="zoom-(--ui-zoom) w-36 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <p class="font-mono text-xs text-sky-700 dark:text-sky-300">zoom-(--ui-zoom)</p>
+              <p class="mt-1 text-sm text-slate-800 dark:text-slate-100">From a variable</p>
+            </div>
+            <div class="zoom-100 w-36 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 md:zoom-125 dark:bg-slate-800 dark:ring-white/10">
+              <p class="font-mono text-xs text-sky-700 dark:text-sky-300">md:zoom-125</p>
+              <p class="mt-1 text-sm text-slate-800 dark:text-slate-100">Grows from 768px</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="zoom-6"></pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 5. tab-size ===================== -->
+  <article class="sc-feature" id="tab-size">
+    <div class="sc-notes">
+      <h2>Tab size: <code>tab-2</code>, <code>tab-4</code>, <code>tab-8</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Utilities for <code>tab-size</code>, the width of a tab character in preformatted text. Bare numbers are counts of space widths (<code>tab-4</code> is <code>tab-size: 4</code>); <code>tab-[12px]</code> and <code>tab-(--var)</code> take lengths and variables. It is inherited, so one class on a wrapper covers every <code>&lt;pre&gt;</code> inside.</p>
+      <ul class="sc-parts">
+        <li><code>tab-&lt;number&gt;</code></li>
+        <li><code>tab-2</code></li>
+        <li><code>tab-8</code></li>
+        <li><code>tab-[12px]</code></li>
+        <li><code>tab-(--tab-size)</code></li>
+        <li><code>md:tab-4</code></li>
+      </ul>
+      <p class="sc-note">It only affects preserved tab characters: <code>&lt;pre&gt;</code>, or <code>whitespace-pre</code> and <code>whitespace-pre-wrap</code> on other elements. Editors and formatters often swap tabs for spaces, so write them as <code>&amp;#9;</code> in HTML (and <code>&amp;#10;</code> for a newline). There is no bare <code>tab</code> class by default; see the <code>--default()</code> card for one you can define.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/tab-size" target="_blank" rel="noopener">Docs: tab-size</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Go snippet: switch between <code>tab-2</code>, <code>tab-4</code> and <code>tab-8</code></figcaption>
+        <div class="sc-demo" id="tab-size-1">
+          <div data-sc-omit class="mb-3 inline-flex rounded-lg bg-slate-200 p-1 dark:bg-white/10" role="group" aria-label="Tab size">
+            <button type="button" data-act="tab-class" data-class="tab-2" aria-pressed="false" class="rounded-md px-3 py-1 font-mono text-xs text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">tab-2</button>
+            <button type="button" data-act="tab-class" data-class="tab-4" aria-pressed="true" class="rounded-md px-3 py-1 font-mono text-xs text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">tab-4</button>
+            <button type="button" data-act="tab-class" data-class="tab-8" aria-pressed="false" class="rounded-md px-3 py-1 font-mono text-xs text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">tab-8</button>
+          </div>
+          <pre class="tab-4 overflow-auto rounded-xl bg-slate-900 dark:ring-1 dark:ring-white/15 p-4 font-mono text-sm/6 text-slate-100">func total(items []Item) float64 {
+&#9;sum := 0.0
+&#9;for _, item := range items {
+&#9;&#9;if item.Active {
+&#9;&#9;&#9;sum += item.Price
+&#9;&#9;}
+&#9;}
+&#9;return sum
+}</pre>
+          <p data-sc-omit data-measure="tab-size" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+          <p data-sc-omit class="sc-note mt-3">The HTML listing below is written by hand: the automatic one would show tab characters as spaces.</p>
+        </div>
+        <pre class="sc-code" data-code="html">
+&lt;pre class="tab-4 overflow-auto rounded-xl bg-slate-900 dark:ring-1 dark:ring-white/15 p-4 font-mono text-sm/6 text-slate-100"&gt;func total(items []Item) float64 {
+&amp;#9;sum := 0.0
+&amp;#9;for _, item := range items {
+&amp;#9;&amp;#9;if item.Active {
+&amp;#9;&amp;#9;&amp;#9;sum += item.Price
+&amp;#9;&amp;#9;}
+&amp;#9;}
+&amp;#9;return sum
+}&lt;/pre&gt;</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-act="tab-class"]')
+  if (!btn) return
+  const demo = btn.closest('.sc-demo')
+  const pre = demo.querySelector('pre')
+  pre.className = pre.className.replace(/tab-\d+/, btn.dataset.class)
+  for (const b of btn.parentElement.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b === btn))
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Tab stops made visible</figcaption>
+        <div class="sc-demo" id="tab-size-2">
+          <div class="space-y-4">
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-2: a stop every 2 columns</p>
+              <pre class="tab-2 overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 bg-[linear-gradient(to_right,rgb(56_189_248/0.4)_1px,transparent_1px)] bg-size-[2ch_100%] bg-origin-content px-4 py-3 font-mono text-sm/6 text-slate-100">if ok {
+&#9;run()
+&#9;&#9;deeper()
+}</pre>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-4: every 4 columns</p>
+              <pre class="tab-4 overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 bg-[linear-gradient(to_right,rgb(56_189_248/0.4)_1px,transparent_1px)] bg-size-[4ch_100%] bg-origin-content px-4 py-3 font-mono text-sm/6 text-slate-100">if ok {
+&#9;run()
+&#9;&#9;deeper()
+}</pre>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-8: every 8 columns</p>
+              <pre class="tab-8 overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 bg-[linear-gradient(to_right,rgb(56_189_248/0.4)_1px,transparent_1px)] bg-size-[8ch_100%] bg-origin-content px-4 py-3 font-mono text-sm/6 text-slate-100">if ok {
+&#9;run()
+&#9;&#9;deeper()
+}</pre>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html">
+&lt;pre class="tab-4 overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 bg-[linear-gradient(to_right,rgb(56_189_248/0.4)_1px,transparent_1px)] bg-size-[4ch_100%] bg-origin-content px-4 py-3 font-mono text-sm/6 text-slate-100"&gt;if ok {
+&amp;#9;run()
+&amp;#9;&amp;#9;deeper()
+}&lt;/pre&gt;</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Data import preview: columns line up on tab stops</figcaption>
+        <div class="sc-demo" id="tab-size-3">
+          <div data-sc-omit class="mb-3 flex flex-wrap items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+            <label for="tab-range">Tab size</label>
+            <input id="tab-range" type="range" min="6" max="24" value="14" data-range="tab" class="w-48 accent-sky-600">
+            <output class="font-mono text-xs">--tab-size: 14</output>
+          </div>
+          <pre style="--tab-size: 14" class="tab-(--tab-size) overflow-auto rounded-xl bg-white p-4 font-mono text-xs/6 text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:text-slate-100 dark:ring-white/10">SKU&#9;Name&#9;Qty
+A-100&#9;Desk lamp&#9;24
+B-220&#9;Monitor arm&#9;8
+C-310&#9;Standing desk&#9;3
+D-405&#9;Cable tray&#9;60</pre>
+        </div>
+        <pre class="sc-code" data-code="html">
+&lt;pre style="--tab-size: 14" class="tab-(--tab-size) overflow-auto rounded-xl bg-white p-4 font-mono text-xs/6 text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:text-slate-100 dark:ring-white/10"&gt;SKU&amp;#9;Name&amp;#9;Qty
+A-100&amp;#9;Desk lamp&amp;#9;24
+B-220&amp;#9;Monitor arm&amp;#9;8
+C-310&amp;#9;Standing desk&amp;#9;3
+D-405&amp;#9;Cable tray&amp;#9;60&lt;/pre&gt;</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+document.addEventListener('input', (e) =&gt; {
+  if (!e.target.matches('[data-range="tab"]')) return
+  const demo = e.target.closest('.sc-demo')
+  demo.querySelector('pre').style.setProperty('--tab-size', e.target.value)
+  demo.querySelector('output').textContent = '--tab-size: ' + e.target.value
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Makefile: tabs are syntax, and <code>tab-2 md:tab-4</code> saves room on phones</figcaption>
+        <div class="sc-demo" id="tab-size-4">
+          <pre class="tab-2 overflow-auto rounded-xl bg-slate-900 dark:ring-1 dark:ring-white/15 p-4 font-mono text-sm/6 text-slate-100 md:tab-4">build:
+&#9;tailwindcss -i src/in.css -o dist/out.css --minify --silent
+
+clean:
+&#9;rm -f dist/out.css</pre>
+          <p data-sc-omit data-measure="tab-size" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+        </div>
+        <pre class="sc-code" data-code="html">
+&lt;pre class="tab-2 overflow-auto rounded-xl bg-slate-900 dark:ring-1 dark:ring-white/15 p-4 font-mono text-sm/6 text-slate-100 md:tab-4"&gt;build:
+&amp;#9;tailwindcss -i src/in.css -o dist/out.css --minify --silent
+
+clean:
+&amp;#9;rm -f dist/out.css&lt;/pre&gt;</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Arbitrary values: a length in pixels and in characters</figcaption>
+        <div class="sc-demo" id="tab-size-5">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-[12px]</p>
+              <pre class="tab-[12px] overflow-auto rounded-lg bg-white p-3 font-mono text-xs/6 text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:text-slate-100 dark:ring-white/10">host&#9;db.internal
+port&#9;5432
+database&#9;orders
+timeout&#9;30s</pre>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-[10ch]</p>
+              <pre class="tab-[10ch] overflow-auto rounded-lg bg-white p-3 font-mono text-xs/6 text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:text-slate-100 dark:ring-white/10">host&#9;db.internal
+port&#9;5432
+database&#9;orders
+timeout&#9;30s</pre>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html">
+&lt;pre class="tab-[12px] ..."&gt;host&amp;#9;db.internal
+port&amp;#9;5432
+database&amp;#9;orders
+timeout&amp;#9;30s&lt;/pre&gt;
+&lt;pre class="tab-[10ch] ..."&gt;host&amp;#9;db.internal
+port&amp;#9;5432
+database&amp;#9;orders
+timeout&amp;#9;30s&lt;/pre&gt;</pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 6. @container-size (cross-link: page 04) ===================== -->
+  <article class="sc-feature" id="container-size">
+    <div class="sc-notes">
+      <h2><code>@container-size</code>: size containers</h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p><code>@container</code> makes an inline-size container, so children can react to its width but not its height. <code>@container-size</code> sets <code>container-type: size</code>, which makes the height-based units <code>cqb</code> and <code>cqh</code> work. Name one with <code>@container-size/{name}</code>.</p>
+      <ul class="sc-parts">
+        <li><code>@container-size</code></li>
+        <li><code>@container-size/hero</code></li>
+        <li><code>h-[50cqb]</code></li>
+        <li><code>text-[45cqb]</code></li>
+      </ul>
+      <p class="sc-note">A size container cannot size itself from its content, so give it a height (<code>h-40</code>, an aspect ratio, or a stretching parent). In a plain <code>@container</code>, <code>cqb</code> silently falls back to the viewport. The full container-query tour is on <a href="04-container-queries.html#container-size">page 04</a>.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-size-containers" target="_blank" rel="noopener">Docs: responsive design, size containers</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption><code>cqb</code> needs a size container</figcaption>
+        <div class="sc-demo" id="container-size-1">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">@container</p>
+              <div class="@container h-40 overflow-hidden rounded-lg bg-white ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+                <div class="h-[50cqb] bg-rose-300 px-3 py-2 text-sm font-medium text-rose-950">h-[50cqb] has no height to measure, so it falls back to the viewport</div>
+              </div>
+            </div>
+            <div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">@container-size</p>
+              <div class="@container-size h-40 overflow-hidden rounded-lg bg-white ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+                <div class="h-[50cqb] bg-sky-300 px-3 py-2 text-sm font-medium text-sky-950">h-[50cqb] is half of the 10rem box</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-size-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A stat tile whose number follows its own height</figcaption>
+        <div class="sc-demo" id="container-size-2">
+          <p data-sc-omit class="mb-3 text-sm text-slate-700 dark:text-slate-300">Drag the corner handle: the figure is <code>45cqb</code>, 45% of the tile's height.</p>
+          <div class="@container-size h-32 min-h-16 w-56 max-w-full min-w-28 resize overflow-hidden rounded-xl bg-white ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+            <div class="grid h-full place-items-center">
+              <p class="text-[45cqb] leading-none font-bold text-sky-700 dark:text-sky-300">42</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-size-2"></pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 7. stacked + compound @variant (cross-link: page 03) ===================== -->
+  <article class="sc-feature" id="variant-stacked-compound">
+    <div class="sc-notes">
+      <h2>Stacked and compound <code>@variant</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>In your own CSS, <code>@variant</code> now takes stacked variants (<code>hover:focus</code>, both must match) and compound variants (<code>hover, focus</code>, either matches, with one shared block of styles). Before 4.3 it took a single variant.</p>
+      <ul class="sc-parts">
+        <li><code>@variant hover:focus { … }</code></li>
+        <li><code>@variant hover, focus { … }</code></li>
+        <li><code>@variant dark:hover { … }</code></li>
+      </ul>
+      <p class="sc-note">The output is plain nested CSS. The v4.3 post advises a real component styled with classes unless CSS is the right tool. Details on <a href="03-directives.html#variant-stacked-compound">page 03</a>.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#using-variants" target="_blank" rel="noopener">Docs: adding custom styles, using variants</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Stacked <code>hover:focus</code> vs compound <code>hover, focus</code></figcaption>
+        <div class="sc-demo" id="variant-stacked-compound-1">
+          <div class="flex flex-wrap items-start gap-6">
+            <div class="text-center">
+              <button type="button" class="cta-stacked rounded-md px-4 py-2 text-sm font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:focus-visible:outline-white">Stacked</button>
+              <p class="mt-2 font-mono text-xs text-slate-700 dark:text-slate-300">hover:focus</p>
+            </div>
+            <div class="text-center">
+              <button type="button" class="cta-compound rounded-md px-4 py-2 text-sm font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:focus-visible:outline-white">Compound</button>
+              <p class="mt-2 font-mono text-xs text-slate-700 dark:text-slate-300">hover, focus</p>
+            </div>
+          </div>
+          <p data-sc-omit class="sc-note mt-4">Hover the first button and click it (or press Tab while hovering): it turns green only when hovered and focused. The second turns green on hover alone or on focus alone. Safari does not focus buttons on click, so use Tab with the pointer resting on the button.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+.cta-stacked {
+  background: var(--color-sky-600);
+  @variant hover:focus {
+    background: var(--color-emerald-600);
+  }
+}
+.cta-compound {
+  background: var(--color-sky-600);
+  @variant hover, focus {
+    background: var(--color-emerald-600);
+  }
+}</pre>
+        <pre class="sc-code" data-code="css" data-label="Compiled CSS">
+.cta-stacked {
+  background: var(--color-sky-600);
+  &amp;:hover {
+    @media (hover: hover) {
+      &amp;:focus {
+        background: var(--color-emerald-600);
+      }
+    }
+  }
+}
+.cta-compound {
+  background: var(--color-sky-600);
+  &amp;:hover {
+    @media (hover: hover) {
+      background: var(--color-emerald-600);
+    }
+  }
+  &amp;:focus {
+    background: var(--color-emerald-600);
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A scroll box that lights up on hover or while typing inside it</figcaption>
+        <div class="sc-demo" id="variant-stacked-compound-2">
+          <div class="chat-scroll mx-auto h-44 max-w-sm overflow-auto rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+            <ul class="space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              <li><span class="font-medium text-slate-900 dark:text-white">Maya:</span> Pushed the fix, can someone review?</li>
+              <li><span class="font-medium text-slate-900 dark:text-white">Diego:</span> On it. Staging is still building.</li>
+              <li><span class="font-medium text-slate-900 dark:text-white">Priya:</span> Tests are green on my branch too.</li>
+              <li><span class="font-medium text-slate-900 dark:text-white">Maya:</span> Great, merging after lunch.</li>
+              <li><span class="font-medium text-slate-900 dark:text-white">Tomás:</span> Please add a note to the changelog.</li>
+              <li><span class="font-medium text-slate-900 dark:text-white">Maya:</span> Done, see the last commit.</li>
+            </ul>
+            <div class="sticky -bottom-3 -mx-3 mt-3 -mb-3 bg-white p-3 dark:bg-slate-900">
+              <label class="sr-only" for="chat-reply">Reply</label>
+              <input id="chat-reply" type="text" placeholder="Write a reply" class="w-full rounded-md bg-slate-100 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:outline-2 focus:outline-sky-600 dark:bg-white/10 dark:text-white dark:placeholder:text-slate-400">
+            </div>
+          </div>
+          <p data-sc-omit class="sc-note mx-auto mt-3 max-w-sm">Hover the box or click into the field: the thumb turns sky blue for either one.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+.chat-scroll {
+  @apply scrollbar-thin scrollbar-thumb-slate-400;
+  @variant hover, focus-within {
+    @apply scrollbar-thumb-sky-500;
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Stacking with <code>dark</code>: one block, two themes</figcaption>
+        <div class="sc-demo" id="variant-stacked-compound-3">
+          <div class="card-edge max-w-xs rounded-xl bg-white p-4 dark:bg-slate-900">
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">Team plan</p>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">Hover this card. The border turns sky blue in light mode and amber in dark mode.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+.card-edge {
+  border: 2px solid var(--color-slate-300);
+  @variant hover {
+    border-color: var(--color-sky-500);
+  }
+  @variant dark {
+    border-color: var(--color-slate-700);
+  }
+  @variant dark:hover {
+    border-color: var(--color-amber-400);
+  }
+}</pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 8. --default() (cross-link: page 03) ===================== -->
+  <article class="sc-feature" id="default-function">
+    <div class="sc-notes">
+      <h2><code>--default()</code> for functional utilities</h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Inside <code>--value()</code> and <code>--modifier()</code> of a functional <code>@utility</code>, <code>--default()</code> supplies the value used when the class is written without one. <code>tab-stop</code> can mean 4 while <code>tab-stop-2</code> still means 2.</p>
+      <ul class="sc-parts">
+        <li><code>--value(integer, --default(4))</code></li>
+        <li><code>--modifier(number, --default(1.4))</code></li>
+        <li><code>tab-stop</code></li>
+        <li><code>tilt</code> / <code>tilt-12</code></li>
+        <li><code>type-18/2</code></li>
+      </ul>
+      <p class="sc-note">Defaults are plain numbers, so wrap them in <code>calc(… * 1deg)</code> for units. The demos define <code>tab-stop-*</code> rather than <code>tab-*</code> so the built-in <code>tab-&lt;n&gt;</code> above stays untouched. Upcoming, not in 4.3.3: whitespace inside <code>--default(…)</code> values is preserved on the main branch. See <a href="03-directives.html#utility-default">page 03</a>.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#default-values" target="_blank" rel="noopener">Docs: adding custom styles, default values</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>A bare <code>tab-stop</code> that means 4</figcaption>
+        <div class="sc-demo" id="default-function-1">
+          <div class="grid gap-4 sm:grid-cols-3">
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-stop</p>
+              <pre class="tab-stop overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 p-3 font-mono text-xs/6 text-slate-100">name&#9;Ada
+role&#9;admin
+team&#9;platform</pre>
+              <p data-sc-omit data-measure="tab-size" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-stop-2</p>
+              <pre class="tab-stop-2 overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 p-3 font-mono text-xs/6 text-slate-100">name&#9;Ada
+role&#9;admin
+team&#9;platform</pre>
+              <p data-sc-omit data-measure="tab-size" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">tab-stop-8</p>
+              <pre class="tab-stop-8 overflow-auto rounded-lg bg-slate-900 dark:ring-1 dark:ring-white/15 p-3 font-mono text-xs/6 text-slate-100">name&#9;Ada
+role&#9;admin
+team&#9;platform</pre>
+              <p data-sc-omit data-measure="tab-size" class="mt-2 font-mono text-xs text-slate-600 dark:text-slate-400"></p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html">
+&lt;pre class="tab-stop ..."&gt;name&amp;#9;Ada
+role&amp;#9;admin
+team&amp;#9;platform&lt;/pre&gt;
+&lt;pre class="tab-stop-2 ..."&gt;...&lt;/pre&gt;
+&lt;pre class="tab-stop-8 ..."&gt;...&lt;/pre&gt;</pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@utility tab-stop-* {
+  tab-size: --value(integer, --default(4));
+}</pre>
+        <pre class="sc-code" data-code="css" data-label="Generated CSS">
+.tab-stop {
+  tab-size: 4;
+}
+.tab-stop-2 {
+  tab-size: 2;
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Stickers: <code>tilt</code> is 3deg, <code>tilt-12</code> is 12deg</figcaption>
+        <div class="sc-demo" id="default-function-2">
+          <div class="flex flex-wrap items-start gap-8 px-2 py-3">
+            <div class="text-center">
+              <span class="tilt inline-block rounded-md bg-amber-300 px-3 py-1.5 text-sm font-bold text-amber-950">NEW</span>
+              <p class="mt-3 font-mono text-xs text-slate-700 dark:text-slate-300">tilt → 3deg</p>
+            </div>
+            <div class="text-center">
+              <span class="tilt-6 inline-block rounded-md bg-sky-300 px-3 py-1.5 text-sm font-bold text-sky-950">BETA</span>
+              <p class="mt-3 font-mono text-xs text-slate-700 dark:text-slate-300">tilt-6 → 6deg</p>
+            </div>
+            <div class="text-center">
+              <span class="tilt-12 inline-block rounded-md bg-rose-300 px-3 py-1.5 text-sm font-bold text-rose-950">SALE</span>
+              <p class="mt-3 font-mono text-xs text-slate-700 dark:text-slate-300">tilt-12 → 12deg</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="default-function-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@utility tilt-* {
+  rotate: calc(--value(integer, --default(3)) * 1deg);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A default for the modifier: <code>type-18</code> vs <code>type-18/2</code></figcaption>
+        <div class="sc-demo" id="default-function-3">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">type-18 → line-height 1.4</p>
+              <p class="type-18 text-slate-800 dark:text-slate-100">Short lines show the difference between a tight and a loose line height.</p>
+            </div>
+            <div class="rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">type-18/2 → line-height 2</p>
+              <p class="type-18/2 text-slate-800 dark:text-slate-100">Short lines show the difference between a tight and a loose line height.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="default-function-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@utility type-* {
+  font-size: calc(--value(integer) * 1px);
+  line-height: --modifier(number, --default(1.4));
+}</pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 9. bare auto-rows / auto-cols (v4.3.2) ===================== -->
+  <article class="sc-feature" id="auto-rows-cols-bare">
+    <div class="sc-notes">
+      <h2>Bare <code>auto-rows-12</code> and <code>auto-cols-16</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Added in <strong>v4.3.2</strong>: <code>auto-rows-*</code> and <code>auto-cols-*</code> take bare numbers from the spacing scale. <code>auto-rows-12</code> is <code>grid-auto-rows: calc(var(--spacing) * 12)</code>, 3rem by default, so you no longer write <code>auto-rows-[3rem]</code>.</p>
+      <ul class="sc-parts">
+        <li><code>auto-rows-12</code></li>
+        <li><code>auto-cols-16</code></li>
+        <li><code>auto-rows-6</code></li>
+        <li><code>auto-rows-[3rem]</code> (old)</li>
+        <li><code>grid-flow-col</code></li>
+        <li><code>row-span-*</code></li>
+      </ul>
+      <p class="sc-note">They size only the implicit rows or columns, the ones created beyond <code>grid-template-*</code>. A bare number must be a multiple of 0.25, so <code>auto-rows-3.3</code> and <code>auto-rows-px</code> generate nothing; use <code>auto-rows-[1px]</code>. The keywords (<code>min</code>, <code>max</code>, <code>fr</code>) and arbitrary values still work.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/grid-auto-rows" target="_blank" rel="noopener">Docs: grid-auto-rows</a> · <a href="https://tailwindcss.com/docs/grid-auto-columns" target="_blank" rel="noopener">grid-auto-columns</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Gallery tiles that span a fixed 3rem row grid</figcaption>
+        <div class="sc-demo" id="auto-rows-cols-bare-1">
+          <div class="mx-auto grid max-w-md grid-cols-3 auto-rows-12 gap-2">
+            <div class="row-span-2 rounded-lg bg-linear-to-br from-sky-500 to-sky-700 p-2 text-xs font-medium text-white">row-span-2</div>
+            <div class="row-span-3 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-700 p-2 text-xs font-medium text-white">row-span-3</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-amber-500 to-amber-700 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-rose-500 to-rose-700 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-2 rounded-lg bg-linear-to-br from-violet-500 to-violet-700 p-2 text-xs font-medium text-white">row-span-2</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-teal-500 to-teal-700 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-indigo-500 to-indigo-700 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-fuchsia-500 to-fuchsia-700 p-2 text-xs font-medium text-white">row-span-1</div>
+          </div>
+          <p data-sc-omit class="sc-note mx-auto mt-4 max-w-md">Every row is <code>auto-rows-12</code> (48px) plus the 8px gap, so a tile's height is always a clean multiple of the row. Before 4.3.2 this needed <code class="line-through">auto-rows-[3rem]</code>.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="auto-rows-cols-bare-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Story rail: <code>auto-cols-16</code> with a slim scrollbar</figcaption>
+        <div class="sc-demo" id="auto-rows-cols-bare-2">
+          <div class="mx-auto grid max-w-lg grid-flow-col auto-cols-16 gap-3 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-transparent">
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-500 to-rose-600 text-lg font-semibold text-white">M</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Maya</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-500 to-rose-600 text-lg font-semibold text-white">D</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Diego</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-500 to-rose-600 text-lg font-semibold text-white">P</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Priya</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 text-lg font-semibold text-white">T</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Tomás</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 text-lg font-semibold text-white">S</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Sofia</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 text-lg font-semibold text-white">J</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Jonas</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-lg font-semibold text-white">A</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Amara</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-lg font-semibold text-white">L</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Liam</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-lg font-semibold text-white">H</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Hana</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-500 to-fuchsia-600 text-lg font-semibold text-white">N</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Noah</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-500 to-fuchsia-600 text-lg font-semibold text-white">Z</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Zoe</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-500 to-fuchsia-600 text-lg font-semibold text-white">R</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Ravi</p></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="auto-rows-cols-bare-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Day view: <code>auto-rows-6</code> gives every half hour 24px</figcaption>
+        <div class="sc-demo" id="auto-rows-cols-bare-3">
+          <div class="mx-auto grid max-w-sm grid-cols-[3rem_1fr] auto-rows-6 gap-x-3 rounded-xl bg-white p-3 text-xs ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+            <span class="col-start-1 row-span-2 row-start-1 border-t border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-400">9:00</span>
+            <span class="col-start-1 row-span-2 row-start-3 border-t border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-400">10:00</span>
+            <span class="col-start-1 row-span-2 row-start-5 border-t border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-400">11:00</span>
+            <span class="col-start-1 row-span-2 row-start-7 border-t border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-400">12:00</span>
+            <span class="col-start-1 row-span-2 row-start-9 border-t border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-400">13:00</span>
+            <div class="col-start-2 row-span-1 row-start-1 my-px truncate rounded-md bg-sky-100 px-2 py-0.5 text-sky-900 dark:bg-sky-900/60 dark:text-sky-100">Standup, 9:00</div>
+            <div class="col-start-2 row-span-2 row-start-2 my-px rounded-md bg-violet-100 px-2 py-1 text-violet-900 dark:bg-violet-900/60 dark:text-violet-100">Design review<br>9:30 to 10:30</div>
+            <div class="col-start-2 row-span-2 row-start-5 my-px rounded-md bg-emerald-100 px-2 py-1 text-emerald-900 dark:bg-emerald-900/60 dark:text-emerald-100">Interview<br>11:00 to 12:00</div>
+            <div class="col-start-2 row-span-1 row-start-8 my-px truncate rounded-md bg-amber-100 px-2 py-0.5 text-amber-900 dark:bg-amber-900/60 dark:text-amber-100">Lunch, 12:30</div>
+            <div class="col-start-2 row-span-2 row-start-9 my-px rounded-md bg-rose-100 px-2 py-1 text-rose-900 dark:bg-rose-900/60 dark:text-rose-100">Planning<br>13:00 to 14:00</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="auto-rows-cols-bare-3"></pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 10. CLI --silent (v4.3.1, code-only) ===================== -->
+  <article class="sc-feature" id="cli-silent">
+    <div class="sc-notes">
+      <h2>CLI <code>--silent</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Added in <strong>v4.3.1</strong>: <code>@tailwindcss/cli</code> accepts <code>--silent</code>, which suppresses non-error output, meaning the version banner and the "Done in" lines. Use it for CI logs and for dev scripts where Tailwind's chatter would interleave with other processes.</p>
+      <ul class="sc-parts">
+        <li><code>--silent</code></li>
+        <li><code>--watch --silent</code></li>
+        <li><code>tailwindcss build --silent</code></li>
+      </ul>
+      <p class="sc-note">Code-only: the CLI runs in Node, not in the browser build, so there is nothing to run on this page. Real errors are still printed in silent mode, and CSS written to stdout is unaffected. It is not in the docs site; the sources are <code>tailwindcss --help</code> and the changelog.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/installation/tailwind-cli" target="_blank" rel="noopener">Docs: Tailwind CLI</a> · <a href="https://github.com/tailwindlabs/tailwindcss/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>The same build, with and without <code>--silent</code></figcaption>
+        <div class="sc-demo" id="cli-silent-1">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="overflow-hidden rounded-xl bg-slate-900 ring-1 ring-slate-900/20 dark:ring-white/10">
+              <div class="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
+                <span class="size-2.5 rounded-full bg-rose-400"></span><span class="size-2.5 rounded-full bg-amber-400"></span><span class="size-2.5 rounded-full bg-emerald-400"></span>
+                <span class="ml-2 font-mono text-xs text-slate-300">default</span>
+              </div>
+              <pre class="p-4 font-mono text-xs/6 whitespace-pre-wrap text-slate-100">$ tailwindcss -i in.css -o out.css --minify
+≈ tailwindcss v4.3.3
+
+Done in 32ms
+$ </pre>
+            </div>
+            <div class="overflow-hidden rounded-xl bg-slate-900 ring-1 ring-slate-900/20 dark:ring-white/10">
+              <div class="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
+                <span class="size-2.5 rounded-full bg-rose-400"></span><span class="size-2.5 rounded-full bg-amber-400"></span><span class="size-2.5 rounded-full bg-emerald-400"></span>
+                <span class="ml-2 font-mono text-xs text-slate-300">--silent</span>
+              </div>
+              <pre class="p-4 font-mono text-xs/6 whitespace-pre-wrap text-slate-100">$ tailwindcss -i in.css -o out.css --minify --silent
+$ </pre>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="bash" data-label="Commands">
+npx @tailwindcss/cli -i src/input.css -o dist/output.css --minify
+npx @tailwindcss/cli -i src/input.css -o dist/output.css --minify --silent</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Quiet CSS step in package.json scripts</figcaption>
+        <pre class="sc-code" data-code="json" data-label="package.json">
+{
+  "scripts": {
+    "build:css": "tailwindcss -i src/input.css -o dist/output.css --minify --silent",
+    "build": "npm run build:css &amp;&amp; vite build"
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Quiet watch next to a dev server</figcaption>
+        <pre class="sc-code" data-code="bash" data-label="Shell">
+npx concurrently "vite" "tailwindcss -i src/input.css -o public/out.css --watch --silent"</pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 11. CLI --watch --poll (v4.3.3, code-only) ===================== -->
+  <article class="sc-feature" id="cli-watch-poll">
+    <div class="sc-notes">
+      <h2>CLI <code>--watch --poll</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Added in <strong>v4.3.3</strong>: <code>--poll[=ms]</code> makes <code>--watch</code> check files on a timer instead of waiting for filesystem events. Use it where events are unreliable or missing. <code>--poll</code> alone checks every 250 ms; <code>--poll=500</code> sets the interval.</p>
+      <ul class="sc-parts">
+        <li><code>--watch --poll</code></li>
+        <li><code>--watch --poll=500</code></li>
+        <li><code>--poll --silent</code></li>
+      </ul>
+      <p class="sc-note">Code-only: this is a Node CLI flag. Polling only applies together with <code>--watch</code>, and <code>--poll=0</code> is rejected with "Specified polling interval must be a positive number." The same release stopped loading <code>@parcel/watcher</code> unless it is needed, so polling works even where that module cannot load.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/installation/tailwind-cli" target="_blank" rel="noopener">Docs: Tailwind CLI</a> · <a href="https://github.com/tailwindlabs/tailwindcss/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>What the terminal shows while polling</figcaption>
+        <div class="sc-demo" id="cli-watch-poll-1">
+          <div class="mx-auto max-w-xl overflow-hidden rounded-xl bg-slate-900 ring-1 ring-slate-900/20 dark:ring-white/10">
+            <div class="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
+              <span class="size-2.5 rounded-full bg-rose-400"></span><span class="size-2.5 rounded-full bg-amber-400"></span><span class="size-2.5 rounded-full bg-emerald-400"></span>
+              <span class="ml-2 font-mono text-xs text-slate-300">tailwindcss --watch --poll=300</span>
+            </div>
+            <pre class="p-4 font-mono text-xs/6 whitespace-pre-wrap text-slate-100">$ tailwindcss -i in.css -o out.css --watch --poll=300
+≈ tailwindcss v4.3.3
+
+Done in 32ms
+<span class="animate-pulse text-slate-300 motion-reduce:animate-none">Polling for changes…</span></pre>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="bash" data-label="Shell">
+npx @tailwindcss/cli -i src/input.css -o dist/output.css --watch --poll=300</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Docker Compose dev container</figcaption>
+        <pre class="sc-code" data-code="yaml" data-label="compose.yaml">
+services:
+  css:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+    # events from a bind mount may never reach the container, so poll
+    command: npx @tailwindcss/cli -i src/input.css -o public/out.css --watch --poll=300</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Native events or polling?</figcaption>
+        <div class="sc-demo" id="cli-watch-poll-3">
+          <div class="sc-table-wrap">
+            <table class="sc-table">
+              <thead>
+                <tr><th>Typical situation</th><th>Flags</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Project on a local disk</td><td><code>--watch</code></td></tr>
+                <tr><td>Docker or Podman bind mount, often from a macOS or Windows host</td><td><code>--watch --poll=300</code></td></tr>
+                <tr><td>WSL2 with the project under <code>/mnt/c</code></td><td><code>--watch --poll</code></td></tr>
+                <tr><td>NFS or SMB share, network drive</td><td><code>--watch --poll=1000</code></td></tr>
+                <tr><td>VM shared folder</td><td><code>--watch --poll</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="bash" data-label="Shell">
+tailwindcss -i in.css -o out.css --watch              # native file events
+tailwindcss -i in.css -o out.css --watch --poll       # poll every 250ms
+tailwindcss -i in.css -o out.css --watch --poll=1000  # poll every second</pre>
+      </figure>
+
+    </div>
+  </article>
+
+  <!-- ===================== 12. release map ===================== -->
+  <article class="sc-feature" id="release-map">
+    <div class="sc-notes">
+      <h2>What shipped in each 4.3 release</h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Everything on this page landed in v4.3.0 except three patch-release additions: <code>--silent</code> in v4.3.1, bare <code>auto-rows-12</code> / <code>auto-cols-16</code> in v4.3.2 and <code>--watch --poll</code> in v4.3.3. The latest release is v4.3.3 (16 July 2026).</p>
+      <ul class="sc-parts">
+        <li><code>v4.3.0</code></li>
+        <li><code>v4.3.1</code></li>
+        <li><code>v4.3.2</code></li>
+        <li><code>v4.3.3</code></li>
+      </ul>
+      <p class="sc-note">Items in the changelog's "Unreleased" section, such as the <code>@tailwindcss/turbopack</code> package, are not in v4.3.3. The v4.3 post also covers the new colour palettes, the webpack plugin, logical-property utilities and <code>font-features-*</code>, which are outside this page.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/blog/tailwindcss-v4-3" target="_blank" rel="noopener">Blog: Tailwind CSS v4.3</a> · <a href="https://github.com/tailwindlabs/tailwindcss/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></p>
+    </div>
+    <div class="sc-examples">
+
+      <figure class="sc-example">
+        <figcaption>Release timeline</figcaption>
+        <div class="sc-demo" id="release-map-1">
+          <ol class="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 mask-r-from-90% scrollbar-none">
+            <li class="w-64 shrink-0 snap-start rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+              <p class="font-mono text-sm font-semibold text-emerald-700 dark:text-emerald-300">v4.3.0</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400">8 May 2026</p>
+              <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700 dark:text-slate-300">
+                <li>Scrollbar width, colour and gutter</li>
+                <li><code class="font-mono text-xs">zoom-*</code> and <code class="font-mono text-xs">tab-*</code></li>
+                <li><code class="font-mono text-xs">@container-size</code></li>
+                <li>Stacked and compound <code class="font-mono text-xs">@variant</code></li>
+                <li><code class="font-mono text-xs">--default()</code></li>
+              </ul>
+            </li>
+            <li class="w-64 shrink-0 snap-start rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+              <p class="font-mono text-sm font-semibold text-emerald-700 dark:text-emerald-300">v4.3.1</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400">12 Jun 2026</p>
+              <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700 dark:text-slate-300">
+                <li>CLI <code class="font-mono text-xs">--silent</code></li>
+              </ul>
+            </li>
+            <li class="w-64 shrink-0 snap-start rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+              <p class="font-mono text-sm font-semibold text-emerald-700 dark:text-emerald-300">v4.3.2</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400">26 Jun 2026</p>
+              <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700 dark:text-slate-300">
+                <li>Bare <code class="font-mono text-xs">auto-rows-12</code> and <code class="font-mono text-xs">auto-cols-16</code></li>
+              </ul>
+            </li>
+            <li class="w-64 shrink-0 snap-start rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-white/10">
+              <p class="font-mono text-sm font-semibold text-emerald-700 dark:text-emerald-300">v4.3.3 · latest</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400">16 Jul 2026</p>
+              <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700 dark:text-slate-300">
+                <li>CLI <code class="font-mono text-xs">--watch --poll</code></li>
+              </ul>
+            </li>
+            <li class="w-64 shrink-0 snap-start rounded-xl border border-dashed border-slate-400 p-4 dark:border-slate-500">
+              <p class="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">Upcoming</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400">not released</p>
+              <ul class="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700 dark:text-slate-300">
+                <li><code class="font-mono text-xs">@tailwindcss/turbopack</code> package for Next.js</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="release-map-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Support at a glance</figcaption>
+        <div class="sc-demo" id="release-map-2">
+          <div class="sc-table-wrap">
+            <table class="sc-table">
+              <thead>
+                <tr><th>Feature</th><th>Shipped</th><th>Runs in</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>scrollbar-auto|thin|none</code>, <code>scrollbar-thumb-*</code>, <code>scrollbar-track-*</code></td><td>v4.3.0</td><td>Chrome and Edge 121+, Firefox 64+; Safari: check caniuse</td></tr>
+                <tr><td><code>scrollbar-gutter-*</code></td><td>v4.3.0</td><td>Chrome 94+, Firefox 97+, Safari 18.2+; visible with classic scrollbars only</td></tr>
+                <tr><td><code>zoom-*</code></td><td>v4.3.0</td><td>Chrome, Safari, Firefox 126+</td></tr>
+                <tr><td><code>tab-*</code></td><td>v4.3.0</td><td>Every current browser</td></tr>
+                <tr><td><code>@container-size</code></td><td>v4.3.0</td><td>Every current browser (container queries)</td></tr>
+                <tr><td>Stacked and compound <code>@variant</code>, <code>--default()</code></td><td>v4.3.0</td><td>Build time, plain CSS output</td></tr>
+                <tr><td><code>--silent</code></td><td>v4.3.1</td><td>CLI (Node)</td></tr>
+                <tr><td><code>auto-rows-12</code>, <code>auto-cols-16</code></td><td>v4.3.2</td><td>Any browser with CSS Grid</td></tr>
+                <tr><td><code>--watch --poll</code></td><td>v4.3.3</td><td>CLI (Node)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="release-map-2"></pre>
+      </figure>
+
+    </div>
+  </article>
+</main>
+
+<footer data-sc-foot></footer>
+
+<script>
+// One script for the whole page. Handlers are delegated on document, so demos keep working
+// when they are re-mounted. None of this is needed for the Tailwind utilities themselves.
+;(() => {
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)]
+
+  // ---------- optional readouts (hidden from the code listings with data-sc-omit) ----------
+  // Overlay scrollbars (macOS, iOS, Android) take no layout space, so every bar measures 0px there.
+  const probe = document.createElement('div')
+  probe.style.cssText = 'position:absolute;visibility:hidden;overflow:scroll;width:50px;height:50px'
+  document.body.append(probe)
+  const overlay = probe.offsetWidth - probe.clientWidth === 0
+  probe.remove()
+
+  const px = (n) => Math.round(n * 10) / 10 + 'px'
+  const MEASURE = {
+    // the bar's width is the difference between the outer and the inner box
+    'bar-y': (box) => 'scrollbar width: ' + px(box.offsetWidth - box.clientWidth) + (overlay ? ' (overlay bars take no space here)' : ''),
+    'content-width': (box) => 'content width: ' + px(box.firstElementChild.getBoundingClientRect().width),
+    'center-offset': (wrap) => {
+      const pane = wrap.firstElementChild
+      const a = pane.firstElementChild.getBoundingClientRect()
+      const b = pane.getBoundingClientRect()
+      return 'column centre vs box centre: ' + px(a.left + a.width / 2 - (b.left + b.width / 2))
+    },
+    'tab-size': (box) => 'computed tab-size: ' + getComputedStyle(box).tabSize,
+    footprint: (row) => {
+      const [box, marker] = row.children
+      const name = box.className.match(/(?:zoom|scale)-\d+/)[0]
+      return name + ': the marker square starts ' + px(marker.getBoundingClientRect().left - box.getBoundingClientRect().left) + ' from the left edge of the box'
+    },
+    pointer: () => {
+      const coarse = matchMedia('(pointer: coarse)').matches
+      const fine = matchMedia('(pointer: fine)').matches
+      return 'pointer: ' + (coarse ? 'coarse' : fine ? 'fine' : 'none') + ' → ' + (coarse ? 'scrollbar-none' : fine ? 'scrollbar-thin' : 'scrollbar-auto')
+    },
+  }
+  function measure() {
+    for (const out of $$('[data-measure]')) {
+      const box = out.previousElementSibling
+      const fn = MEASURE[out.dataset.measure]
+      if (box && fn) out.textContent = fn(box)
+    }
+  }
+  let queued = false
+  const refresh = () => {
+    if (queued) return
+    queued = true
+    requestAnimationFrame(() => {
+      queued = false
+      measure()
+    })
+  }
+  for (const type of ['load', 'resize', 'click', 'input']) addEventListener(type, refresh, true)
+  // the browser build injects its generated CSS after load, so measure again whenever the page styles change
+  new MutationObserver(refresh).observe(document.head, { childList: true, subtree: true, characterData: true })
+  if (document.fonts) document.fonts.ready.then(refresh)
+  refresh()
+
+  // ---------- scrollbar-color: theme swatches ----------
+  document.addEventListener('click', (e) => {
+    const swatch = e.target.closest('[data-act="swatch"]')
+    if (!swatch) return
+    const box = swatch.closest('.sc-demo').querySelector('[data-swatch-box]')
+    box.style.setProperty('--sb-thumb', swatch.dataset.thumb)
+    box.style.setProperty('--sb-track', swatch.dataset.track)
+    for (const b of swatch.parentElement.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b === swatch))
+  })
+
+  // ---------- scrollbar-gutter: add and reset rows ----------
+  const SUBJECTS = ['Build 1043 started', 'Ada commented on PR 320', 'Release notes drafted', 'Staging is back up', 'Review requested on PR 322']
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act="add-rows"], [data-act="reset-rows"]')
+    if (!btn) return
+    for (const pane of btn.closest('.sc-demo').querySelectorAll('[data-pane]')) {
+      if (btn.dataset.act === 'reset-rows') {
+        while (pane.children.length > 2) pane.lastElementChild.remove()
+        continue
+      }
+      for (const text of SUBJECTS) {
+        const row = pane.firstElementChild.cloneNode()
+        row.textContent = text
+        pane.append(row)
+      }
+    }
+  })
+
+  // ---------- scrollbar-gutter: scroll lock ----------
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act="lock"]')
+    if (!btn) return
+    const locked = btn.getAttribute('aria-pressed') !== 'true'
+    btn.setAttribute('aria-pressed', String(locked))
+    btn.textContent = locked ? 'Unlock page scroll' : 'Lock page scroll'
+    for (const pane of btn.closest('.sc-demo').querySelectorAll('[data-pane]')) {
+      pane.classList.toggle('overflow-hidden', locked)
+      pane.classList.toggle('overflow-y-auto', !locked)
+    }
+  })
+
+  // ---------- zoom: zoom vs scale levels ----------
+  const LEVELS = { 50: ['zoom-50', 'scale-50'], 100: ['zoom-100', 'scale-100'], 150: ['zoom-150', 'scale-150'] }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act="zoom-level"]')
+    if (!btn) return
+    const demo = btn.closest('.sc-demo')
+    const [zoom, scale] = LEVELS[btn.dataset.level]
+    const [zoomBox, scaleBox] = demo.querySelectorAll('[class*="zoom-"], [class*="scale-"]')
+    zoomBox.className = zoomBox.className.replace(/zoom-\d+/, zoom)
+    scaleBox.className = scaleBox.className.replace(/scale-\d+/, scale)
+    for (const b of btn.parentElement.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b === btn))
+  })
+
+  // ---------- zoom: document viewer slider ----------
+  // Tailwind compiles from class attribute changes, so write whole class names
+  const ZOOM = { 50: 'zoom-50', 75: 'zoom-75', 100: 'zoom-100', 125: 'zoom-125', 150: 'zoom-150' }
+
+  document.addEventListener('input', (e) => {
+    if (!e.target.matches('[data-range="zoom"]')) return
+    const demo = e.target.closest('.sc-demo')
+    const doc = demo.querySelector('article')
+    doc.className = doc.className.replace(/zoom-\d+/, ZOOM[e.target.value])
+    demo.querySelector('output').textContent = ZOOM[e.target.value]
+  })
+
+  // ---------- tab-size: segmented control ----------
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act="tab-class"]')
+    if (!btn) return
+    const demo = btn.closest('.sc-demo')
+    const pre = demo.querySelector('pre')
+    pre.className = pre.className.replace(/tab-\d+/, btn.dataset.class)
+    for (const b of btn.parentElement.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b === btn))
+  })
+
+  // ---------- tab-size: tab-(--tab-size) slider ----------
+  document.addEventListener('input', (e) => {
+    if (!e.target.matches('[data-range="tab"]')) return
+    const demo = e.target.closest('.sc-demo')
+    demo.querySelector('pre').style.setProperty('--tab-size', e.target.value)
+    demo.querySelector('output').textContent = '--tab-size: ' + e.target.value
+  })
+})()
+</script>
+</body>
+</html>

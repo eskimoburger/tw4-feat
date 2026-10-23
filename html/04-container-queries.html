@@ -1,0 +1,2013 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Container queries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* page-specific v4 CSS (@theme, @utility, @keyframes, …) goes below */
+
+  /* ---- custom container sizes: each --container-* name becomes @name:, @min-name: and @max-name: ---- */
+  @theme {
+    --container-8xl: 96rem;
+    --container-compact: 15rem;
+    --container-regular: 26rem;
+    --container-card-wide: 40rem;
+  }
+
+  /* ---- the legacy `container` class: v4 customizes it with @utility (no JS config) ---- */
+  @utility container {
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="sc-intro">
+    <p class="sc-eyebrow">Page 04 · Layout</p>
+    <h1>Container queries</h1>
+    <p class="sc-lede">Style a component from the width of the box it sits in instead of the width of the screen. This page covers <code>@container</code>, the <code>@sm:</code> … <code>@7xl:</code> and <code>@max-*</code> variants, ranges, named and nested containers, container units, custom sizes and the v4.3 <code>@container-size</code>. Drag the handles and sliders: every example is live.</p>
+    <nav data-sc-toc aria-label="Features on this page"></nav>
+  </section>
+
+  <!-- ===================== 1. @container + size variants ===================== -->
+  <article class="sc-feature" id="container-basic">
+    <div class="sc-notes">
+      <h2><code>@container</code> and the size variants</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Add <code>@container</code> to a parent and its descendants can use <code>@sm:</code>, <code>@md:</code>, <code>@lg:</code> and friends, which react to that parent's width instead of the screen. Like viewport breakpoints they are mobile-first: a variant applies at that width and up.</p>
+      <ul class="sc-parts">
+        <li><code>@container</code></li>
+        <li><code>@3xs:</code> … <code>@7xl:</code></li>
+        <li><code>@min-md:</code></li>
+        <li><code>@[475px]:</code></li>
+      </ul>
+      <p class="sc-note">A container cannot style itself, only its descendants. Queries measure the container's content box, so padding and border on the container are not counted. Browser support: Baseline 2023 (Chrome and Edge 105, Safari 16, Firefox 110).</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#basic-example" target="_blank" rel="noopener">Docs: responsive design, container queries</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Media card: stacked, then a row at <code>@md</code></figcaption>
+        <div class="sc-demo" id="container-basic-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[34rem] max-w-full min-w-56">
+            <div class="p-3">
+              <article class="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-900/10 @md:flex-row @md:items-center @md:gap-5 dark:bg-slate-800 dark:ring-white/10">
+                <div class="aspect-video w-full rounded-lg bg-linear-to-br from-sky-300 to-indigo-400 @md:aspect-square @md:w-32 @md:shrink-0 dark:from-sky-700 dark:to-indigo-800"></div>
+                <div class="min-w-0">
+                  <p class="text-xs font-medium tracking-wide text-indigo-600 uppercase dark:text-indigo-300">Episode 42</p>
+                  <h3 class="font-semibold text-slate-900 @md:text-lg dark:text-white">Designing in the browser</h3>
+                  <p class="line-clamp-2 text-sm text-slate-600 @lg:line-clamp-3 dark:text-slate-300">Four designers explain how they prototype with real CSS instead of static mockups, and what changes when the browser is the canvas.</p>
+                </div>
+                <button class="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-500 @md:ml-auto" type="button">Follow</button>
+              </article>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-basic-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>KPI tile that reveals detail as it gets room</figcaption>
+        <div class="sc-demo" id="container-basic-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[30rem] max-w-full min-w-48">
+            <div class="p-3">
+              <div class="flex items-center justify-between gap-3 rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <div>
+                  <p class="text-xs text-slate-500 @sm:text-sm dark:text-slate-400">Monthly revenue</p>
+                  <p class="text-xl font-semibold text-slate-900 tabular-nums @sm:text-2xl @lg:text-4xl dark:text-white">$48,200</p>
+                </div>
+                <span class="hidden rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-700 @xs:inline dark:text-emerald-300">+12%</span>
+                <svg class="hidden h-10 w-24 shrink-0 text-emerald-500 @md:block" viewBox="0 0 96 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 32 L24 24 L48 28 L72 12 L94 6"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-basic-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Toast that shrinks to an icon: the same markup at three widths</figcaption>
+        <div class="sc-demo" id="container-basic-3">
+          <div class="flex flex-wrap items-start gap-x-6 gap-y-4">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">w-20 · below @2xs</p>
+              <div class="@container w-20">
+                <div class="flex items-center gap-3 rounded-xl bg-slate-900 p-3 text-white dark:bg-slate-700">
+                  <span class="grid size-8 shrink-0 place-items-center rounded-full bg-emerald-700 text-sm font-bold">✓</span>
+                  <p class="hidden min-w-0 flex-1 truncate text-sm @2xs:block">Changes saved</p>
+                  <button class="ml-auto hidden rounded-md bg-white/15 px-2 py-1 text-xs @sm:block" type="button">Undo</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">w-80 · @2xs reached</p>
+              <div class="@container w-80">
+                <div class="flex items-center gap-3 rounded-xl bg-slate-900 p-3 text-white dark:bg-slate-700">
+                  <span class="grid size-8 shrink-0 place-items-center rounded-full bg-emerald-700 text-sm font-bold">✓</span>
+                  <p class="hidden min-w-0 flex-1 truncate text-sm @2xs:block">Changes saved</p>
+                  <button class="ml-auto hidden rounded-md bg-white/15 px-2 py-1 text-xs @sm:block" type="button">Undo</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">w-[26rem] · @sm reached</p>
+              <div class="@container w-[26rem]">
+                <div class="flex items-center gap-3 rounded-xl bg-slate-900 p-3 text-white dark:bg-slate-700">
+                  <span class="grid size-8 shrink-0 place-items-center rounded-full bg-emerald-700 text-sm font-bold">✓</span>
+                  <p class="hidden min-w-0 flex-1 truncate text-sm @2xs:block">Changes saved</p>
+                  <button class="ml-auto hidden rounded-md bg-white/15 px-2 py-1 text-xs @sm:block" type="button">Undo</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-basic-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 2. live resize ===================== -->
+  <article class="sc-feature" id="live-resize">
+    <div class="sc-notes">
+      <h2>Drag to resize: the live playground</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Make the wrapper both the container and the resize target with <code>@container resize-x overflow-auto</code>. Drag its corner (or use the slider on a touch screen) and the component reflows with no JavaScript inside it.</p>
+      <ul class="sc-parts">
+        <li><code>@container/demo</code></li>
+        <li><code>resize-x</code></li>
+        <li><code>overflow-auto</code></li>
+        <li><code>min-w-56</code></li>
+        <li><code>@md/demo:</code></li>
+      </ul>
+      <p class="sc-note"><code>resize</code> only works when <code>overflow</code> is not <code>visible</code>. The readout script is optional: it prints the content-box width, which is the number the queries test.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#container-queries" target="_blank" rel="noopener">Docs: responsive design, container queries</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Card with a live width readout, a range badge and fluid title</figcaption>
+        <div class="sc-demo" id="live-resize-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="224" max="900" class="w-full accent-indigo-600" aria-label="Container width"></label></div>
+          <div class="@container/demo resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-56">
+            <article class="flex flex-col gap-3 p-4 @md/demo:flex-row @md/demo:items-center @max-sm/demo:bg-amber-500/25 @sm/demo:@max-md/demo:bg-sky-500/25 @lg/demo:bg-emerald-500/25">
+              <div class="aspect-video w-full rounded-lg bg-linear-to-br from-violet-400 to-sky-400 @md/demo:w-40 @md/demo:shrink-0 dark:from-violet-600 dark:to-sky-600"></div>
+              <div class="min-w-0">
+                <p class="font-mono text-xs text-slate-700 dark:text-slate-200">
+                  <span class="hidden @max-sm/demo:inline">below @sm</span>
+                  <span class="hidden @sm/demo:@max-md/demo:inline">@sm to @md</span>
+                  <span class="hidden @md/demo:@max-lg/demo:inline">@md to @lg</span>
+                  <span class="hidden @lg/demo:inline">@lg and up</span>
+                </p>
+                <h3 class="text-[clamp(1rem,6cqi,2rem)] leading-tight font-semibold text-slate-900 dark:text-white">Fluid title that follows the box</h3>
+                <p class="mt-1 text-sm text-slate-700 dark:text-slate-200">The background changes per band, using only stacked container variants.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="live-resize-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Print the content-box width (what @-variants test) and drive the box from a slider.
+const SCALE = '3xs:16,2xs:18,xs:20,sm:24,md:28,lg:32,xl:36,2xl:42,3xl:48,4xl:56,5xl:64,6xl:72,7xl:80'
+const bars = new WeakMap() // box -> its readout bar
+
+const observer = new ResizeObserver((entries) => {
+  for (const entry of entries) paint(entry.target, entry.contentBoxSize[0])
+})
+
+function paint(box, size) {
+  const bar = bars.get(box)
+  if (!bar) return
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+  const steps = (bar.dataset.cqSteps || SCALE).split(',').map((s) => s.split(':'))
+  const reached = steps.filter(([, r]) =&gt; r * rem &lt;= size.inlineSize).pop()
+  const w = Math.round(size.inlineSize)
+  const text = bar.dataset.cqBar === 'wh' ? w + ' × ' + Math.round(size.blockSize) + ' px' : w + 'px · ' + (reached ? '@' + reached[0] : 'below @' + steps[0][0])
+  bar.querySelector('[data-cq-text]').textContent = text
+  for (const range of bar.querySelectorAll('[data-cq-range]')) {
+    range.value = Math.round(range.dataset.cqRange === 'h' ? size.blockSize : size.inlineSize)
+  }
+}
+
+// Each bar controls the element right after it.
+for (const bar of document.querySelectorAll('[data-cq-bar]')) {
+  const box = bar.nextElementSibling
+  if (!box) continue
+  bars.set(box, bar)
+  observer.observe(box)
+}
+
+document.addEventListener('input', (e) =&gt; {
+  const range = e.target.closest('[data-cq-range]')
+  if (!range) return
+  const box = range.closest('[data-cq-bar]').nextElementSibling
+  box.style[range.dataset.cqRange === 'h' ? 'height' : 'width'] = range.value + 'px'
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Booking form: one column, then two</figcaption>
+        <div class="sc-demo" id="live-resize-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="224" max="900" class="w-full accent-indigo-600" aria-label="Container width"></label></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-56">
+            <form class="p-4" onsubmit="return false">
+              <h3 class="text-base font-semibold text-slate-900 dark:text-white">Book a table</h3>
+              <div class="mt-3 grid gap-3 @md:grid-cols-2">
+                <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">Name
+                  <input class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="text" value="Maya Ortiz">
+                </label>
+                <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">Email
+                  <input class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="email" value="maya@example.com">
+                </label>
+                <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">Date
+                  <input class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="text" value="Fri 14 Nov, 19:30">
+                </label>
+                <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">Guests
+                  <select class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"><option>2 guests</option><option>4 guests</option></select>
+                </label>
+                <button class="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 @md:col-span-2 @xl:col-span-1 @xl:col-start-2 @xl:justify-self-end" type="button">Reserve</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="live-resize-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Navbar that folds into a Menu button</figcaption>
+        <div class="sc-demo" id="live-resize-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="224" max="900" class="w-full accent-indigo-600" aria-label="Container width"></label></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-56">
+            <div class="p-3">
+              <nav class="flex items-center gap-4 rounded-xl bg-white px-4 py-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <span class="font-semibold text-slate-900 dark:text-white">Acme</span>
+                <ul class="ml-4 hidden items-center gap-5 text-sm text-slate-600 @xl:flex dark:text-slate-300">
+                  <li>Product</li>
+                  <li>Pricing</li>
+                  <li>Docs</li>
+                  <li>Changelog</li>
+                </ul>
+                <button class="ml-auto rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-800 @xl:hidden dark:border-slate-600 dark:text-white" type="button">Menu</button>
+                <button class="ml-auto hidden rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white @xl:block" type="button">Sign in</button>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="live-resize-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 3. portability ===================== -->
+  <article class="sc-feature" id="portability">
+    <div class="sc-notes">
+      <h2>One component, two slots</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Drop the same markup into a narrow sidebar and a wide main column, each wrapped in its own <code>@container</code>, and each copy picks the layout that fits its slot. Viewport breakpoints cannot do this because the screen is the same size for both.</p>
+      <ul class="sc-parts">
+        <li><code>&lt;aside class="@container"&gt;</code></li>
+        <li><code>&lt;main class="@container"&gt;</code></li>
+        <li><code>@sm:flex-row</code></li>
+        <li><code>@max-xs:hidden</code></li>
+      </ul>
+      <p class="sc-note">Give a flex or grid child <code>min-w-0</code> so it can shrink below its content, otherwise the container never gets narrow enough to switch.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#what-are-container-queries" target="_blank" rel="noopener">Docs: responsive design, what are container queries</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Profile card: the layout follows the slot, not the card</figcaption>
+        <div class="sc-demo" id="portability-1">
+          <div data-sc-omit class="mb-3"><button class="sc-btn" type="button" data-swap>Swap slots</button></div>
+          <div class="flex items-start gap-4">
+            <div class="w-64 shrink-0">
+              <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>sidebar slot</span></div>
+              <aside class="@container js-slot rounded-xl bg-white/50 p-2 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                <article class="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-900/10 @sm:flex-row @sm:items-center dark:bg-slate-800 dark:ring-white/10">
+                  <div class="size-14 shrink-0 rounded-full bg-linear-to-br from-amber-300 to-rose-400 dark:from-amber-500 dark:to-rose-600"></div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="truncate font-semibold text-slate-900 dark:text-white">Priya Raman</h3>
+                    <p class="truncate text-sm text-slate-600 dark:text-slate-300">Staff designer · Lisbon</p>
+                  </div>
+                  <button class="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-500" type="button">Message</button>
+                </article>
+              </aside>
+            </div>
+            <div class="min-w-[28rem] flex-1">
+              <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>main slot</span></div>
+              <main class="@container js-slot rounded-xl bg-white/50 p-2 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                <article class="flex flex-col gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-900/10 @sm:flex-row @sm:items-center dark:bg-slate-800 dark:ring-white/10">
+                  <div class="size-14 shrink-0 rounded-full bg-linear-to-br from-sky-300 to-emerald-400 dark:from-sky-500 dark:to-emerald-600"></div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="truncate font-semibold text-slate-900 dark:text-white">Tomás Lindqvist</h3>
+                    <p class="truncate text-sm text-slate-600 dark:text-slate-300">Design engineer · Malmö</p>
+                  </div>
+                  <button class="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-500" type="button">Message</button>
+                </article>
+              </main>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="portability-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Move each card into the other slot: the card's layout follows the new container.
+document.addEventListener('click', (e) =&gt; {
+  if (!e.target.closest('[data-swap]')) return
+  const [a, b] = e.target.closest('.sc-demo').querySelectorAll('.js-slot')
+  const first = a.firstElementChild
+  a.append(b.firstElementChild)
+  b.append(first)
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Product tile in a mini cart, a cart drawer and the catalog</figcaption>
+        <div class="sc-demo" id="portability-2">
+          <div class="flex flex-wrap items-start gap-x-5 gap-y-4">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">mini cart · 16rem</p>
+              <div class="@container w-64">
+                <div class="flex items-center gap-3 rounded-xl bg-white p-2 ring-1 ring-slate-900/10 @sm:flex-col @sm:items-stretch @sm:p-3 dark:bg-slate-800 dark:ring-white/10">
+                  <div class="size-12 shrink-0 rounded-lg bg-linear-to-br from-rose-300 to-orange-300 @sm:aspect-video @sm:size-auto dark:from-rose-700 dark:to-orange-700"></div>
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Canvas sneaker</p>
+                    <p class="text-sm text-slate-600 @max-xs:hidden dark:text-slate-300">Recycled cotton, white sole</p>
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white">$89</p>
+                  </div>
+                  <button class="hidden rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white @sm:block" type="button">Add to cart</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">cart drawer · 20rem</p>
+              <div class="@container w-80">
+                <div class="flex items-center gap-3 rounded-xl bg-white p-2 ring-1 ring-slate-900/10 @sm:flex-col @sm:items-stretch @sm:p-3 dark:bg-slate-800 dark:ring-white/10">
+                  <div class="size-12 shrink-0 rounded-lg bg-linear-to-br from-rose-300 to-orange-300 @sm:aspect-video @sm:size-auto dark:from-rose-700 dark:to-orange-700"></div>
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Canvas sneaker</p>
+                    <p class="text-sm text-slate-600 @max-xs:hidden dark:text-slate-300">Recycled cotton, white sole</p>
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white">$89</p>
+                  </div>
+                  <button class="hidden rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white @sm:block" type="button">Add to cart</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">catalog slot · 26rem</p>
+              <div class="@container w-[26rem]">
+                <div class="flex items-center gap-3 rounded-xl bg-white p-2 ring-1 ring-slate-900/10 @sm:flex-col @sm:items-stretch @sm:p-3 dark:bg-slate-800 dark:ring-white/10">
+                  <div class="size-12 shrink-0 rounded-lg bg-linear-to-br from-rose-300 to-orange-300 @sm:aspect-video @sm:size-auto dark:from-rose-700 dark:to-orange-700"></div>
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Canvas sneaker</p>
+                    <p class="text-sm text-slate-600 @max-xs:hidden dark:text-slate-300">Recycled cotton, white sole</p>
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white">$89</p>
+                  </div>
+                  <button class="hidden rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white @sm:block" type="button">Add to cart</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="portability-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Notification: terse in a toast, full in the inbox</figcaption>
+        <div class="sc-demo" id="portability-3">
+          <div class="flex flex-wrap items-start gap-x-5 gap-y-4">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">toast · 18rem</p>
+              <div class="@container w-72">
+                <div class="flex items-start gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                  <span class="grid size-9 shrink-0 place-items-center rounded-full bg-indigo-500/20 text-sm font-semibold text-indigo-700 dark:text-indigo-200">AL</span>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Ada commented</p>
+                    <p class="hidden text-sm text-slate-600 @lg:block dark:text-slate-300">"Can we move the launch review to Thursday? The pricing page still needs legal sign-off."</p>
+                    <div class="mt-2 hidden gap-2 @md:flex">
+                      <button class="rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-medium text-white" type="button">Reply</button>
+                      <button class="rounded-md border border-slate-300 px-2.5 py-1 text-xs text-slate-700 dark:border-slate-600 dark:text-slate-200" type="button">Mute thread</button>
+                    </div>
+                  </div>
+                  <span class="text-xs text-slate-500 dark:text-slate-400">2m</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">inbox panel · 36rem</p>
+              <div class="@container w-[36rem]">
+                <div class="flex items-start gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                  <span class="grid size-9 shrink-0 place-items-center rounded-full bg-indigo-500/20 text-sm font-semibold text-indigo-700 dark:text-indigo-200">AL</span>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-slate-900 dark:text-white">Ada commented</p>
+                    <p class="hidden text-sm text-slate-600 @lg:block dark:text-slate-300">"Can we move the launch review to Thursday? The pricing page still needs legal sign-off."</p>
+                    <div class="mt-2 hidden gap-2 @md:flex">
+                      <button class="rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-medium text-white" type="button">Reply</button>
+                      <button class="rounded-md border border-slate-300 px-2.5 py-1 text-xs text-slate-700 dark:border-slate-600 dark:text-slate-200" type="button">Mute thread</button>
+                    </div>
+                  </div>
+                  <span class="text-xs text-slate-500 dark:text-slate-400">2m</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="portability-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 4. container vs viewport ===================== -->
+  <article class="sc-feature" id="container-vs-viewport">
+    <div class="sc-notes">
+      <h2>Container queries or viewport breakpoints?</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Use viewport breakpoints (<code>md:</code>) for page-level decisions that depend on the screen, and container queries (<code>@md:</code>) for components that depend on the space they are given. The two scales are different: <code>@md</code> is 28rem, <code>md:</code> is 48rem.</p>
+      <ul class="sc-parts">
+        <li><code>md:flex-row</code></li>
+        <li><code>@md:flex-row</code></li>
+        <li><code>lg:grid-cols-[…]</code></li>
+        <li><code>dark:</code></li>
+        <li><code>print:</code></li>
+      </ul>
+      <p class="sc-note">Container queries only see size. Media features such as <code>dark:</code>, <code>print:</code>, <code>motion-reduce:</code>, <code>pointer-coarse:</code> and <code>landscape:</code> stay viewport-level, and mixing both in one component is normal.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#container-queries" target="_blank" rel="noopener">Docs: responsive design, container queries</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The same card in a 16rem sidebar: viewport variant vs container variant</figcaption>
+        <div class="sc-demo" id="container-vs-viewport-1">
+          <p data-sc-omit data-vw-out class="mb-3 w-fit rounded-md bg-slate-900 px-2 py-1 font-mono text-xs text-white dark:bg-slate-100 dark:text-slate-900"></p>
+          <div class="grid gap-4 sm:grid-cols-[16rem_minmax(0,1fr)]">
+            <div class="flex min-w-0 flex-col gap-3">
+              <div>
+                <p data-sc-omit class="mb-1.5 font-mono text-xs text-rose-700 dark:text-rose-300">md:flex-row · viewport, wrong here</p>
+                <div class="rounded-xl bg-white/50 p-2 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                  <article class="flex flex-col gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 md:flex-row md:items-center dark:bg-slate-800 dark:ring-white/10">
+                    <div class="size-12 shrink-0 rounded-full bg-linear-to-br from-amber-300 to-rose-400 dark:from-amber-500 dark:to-rose-600"></div>
+                    <div class="min-w-0 flex-1">
+                      <h3 class="truncate font-semibold text-slate-900 dark:text-white">Priya Raman</h3>
+                      <p class="truncate text-sm text-slate-600 dark:text-slate-300">Staff designer</p>
+                    </div>
+                    <button class="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white" type="button">Message</button>
+                  </article>
+                </div>
+              </div>
+              <div>
+                <p data-sc-omit class="mb-1.5 font-mono text-xs text-emerald-700 dark:text-emerald-300">@md:flex-row · container, right</p>
+                <div class="@container rounded-xl bg-white/50 p-2 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                  <article class="flex flex-col gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 @md:flex-row @md:items-center dark:bg-slate-800 dark:ring-white/10">
+                    <div class="size-12 shrink-0 rounded-full bg-linear-to-br from-amber-300 to-rose-400 dark:from-amber-500 dark:to-rose-600"></div>
+                    <div class="min-w-0 flex-1">
+                      <h3 class="truncate font-semibold text-slate-900 dark:text-white">Priya Raman</h3>
+                      <p class="truncate text-sm text-slate-600 dark:text-slate-300">Staff designer</p>
+                    </div>
+                    <button class="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white" type="button">Message</button>
+                  </article>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1.5 font-mono text-xs text-emerald-700 dark:text-emerald-300">@md:flex-row · container, wide slot</p>
+              <div class="@container rounded-xl bg-white/50 p-2 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                <article class="flex flex-col gap-3 rounded-xl bg-white p-3 ring-1 ring-slate-900/10 @md:flex-row @md:items-center dark:bg-slate-800 dark:ring-white/10">
+                  <div class="size-12 shrink-0 rounded-full bg-linear-to-br from-amber-300 to-rose-400 dark:from-amber-500 dark:to-rose-600"></div>
+                  <div class="min-w-0 flex-1">
+                    <h3 class="truncate font-semibold text-slate-900 dark:text-white">Priya Raman</h3>
+                    <p class="truncate text-sm text-slate-600 dark:text-slate-300">Staff designer</p>
+                  </div>
+                  <button class="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white" type="button">Message</button>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-vs-viewport-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Tell the reader which side of the viewport breakpoint they are on (md = 48rem).
+function viewportReadout() {
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+  for (const out of document.querySelectorAll('[data-vw-out]')) {
+    out.textContent = 'viewport ' + innerWidth + 'px · md: ' + (innerWidth &gt;= 48 * rem ? 'on' : 'off')
+  }
+}
+addEventListener('resize', viewportReadout)
+viewportReadout()</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Hybrid page: <code>lg:</code> for the shell, <code>@container</code> for the card grid</figcaption>
+        <div class="sc-demo" id="container-vs-viewport-2">
+          <div class="overflow-hidden rounded-xl bg-white/60 ring-1 ring-slate-900/20 lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] dark:bg-slate-950/60 dark:ring-white/25">
+            <aside class="hidden border-r border-slate-900/10 bg-white p-4 lg:block dark:border-white/10 dark:bg-slate-900">
+              <p class="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">Workspace</p>
+              <ul class="grid gap-1 text-sm text-slate-700 dark:text-slate-200">
+                <li class="rounded-md bg-indigo-500/15 px-2 py-1 font-medium">Overview</li>
+                <li class="px-2 py-1">Projects</li>
+                <li class="px-2 py-1">Reports</li>
+                <li class="px-2 py-1">Billing</li>
+              </ul>
+            </aside>
+            <main class="@container p-4">
+              <h3 class="mb-3 text-base font-semibold text-slate-900 dark:text-white">Overview</h3>
+              <div class="grid gap-3 @lg:grid-cols-2 @3xl:grid-cols-4">
+                <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Active users</p><p class="text-xl font-semibold text-slate-900 dark:text-white">12,480</p></div>
+                <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Conversion</p><p class="text-xl font-semibold text-slate-900 dark:text-white">3.8%</p></div>
+                <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Avg. order</p><p class="text-xl font-semibold text-slate-900 dark:text-white">$64.20</p></div>
+                <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Refunds</p><p class="text-xl font-semibold text-slate-900 dark:text-white">0.6%</p></div>
+              </div>
+            </main>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-vs-viewport-2"></pre>
+        <div class="p-3"><p class="sc-note">At a wide window the sidebar takes space, so the card grid gets two columns. Narrow the window below 64rem and the sidebar disappears, the grid gets the room back and switches to four. The cards never look at the screen width.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Decision table</figcaption>
+        <div class="sc-demo" id="container-vs-viewport-3">
+          <div class="sc-table-wrap">
+            <table class="sc-table">
+              <thead>
+                <tr><th></th><th>Viewport: <code>md:</code></th><th>Container: <code>@md:</code></th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Asks</th><td>How big is the screen?</td><td>How much room does this box have?</td></tr>
+                <tr><th scope="row">Use it for</th><td>Page shell: grid columns, nav pattern, sidebar toggle, global type scale</td><td>Cards, tiles, widgets, form rows, anything that is reused in sidebars, modals, grid cells or CMS slots</td></tr>
+                <tr><th scope="row">Scale</th><td><code>--breakpoint-*</code>: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem</td><td><code>--container-*</code>: @sm 24rem, @md 28rem, @lg 32rem, @xl 36rem, @2xl 42rem …</td></tr>
+                <tr><th scope="row">Compiles to</th><td><code>@media (width &gt;= 48rem)</code></td><td><code>@container (width &gt;= 28rem)</code></td></tr>
+                <tr><th scope="row">Always viewport</th><td colspan="2"><code>dark:</code> <code>print:</code> <code>motion-reduce:</code> <code>pointer-coarse:</code> <code>landscape:</code> <code>hover:</code> (media features a container cannot see)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-vs-viewport-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 5. product grid ===================== -->
+  <article class="sc-feature" id="product-grid">
+    <div class="sc-notes">
+      <h2>A grid whose columns follow its container</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Put <code>@container</code> on the parent of the grid and step the column count with <code>@xs:</code>, <code>@lg:</code>, <code>@3xl:</code>. The grid gets more columns when its slot is wide, such as no sidebar, and fewer when the same slot is narrow.</p>
+      <ul class="sc-parts">
+        <li><code>@container</code></li>
+        <li><code>grid-cols-2</code></li>
+        <li><code>@lg:grid-cols-3</code></li>
+        <li><code>@3xl:grid-cols-4</code></li>
+        <li><code>repeat(auto-fill,minmax())</code></li>
+      </ul>
+      <p class="sc-note">The grid cannot be its own container for its own variants: put <code>@container</code> on its parent. If you only need "as many columns as fit", <code>grid-cols-[repeat(auto-fill,minmax(min(100%,7rem),1fr))]</code> needs no query at all.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#basic-example" target="_blank" rel="noopener">Docs: responsive design, container queries</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Catalog with and without a filter sidebar</figcaption>
+        <div class="sc-demo" id="product-grid-1">
+          <div class="group/shell">
+            <label class="mb-3 inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-800 dark:text-slate-100"><input id="catalog-filters" type="checkbox" class="size-4 accent-indigo-600"> Show filters</label>
+            <div class="flex flex-col gap-4 sm:flex-row">
+              <aside class="hidden shrink-0 rounded-xl bg-white p-3 text-sm ring-1 ring-slate-900/10 group-has-[#catalog-filters:checked]/shell:block sm:w-44 dark:bg-slate-800 dark:ring-white/10">
+                <p class="font-semibold text-slate-900 dark:text-white">Category</p>
+                <ul class="mt-2 grid gap-1 text-slate-700 dark:text-slate-200"><li>Shoes</li><li>Bags</li><li>Jackets</li></ul>
+                <p class="mt-3 font-semibold text-slate-900 dark:text-white">Price</p>
+                <ul class="mt-2 grid gap-1 text-slate-700 dark:text-slate-200"><li>Under $50</li><li>$50 to $150</li><li>Over $150</li></ul>
+              </aside>
+              <div class="min-w-0 flex-1">
+                <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>grid container</span></div>
+                <div class="@container">
+                  <ul class="grid grid-cols-2 gap-4 @lg:grid-cols-3 @3xl:grid-cols-4">
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-sky-300 to-indigo-400 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-sky-700 dark:to-indigo-800"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Trail runner</p><p class="text-sm text-slate-600 dark:text-slate-300">$129</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-rose-300 to-orange-300 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-rose-700 dark:to-orange-700"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Canvas tote</p><p class="text-sm text-slate-600 dark:text-slate-300">$48</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-emerald-300 to-teal-400 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-emerald-700 dark:to-teal-800"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Wool beanie</p><p class="text-sm text-slate-600 dark:text-slate-300">$32</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-amber-200 to-pink-300 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-amber-700 dark:to-pink-800"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Rain shell</p><p class="text-sm text-slate-600 dark:text-slate-300">$180</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-violet-300 to-fuchsia-300 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-violet-700 dark:to-fuchsia-800"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Daypack</p><p class="text-sm text-slate-600 dark:text-slate-300">$95</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-cyan-300 to-sky-400 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-cyan-700 dark:to-sky-800"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Merino socks</p><p class="text-sm text-slate-600 dark:text-slate-300">$18</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-slate-300 to-zinc-400 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-slate-600 dark:to-zinc-700"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Field watch</p><p class="text-sm text-slate-600 dark:text-slate-300">$210</p></div>
+                    </li>
+                    <li class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                      <div class="aspect-square overflow-hidden"><div class="size-full bg-linear-to-br from-lime-300 to-emerald-300 transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none dark:from-lime-700 dark:to-emerald-800"></div></div>
+                      <div class="p-3"><p class="truncate text-sm font-medium text-slate-900 dark:text-white">Linen shirt</p><p class="text-sm text-slate-600 dark:text-slate-300">$74</p></div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="product-grid-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Stepped columns vs <code>auto-fill</code>, under one handle</figcaption>
+        <div class="sc-demo" id="product-grid-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-52">
+            <div class="grid gap-4 p-3">
+              <div>
+                <p class="mb-2 font-mono text-xs break-all text-slate-700 dark:text-slate-200">grid-cols-2 @sm:grid-cols-3 @2xl:grid-cols-6</p>
+                <ul class="grid grid-cols-2 gap-3 @sm:grid-cols-3 @2xl:grid-cols-6">
+                  <li class="grid aspect-square place-items-center rounded-lg bg-indigo-500/25 text-sm font-semibold text-indigo-950 dark:text-indigo-100">1</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-indigo-500/25 text-sm font-semibold text-indigo-950 dark:text-indigo-100">2</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-indigo-500/25 text-sm font-semibold text-indigo-950 dark:text-indigo-100">3</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-indigo-500/25 text-sm font-semibold text-indigo-950 dark:text-indigo-100">4</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-indigo-500/25 text-sm font-semibold text-indigo-950 dark:text-indigo-100">5</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-indigo-500/25 text-sm font-semibold text-indigo-950 dark:text-indigo-100">6</li>
+                </ul>
+              </div>
+              <div>
+                <p class="mb-2 font-mono text-xs break-all text-slate-700 dark:text-slate-200">grid-cols-[repeat(auto-fill,minmax(min(100%,7rem),1fr))]</p>
+                <ul class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,7rem),1fr))] gap-3">
+                  <li class="grid aspect-square place-items-center rounded-lg bg-emerald-500/25 text-sm font-semibold text-emerald-950 dark:text-emerald-100">1</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-emerald-500/25 text-sm font-semibold text-emerald-950 dark:text-emerald-100">2</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-emerald-500/25 text-sm font-semibold text-emerald-950 dark:text-emerald-100">3</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-emerald-500/25 text-sm font-semibold text-emerald-950 dark:text-emerald-100">4</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-emerald-500/25 text-sm font-semibold text-emerald-950 dark:text-emerald-100">5</li>
+                  <li class="grid aspect-square place-items-center rounded-lg bg-emerald-500/25 text-sm font-semibold text-emerald-950 dark:text-emerald-100">6</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="product-grid-2"></pre>
+        <div class="p-3"><p class="sc-note">Use variants when the design wants specific counts at named widths. Use <code>auto-fill</code> when any count that fits is fine: it needs no container and moves smoothly instead of in steps.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Gallery that goes from one column of squares to two of 3:2 photos</figcaption>
+        <div class="sc-demo" id="product-grid-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[30rem] max-w-full min-w-44">
+            <div class="grid grid-cols-1 @sm:grid-cols-2">
+              <div class="aspect-square bg-linear-to-br from-sky-300 to-indigo-400 @sm:aspect-3/2 dark:from-sky-700 dark:to-indigo-800"></div>
+              <div class="aspect-square bg-linear-to-br from-amber-200 to-rose-300 @sm:aspect-3/2 dark:from-amber-700 dark:to-rose-800"></div>
+              <div class="aspect-square bg-linear-to-br from-emerald-300 to-teal-400 @sm:aspect-3/2 dark:from-emerald-700 dark:to-teal-800"></div>
+              <div class="aspect-square bg-linear-to-br from-violet-300 to-fuchsia-300 @sm:aspect-3/2 dark:from-violet-700 dark:to-fuchsia-800"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="product-grid-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 6. @max-* ===================== -->
+  <article class="sc-feature" id="container-max">
+    <div class="sc-notes">
+      <h2><code>@max-*</code>: below a container size</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>@max-sm:</code>, <code>@max-md:</code> and the rest apply below a container size, the mirror of <code>@sm:</code>. Reach for them for desktop-first tweaks inside a component, like collapsing a column or hiding a label when space runs out.</p>
+      <ul class="sc-parts">
+        <li><code>@max-3xs:</code> … <code>@max-7xl:</code></li>
+        <li><code>@max-md:hidden</code></li>
+        <li><code>@max-sm:sr-only</code></li>
+        <li><code>@max-[960px]:</code></li>
+      </ul>
+      <p class="sc-note"><code>@max-md:</code> means <code>width &lt; 28rem</code> and <code>@md:</code> means <code>width &gt;= 28rem</code>, so the two never overlap. Avoid mixing both directions on the same property in one element.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#max-width-container-queries" target="_blank" rel="noopener">Docs: responsive design, max-width container queries</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>People list that drops the role column when narrow</figcaption>
+        <div class="sc-demo" id="container-max-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[36rem] max-w-full min-w-52">
+            <ul class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-800">
+              <li class="grid grid-cols-[1fr_auto_auto] items-center gap-4 p-3 @max-md:grid-cols-[1fr_auto]">
+                <span class="font-medium text-slate-900 dark:text-white">Ada Lovelace</span>
+                <span class="text-sm text-slate-600 @max-md:hidden dark:text-slate-300">Engineer</span>
+                <span class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">Active</span>
+              </li>
+              <li class="grid grid-cols-[1fr_auto_auto] items-center gap-4 p-3 @max-md:grid-cols-[1fr_auto]">
+                <span class="font-medium text-slate-900 dark:text-white">Grace Hopper</span>
+                <span class="text-sm text-slate-600 @max-md:hidden dark:text-slate-300">Compiler lead</span>
+                <span class="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-800 dark:text-amber-300">Away</span>
+              </li>
+              <li class="grid grid-cols-[1fr_auto_auto] items-center gap-4 p-3 @max-md:grid-cols-[1fr_auto]">
+                <span class="font-medium text-slate-900 dark:text-white">Katherine Johnson</span>
+                <span class="text-sm text-slate-600 @max-md:hidden dark:text-slate-300">Analyst</span>
+                <span class="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">Active</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-max-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Toolbar: labels go screen-reader-only, then Share disappears</figcaption>
+        <div class="sc-demo" id="container-max-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[28rem] max-w-full min-w-32">
+            <div class="flex gap-2 p-3">
+              <button class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="button">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 2h8l2 2v10H3z"/><path d="M5 2v4h5V2M5 14v-4h6v4"/></svg>
+                <span class="@max-sm:sr-only">Save</span>
+              </button>
+              <button class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="button">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="8" height="8" rx="1"/><path d="M3 11V3h8"/></svg>
+                <span class="@max-sm:sr-only">Duplicate</span>
+              </button>
+              <button class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800 @max-xs:hidden dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="button">
+                <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="4" cy="8" r="1.5"/><circle cx="12" cy="4" r="1.5"/><circle cx="12" cy="12" r="1.5"/><path d="M5.3 7.3l5.4-2.6M5.3 8.7l5.4 2.6"/></svg>
+                <span class="@max-sm:sr-only">Share</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-max-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Nav rail: one component as a 4rem rail and an 18rem drawer</figcaption>
+        <div class="sc-demo" id="container-max-3">
+          <div class="flex flex-wrap items-start gap-x-8 gap-y-4">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">w-16 · rail</p>
+              <nav class="@container w-16" aria-label="Rail">
+                <ul class="grid gap-1 rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                  <li><button class="flex w-full items-center gap-3 rounded-lg bg-indigo-500/15 px-3 py-2 text-sm font-medium text-slate-900 @max-2xs:justify-center @max-2xs:px-0 dark:text-white" type="button"><svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 8l6-5 6 5M4 7v7h8V7"/></svg><span class="@max-2xs:sr-only">Home</span></button></li>
+                  <li><button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 @max-2xs:justify-center @max-2xs:px-0 dark:text-slate-200" type="button"><svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 9l2-6h8l2 6v4H2zM2 9h4l1 2h2l1-2h4"/></svg><span class="@max-2xs:sr-only">Inbox</span></button></li>
+                  <li><button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 @max-2xs:justify-center @max-2xs:px-0 dark:text-slate-200" type="button"><svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 13V8M8 13V3M13 13V6"/></svg><span class="@max-2xs:sr-only">Reports</span></button></li>
+                </ul>
+              </nav>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">w-72 · drawer</p>
+              <nav class="@container w-72" aria-label="Drawer">
+                <ul class="grid gap-1 rounded-xl bg-white p-2 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                  <li><button class="flex w-full items-center gap-3 rounded-lg bg-indigo-500/15 px-3 py-2 text-sm font-medium text-slate-900 @max-2xs:justify-center @max-2xs:px-0 dark:text-white" type="button"><svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 8l6-5 6 5M4 7v7h8V7"/></svg><span class="@max-2xs:sr-only">Home</span></button></li>
+                  <li><button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 @max-2xs:justify-center @max-2xs:px-0 dark:text-slate-200" type="button"><svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 9l2-6h8l2 6v4H2zM2 9h4l1 2h2l1-2h4"/></svg><span class="@max-2xs:sr-only">Inbox</span></button></li>
+                  <li><button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-700 @max-2xs:justify-center @max-2xs:px-0 dark:text-slate-200" type="button"><svg class="size-4 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 13V8M8 13V3M13 13V6"/></svg><span class="@max-2xs:sr-only">Reports</span></button></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-max-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 7. ranges ===================== -->
+  <article class="sc-feature" id="container-range">
+    <div class="sc-notes">
+      <h2>Container query ranges</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Stack a min variant and a max variant to target a band between two container sizes. <code>@sm:@max-lg:grid-cols-2</code> applies from 24rem up to, but not including, 32rem. The order you write them in does not matter.</p>
+      <ul class="sc-parts">
+        <li><code>@sm:@max-md:flex-col</code></li>
+        <li><code>@min-md:@max-xl:hidden</code></li>
+        <li><code>@md/name:@max-xl/name:</code></li>
+      </ul>
+      <p class="sc-note">Both variants must resolve to the same container: with names, put the name on each, like <code>@sm/main:@max-md/main:</code>.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#container-query-ranges" target="_blank" rel="noopener">Docs: responsive design, container query ranges</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Metric tiles: one column, two only in the middle band, then four</figcaption>
+        <div class="sc-demo" id="container-range-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-44">
+            <div class="grid grid-cols-1 gap-3 p-3 @sm:@max-lg:grid-cols-2 @lg:grid-cols-4">
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Sessions</p><p class="text-lg font-semibold text-slate-900 dark:text-white">84.2k</p></div>
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Signups</p><p class="text-lg font-semibold text-slate-900 dark:text-white">1,942</p></div>
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">Churn</p><p class="text-lg font-semibold text-slate-900 dark:text-white">1.4%</p></div>
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-slate-500 dark:text-slate-400">NPS</p><p class="text-lg font-semibold text-slate-900 dark:text-white">62</p></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-range-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A range readout that needs no JavaScript</figcaption>
+        <div class="sc-demo" id="container-range-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-44">
+            <div class="flex flex-wrap gap-2 p-4 font-mono text-xs">
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @max-sm:bg-amber-500/50 dark:text-slate-100">below @sm</span>
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @sm:@max-md:bg-sky-500/50 dark:text-slate-100">@sm to @md</span>
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @md:@max-lg:bg-violet-500/50 dark:text-slate-100">@md to @lg</span>
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @lg:@max-xl:bg-emerald-500/50 dark:text-slate-100">@lg to @xl</span>
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @xl:bg-rose-500/50 dark:text-slate-100">@xl and up</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-range-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Hide the illustration only in the cramped middle</figcaption>
+        <div class="sc-demo" id="container-range-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-52">
+            <div class="p-3">
+              <div class="flex flex-col gap-4 rounded-xl bg-white p-4 ring-1 ring-slate-900/10 @md:flex-row @md:items-center dark:bg-slate-800 dark:ring-white/10">
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-semibold text-slate-900 dark:text-white">Summer sale starts Friday</h3>
+                  <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Up to 40% off trail gear, bags and outerwear. Free returns until the end of September.</p>
+                </div>
+                <div class="h-24 w-full shrink-0 rounded-lg bg-linear-to-br from-amber-300 to-rose-400 @md:w-36 @min-md:@max-xl:hidden dark:from-amber-600 dark:to-rose-700"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-range-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 8. named containers ===================== -->
+  <article class="sc-feature" id="container-named">
+    <div class="sc-notes">
+      <h2>Named containers</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Name a container with <code>@container/sidebar</code> and target it from any descendant with <code>@lg/sidebar:</code>. The element then responds to that specific ancestor instead of the nearest one, which is what you need as soon as containers nest.</p>
+      <ul class="sc-parts">
+        <li><code>@container/name</code></li>
+        <li><code>@lg/name:</code></li>
+        <li><code>@max-md/name:</code></li>
+        <li><code>@min-[600px]/name:</code></li>
+      </ul>
+      <p class="sc-note">A name only works if an ancestor carries the same name. A typo never matches and gives no warning.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#named-containers" target="_blank" rel="noopener">Docs: responsive design, named containers</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>App shell: page, sidebar and main are separate containers</figcaption>
+        <div class="sc-demo" id="container-named-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/page</span></div>
+          <div class="@container/page resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-64">
+            <div class="grid gap-3 p-3 @3xl/page:grid-cols-[16rem_minmax(0,1fr)]">
+              <aside class="@container/side rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <div class="flex flex-col items-center gap-2 text-center @2xs/side:flex-row @2xs/side:text-left">
+                  <span class="size-10 shrink-0 rounded-full bg-linear-to-br from-indigo-300 to-violet-400 @lg/page:size-12 dark:from-indigo-600 dark:to-violet-700"></span>
+                  <div class="min-w-0">
+                    <p class="truncate font-medium text-slate-900 dark:text-white">Dana Whitfield</p>
+                    <p class="text-xs text-slate-600 @max-2xs/side:hidden dark:text-slate-300">Workspace admin</p>
+                  </div>
+                </div>
+              </aside>
+              <section class="@container/main rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <h3 class="text-lg font-semibold text-slate-900 @md/main:text-2xl dark:text-white">Team activity</h3>
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">The avatar reads the page container, the name reads the sidebar, the heading reads main.</p>
+                <div class="mt-3 grid gap-2 @sm/main:grid-cols-2">
+                  <div class="rounded-lg bg-slate-500/15 p-2 text-sm text-slate-800 dark:text-slate-100">12 pull requests merged</div>
+                  <div class="rounded-lg bg-slate-500/15 p-2 text-sm text-slate-800 dark:text-slate-100">3 reviews waiting</div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-named-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Modal: the dialog and its form query different containers</figcaption>
+        <div class="sc-demo" id="container-named-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="320" max="900" class="w-full accent-indigo-600" aria-label="Container width"></label></div>
+          <div class="@container/modal resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[34rem] max-w-full min-w-72">
+            <div class="grid @xl/modal:grid-cols-2">
+              <div class="hidden place-items-center bg-linear-to-br from-indigo-300 to-sky-300 p-6 text-center @xl/modal:grid dark:from-indigo-700 dark:to-sky-700">
+                <p class="text-lg font-semibold text-slate-900 dark:text-white">Join 40,000 teams shipping with Acme</p>
+              </div>
+              <form class="@container/fields bg-white p-4 dark:bg-slate-800" onsubmit="return false">
+                <h3 class="text-base font-semibold text-slate-900 dark:text-white">Create your account</h3>
+                <div class="mt-3 grid gap-3 @md/fields:grid-cols-2">
+                  <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">First name
+                    <input class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white" type="text" value="Maya">
+                  </label>
+                  <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">Last name
+                    <input class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white" type="text" value="Ortiz">
+                  </label>
+                  <label class="grid gap-1 text-sm font-medium text-slate-700 dark:text-slate-200 @md/fields:col-span-2">Work email
+                    <input class="w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white" type="email" value="maya@example.com">
+                  </label>
+                  <button class="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 @md/fields:col-span-2" type="button">Create account</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-named-2"></pre>
+        <div class="p-3"><p class="sc-note">At 34rem the dialog is one column and the form has 34rem, so its fields use two columns. Widen the dialog past 36rem and the image panel appears, the form shrinks to half, and its fields drop to one column.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Dashboard: the grid decides the columns, each widget decides its own layout</figcaption>
+        <div class="sc-demo" id="container-named-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/dash</span></div>
+          <div class="@container/dash resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-64">
+            <div class="grid gap-3 p-3 @xl/dash:grid-cols-2 @3xl/dash:grid-cols-3">
+              <section class="@container/widget rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <div class="flex flex-col gap-2 @xs/widget:flex-row @xs/widget:items-center @xs/widget:justify-between">
+                  <div><p class="text-xs text-slate-500 dark:text-slate-400">Uptime</p><p class="text-xl font-semibold text-slate-900 dark:text-white">99.98%</p></div>
+                  <svg class="h-8 w-20 text-emerald-500" viewBox="0 0 80 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 20 L18 12 L34 18 L50 8 L78 10"/></svg>
+                </div>
+              </section>
+              <section class="@container/widget rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <div class="flex flex-col gap-2 @xs/widget:flex-row @xs/widget:items-center @xs/widget:justify-between">
+                  <div><p class="text-xs text-slate-500 dark:text-slate-400">p95 latency</p><p class="text-xl font-semibold text-slate-900 dark:text-white">182 ms</p></div>
+                  <svg class="h-8 w-20 text-sky-500" viewBox="0 0 80 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 8 L18 14 L34 10 L50 22 L78 18"/></svg>
+                </div>
+              </section>
+              <section class="@container/widget rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <div class="flex flex-col gap-2 @xs/widget:flex-row @xs/widget:items-center @xs/widget:justify-between">
+                  <div><p class="text-xs text-slate-500 dark:text-slate-400">Error rate</p><p class="text-xl font-semibold text-slate-900 dark:text-white">0.12%</p></div>
+                  <svg class="h-8 w-20 text-rose-500" viewBox="0 0 80 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 24 L18 22 L34 26 L50 12 L78 16"/></svg>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-named-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 9. nested containers ===================== -->
+  <article class="sc-feature" id="nested-containers">
+    <div class="sc-notes">
+      <h2>Nested containers</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Containers can sit inside containers. An unnamed variant like <code>@md:</code> always asks the nearest one; a named variant like <code>@md/page:</code> skips ahead to the ancestor with that name, so one element can react to several containers at once.</p>
+      <ul class="sc-parts">
+        <li><code>@container/page</code></li>
+        <li><code>@container/card</code></li>
+        <li><code>@lg/page:underline</code></li>
+        <li><code>@sm/card:font-bold</code></li>
+        <li><code>@md:</code> (nearest)</li>
+      </ul>
+      <p class="sc-note">The nearest container answers unnamed variants whether or not it has a name. Name the containers as soon as there are two.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#named-containers" target="_blank" rel="noopener">Docs: responsive design, named containers</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Two handles, one element reading both containers</figcaption>
+        <div class="sc-demo" id="nested-containers-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>outer: @container/page</span></div>
+          <div class="@container/page resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-72">
+            <div class="p-3">
+              <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>inner: @container/card</span></div>
+              <div class="@container/card resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-72 max-w-full min-w-40">
+                <div class="p-3">
+                  <p class="font-semibold text-slate-900 @lg/page:underline @sm/card:font-bold @lg/card:italic dark:text-white">Resize both containers</p>
+                  <ul class="mt-2 grid gap-1 text-xs text-slate-800 dark:text-slate-100">
+                    <li class="rounded bg-slate-500/20 px-2 py-1 @lg/page:bg-emerald-500/45">page is at least @lg (32rem)</li>
+                    <li class="rounded bg-slate-500/20 px-2 py-1 @sm/card:bg-emerald-500/45">card is at least @sm (24rem)</li>
+                    <li class="rounded bg-slate-500/20 px-2 py-1 @lg/card:bg-emerald-500/45">card is at least @lg (32rem)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="nested-containers-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Unnamed (nearest) vs named (distant) on sibling elements</figcaption>
+        <div class="sc-demo" id="nested-containers-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>outer: @container/page</span></div>
+          <div class="@container/page resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-72">
+            <div class="p-3">
+              <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>inner: @container</span></div>
+              <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-56 max-w-full min-w-32">
+                <div class="grid gap-2 p-3 text-sm text-slate-900 dark:text-white">
+                  <p class="rounded px-2 py-1 @md:bg-emerald-500/40 @md:underline">nearest: <code>@md:</code></p>
+                  <p class="rounded px-2 py-1 @md/page:bg-emerald-500/40 @md/page:underline">distant: <code>@md/page:</code></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="nested-containers-2"></pre>
+        <div class="p-3"><p class="sc-note">The inner box starts at 14rem, below <code>@md</code> (28rem), so only the line that asks the page container is highlighted. Drag the inner box past 28rem and both light up. Shrink the outer box below 28rem and the named one switches off.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Shell, panel and widget on one handle</figcaption>
+        <div class="sc-demo" id="nested-containers-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/shell</span></div>
+          <div class="@container/shell resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-72">
+            <div class="p-3">
+              <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/panel (75% of shell)</span></div>
+              <div class="@container/panel w-3/4 rounded-lg bg-white/70 p-3 ring-1 ring-slate-900/15 dark:bg-slate-900/70 dark:ring-white/20">
+                <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/widget (66% of panel)</span></div>
+                <div class="@container/widget w-2/3 rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                  <p class="text-sm font-medium text-slate-900 @md/widget:text-base dark:text-white">Build duration</p>
+                  <ul class="mt-2 grid gap-1 text-xs text-slate-800 dark:text-slate-100">
+                    <li class="rounded bg-slate-500/20 px-2 py-1 @xl/shell:bg-sky-500/45">shell at least @xl (36rem)</li>
+                    <li class="rounded bg-slate-500/20 px-2 py-1 @sm/panel:bg-violet-500/45">panel at least @sm (24rem)</li>
+                    <li class="rounded bg-slate-500/20 px-2 py-1 @md/widget:bg-emerald-500/45">widget at least @md (28rem)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="nested-containers-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 10. arbitrary values ===================== -->
+  <article class="sc-feature" id="container-arbitrary">
+    <div class="sc-notes">
+      <h2>Arbitrary container sizes</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>For a one-off size that is not in the theme, use <code>@min-[475px]:</code> and <code>@max-[960px]:</code> with any length unit. <code>@[475px]:</code> is shorthand for <code>@min-[475px]:</code>, and every form accepts a <code>/name</code> suffix.</p>
+      <ul class="sc-parts">
+        <li><code>@min-[475px]:</code></li>
+        <li><code>@max-[960px]:</code></li>
+        <li><code>@[600px]:</code></li>
+        <li><code>@min-[30rem]/feed:</code></li>
+        <li><code>@min-[theme(--breakpoint-md)]:</code></li>
+      </ul>
+      <p class="sc-note">The value cannot be a CSS variable: <code>@min-(--bp):</code> and <code>@min-[var(--bp)]:</code> generate nothing. Use a literal or <code>theme()</code>.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-arbitrary-container-query-values" target="_blank" rel="noopener">Docs: responsive design, using arbitrary values</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Newsletter signup that goes inline at exactly 475px</figcaption>
+        <div class="sc-demo" id="container-arbitrary-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[32rem] max-w-full min-w-48">
+            <div class="flex flex-col gap-3 p-6 @min-[475px]:flex-row @min-[475px]:items-center @max-[360px]:p-3 @[600px]:gap-6">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-semibold text-slate-900 dark:text-white">Get the changelog</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-300">One short email per release. No spam.</p>
+              </div>
+              <input class="min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 @min-[475px]:w-52 dark:border-slate-600 dark:bg-slate-800 dark:text-white" type="email" value="you@example.com" aria-label="Email address">
+              <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500" type="button">Subscribe</button>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-arbitrary-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Container thresholds taken from the viewport breakpoints</figcaption>
+        <div class="sc-demo" id="container-arbitrary-2">
+          <div data-sc-omit data-cq-bar data-cq-steps="breakpoint-sm:40,breakpoint-md:48" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-52">
+            <div class="grid gap-3 p-3 @min-[theme(--breakpoint-sm)]:@max-[theme(--breakpoint-md)]:grid-cols-2 @min-[theme(--breakpoint-md)]:grid-cols-3 @max-[theme(--breakpoint-sm)]:text-sm">
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><h3 class="font-semibold text-slate-900 dark:text-white">Fast builds</h3><p class="mt-1 text-slate-600 dark:text-slate-300">Incremental rebuilds in single-digit milliseconds.</p></div>
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><h3 class="font-semibold text-slate-900 dark:text-white">CSS-first config</h3><p class="mt-1 text-slate-600 dark:text-slate-300">Theme and plugins live in your stylesheet.</p></div>
+              <div class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><h3 class="font-semibold text-slate-900 dark:text-white">Modern CSS</h3><p class="mt-1 text-slate-600 dark:text-slate-300">Cascade layers, color-mix and container queries.</p></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-arbitrary-2"></pre>
+        <div class="p-3"><p class="sc-note"><code>theme(--breakpoint-md)</code> resolves to <code>48rem</code> when Tailwind builds the CSS, so the box flips at the same size as the viewport <code>md:</code> breakpoint. This is how tailwindcss.com builds its responsive previews.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>rem threshold on a named container</figcaption>
+        <div class="sc-demo" id="container-arbitrary-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/feed</span></div>
+          <div class="@container/feed resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[34rem] max-w-full min-w-48">
+            <ul class="grid gap-3 p-3 @min-[30rem]/feed:grid-cols-2">
+              <li class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-indigo-600 dark:text-indigo-300">Release</p><p class="text-sm font-medium text-slate-900 dark:text-white">v4.3 adds @container-size</p></li>
+              <li class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-indigo-600 dark:text-indigo-300">Guide</p><p class="text-sm font-medium text-slate-900 dark:text-white">Moving a card between slots</p></li>
+              <li class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-indigo-600 dark:text-indigo-300">Tip</p><p class="text-sm font-medium text-slate-900 dark:text-white">Prefer rem so thresholds follow font size</p></li>
+              <li class="rounded-lg bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10"><p class="text-xs text-indigo-600 dark:text-indigo-300">Case study</p><p class="text-sm font-medium text-slate-900 dark:text-white">A dashboard with 40 widgets</p></li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-arbitrary-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 11. size scale ===================== -->
+  <article class="sc-feature" id="container-scale">
+    <div class="sc-notes">
+      <h2>The container size scale</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Thirteen sizes, from <code>@3xs</code> (16rem) to <code>@7xl</code> (80rem), come from the <code>--container-*</code> theme variables. The same variables also drive <code>max-w-*</code>, <code>w-*</code> and <code>columns-*</code>, so one scale sets both layout widths and container variants.</p>
+      <ul class="sc-parts">
+        <li><code>--container-3xs</code> … <code>--container-7xl</code></li>
+        <li><code>max-w-md</code></li>
+        <li><code>columns-xs</code></li>
+        <li><code>@min-md:</code></li>
+      </ul>
+      <p class="sc-note">These are not the viewport breakpoints: <code>@md</code> is 28rem (448px), while <code>md:</code> is 48rem (768px). There is no <code>@8xl</code> unless you add it.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#container-size-reference" target="_blank" rel="noopener">Docs: responsive design, container size reference</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The default scale</figcaption>
+        <div class="sc-demo" id="container-scale-1">
+          <div class="sc-table-wrap">
+            <table class="sc-table">
+              <thead><tr><th>Variant</th><th>Theme variable</th><th>Size</th><th>Compiles to</th></tr></thead>
+              <tbody>
+                <tr><td><code>@3xs</code></td><td><code>--container-3xs</code></td><td>16rem · 256px</td><td><code>@container (width &gt;= 16rem)</code></td></tr>
+                <tr><td><code>@2xs</code></td><td><code>--container-2xs</code></td><td>18rem · 288px</td><td><code>@container (width &gt;= 18rem)</code></td></tr>
+                <tr><td><code>@xs</code></td><td><code>--container-xs</code></td><td>20rem · 320px</td><td><code>@container (width &gt;= 20rem)</code></td></tr>
+                <tr><td><code>@sm</code></td><td><code>--container-sm</code></td><td>24rem · 384px</td><td><code>@container (width &gt;= 24rem)</code></td></tr>
+                <tr><td><code>@md</code></td><td><code>--container-md</code></td><td>28rem · 448px</td><td><code>@container (width &gt;= 28rem)</code></td></tr>
+                <tr><td><code>@lg</code></td><td><code>--container-lg</code></td><td>32rem · 512px</td><td><code>@container (width &gt;= 32rem)</code></td></tr>
+                <tr><td><code>@xl</code></td><td><code>--container-xl</code></td><td>36rem · 576px</td><td><code>@container (width &gt;= 36rem)</code></td></tr>
+                <tr><td><code>@2xl</code></td><td><code>--container-2xl</code></td><td>42rem · 672px</td><td><code>@container (width &gt;= 42rem)</code></td></tr>
+                <tr><td><code>@3xl</code></td><td><code>--container-3xl</code></td><td>48rem · 768px</td><td><code>@container (width &gt;= 48rem)</code></td></tr>
+                <tr><td><code>@4xl</code></td><td><code>--container-4xl</code></td><td>56rem · 896px</td><td><code>@container (width &gt;= 56rem)</code></td></tr>
+                <tr><td><code>@5xl</code></td><td><code>--container-5xl</code></td><td>64rem · 1024px</td><td><code>@container (width &gt;= 64rem)</code></td></tr>
+                <tr><td><code>@6xl</code></td><td><code>--container-6xl</code></td><td>72rem · 1152px</td><td><code>@container (width &gt;= 72rem)</code></td></tr>
+                <tr><td><code>@7xl</code></td><td><code>--container-7xl</code></td><td>80rem · 1280px</td><td><code>@container (width &gt;= 80rem)</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-scale-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS · from Tailwind's theme.css">
+@theme default {
+  --container-3xs: 16rem;
+  --container-2xs: 18rem;
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 80rem;
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A ruler: every size lights up as the box passes it</figcaption>
+        <div class="sc-demo" id="container-scale-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="256" max="1400" class="w-full accent-indigo-600" aria-label="Container width"></label></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-56">
+            <div class="flex flex-wrap gap-1.5 p-3 font-mono text-xs">
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @3xs:bg-indigo-600 @3xs:text-white dark:text-slate-100">@3xs</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @2xs:bg-indigo-600 @2xs:text-white dark:text-slate-100">@2xs</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @xs:bg-indigo-600 @xs:text-white dark:text-slate-100">@xs</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @sm:bg-indigo-600 @sm:text-white dark:text-slate-100">@sm</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @md:bg-indigo-600 @md:text-white dark:text-slate-100">@md</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @lg:bg-indigo-600 @lg:text-white dark:text-slate-100">@lg</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @xl:bg-indigo-600 @xl:text-white dark:text-slate-100">@xl</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @2xl:bg-indigo-600 @2xl:text-white dark:text-slate-100">@2xl</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @3xl:bg-indigo-600 @3xl:text-white dark:text-slate-100">@3xl</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @4xl:bg-indigo-600 @4xl:text-white dark:text-slate-100">@4xl</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @5xl:bg-indigo-600 @5xl:text-white dark:text-slate-100">@5xl</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @6xl:bg-indigo-600 @6xl:text-white dark:text-slate-100">@6xl</span>
+              <span class="rounded bg-slate-500/20 px-1.5 py-0.5 text-slate-800 @7xl:bg-indigo-600 @7xl:text-white dark:text-slate-100">@7xl</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-scale-2"></pre>
+        <div class="p-3"><p class="sc-note">The slider goes up to 1400px, wider than this page. Past the edge of the stage, scroll it sideways to see the box.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The same variables set <code>max-w-*</code> and <code>columns-*</code></figcaption>
+        <div class="sc-demo" id="container-scale-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-56">
+            <div class="p-4">
+              <p class="mb-3 max-w-md rounded-lg bg-indigo-500/20 px-3 py-2 text-sm text-slate-900 dark:text-slate-100"><code>max-w-md</code> caps this block at <code>var(--container-md)</code>, 28rem: the variable behind <code>@md:</code>.</p>
+              <div class="columns-xs gap-6 text-sm text-slate-800 dark:text-slate-100">
+                <p class="mb-3">Columns of at least <code>var(--container-xs)</code>, 20rem, fill the box. The count follows the width with no container query at all.</p>
+                <p class="mb-3">A newspaper layout like this is the cheapest way to use the container scale: one class and the browser decides how many columns fit.</p>
+                <p class="mb-3">Use variants instead when you need to change other things at the same time, like type size, alignment or which parts are visible.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-scale-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 12. custom sizes ===================== -->
+  <article class="sc-feature" id="container-custom-sizes">
+    <div class="sc-notes">
+      <h2>Custom container sizes</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Add a <code>--container-*</code> variable in <code>@theme</code> and you get matching <code>@name:</code>, <code>@min-name:</code> and <code>@max-name:</code> variants, plus <code>max-w-name</code> and friends. Use it for sizes beyond 80rem or for names that describe intent.</p>
+      <ul class="sc-parts">
+        <li><code>--container-8xl: 96rem</code></li>
+        <li><code>@8xl:</code></li>
+        <li><code>@card-wide:</code></li>
+        <li><code>@max-compact:</code></li>
+        <li><code>--container-*: initial</code></li>
+      </ul>
+      <p class="sc-note">Hyphenated names such as <code>@card-wide:</code> need v4.1.4 or later. If a <code>--spacing-*</code> name collides with a <code>--container-*</code> name, spacing wins for <code>w-*</code> and <code>max-w-*</code>.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-custom-container-sizes" target="_blank" rel="noopener">Docs: responsive design, custom container sizes</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Add <code>@8xl</code> for ultra-wide layouts</figcaption>
+        <div class="sc-demo" id="container-custom-sizes-1">
+          <div data-sc-omit data-cq-bar data-cq-steps="7xl:80,8xl:96" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="640" max="1800" class="w-full accent-indigo-600" aria-label="Container width"></label></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[104rem] min-w-56">
+            <div class="flex flex-col gap-3 p-3 @8xl:flex-row">
+              <section class="flex-1 rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <h3 class="font-semibold text-slate-900 dark:text-white">Editor</h3>
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Stacked above the preview until the container reaches 96rem, then side by side.</p>
+              </section>
+              <section class="flex-1 rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <h3 class="font-semibold text-slate-900 dark:text-white">Preview</h3>
+                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Rendered output updates as you type.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-custom-sizes-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --container-8xl: 96rem;
+}</pre>
+        <div class="p-3"><p class="sc-note">The box starts at 104rem, so scroll this stage sideways. Slide it below 96rem and the panels stack.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Names that describe intent: <code>@compact</code>, <code>@regular</code>, <code>@card-wide</code></figcaption>
+        <div class="sc-demo" id="container-custom-sizes-2">
+          <div data-sc-omit data-cq-bar data-cq-steps="compact:15,regular:26,card-wide:40" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[28rem] max-w-full min-w-40">
+            <div class="p-3">
+              <div class="flex flex-col gap-3 rounded-xl bg-white p-4 ring-1 ring-slate-900/10 @regular:flex-row @regular:items-center @max-compact:p-2 dark:bg-slate-800 dark:ring-white/10">
+                <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-indigo-500/20 text-indigo-700 dark:text-indigo-200"><svg class="size-5" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg></span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium text-slate-900 @compact:text-base dark:text-white">Review pull request #482</p>
+                  <p class="hidden text-sm text-slate-600 @regular:block dark:text-slate-300">Assigned to Maya, due Friday</p>
+                </div>
+                <span class="hidden rounded-full bg-rose-500/15 px-2 py-0.5 text-xs font-medium text-rose-700 @card-wide:inline dark:text-rose-300">High priority</span>
+                <button class="hidden rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white @card-wide:block" type="button">Open</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-custom-sizes-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --container-compact: 15rem;
+  --container-regular: 26rem;
+  --container-card-wide: 40rem; /* hyphenated names: v4.1.4+ */
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Replace the whole scale (code only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --container-*: initial;
+  --container-compact: 18rem;
+  --container-regular: 30rem;
+  --container-wide: 44rem;
+}
+
+/* now @compact: @regular: @wide: exist,
+   and @md: @lg: max-w-md max-w-3xl are gone */</pre>
+        <div class="p-3"><p class="sc-note">Code only: resetting <code>--container-*</code> here would remove every default <code>@sm:</code>, <code>@md:</code> and <code>max-w-*</code> from this page. Only do it deliberately, because it also removes <code>max-w-3xl</code> and friends. The live example above shows named sizes working.</p></div>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 13. container units ===================== -->
+  <article class="sc-feature" id="container-units">
+    <div class="sc-notes">
+      <h2>Container query units</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>The CSS units <code>cqw</code>, <code>cqi</code>, <code>cqh</code>, <code>cqb</code>, <code>cqmin</code> and <code>cqmax</code> are 1% of the container's width, inline size, height, block size, smaller side and larger side. Use them as arbitrary values in any utility to scale padding, gaps, sizes and radii with the box.</p>
+      <ul class="sc-parts">
+        <li><code>w-[50cqw]</code></li>
+        <li><code>p-[4cqi]</code></li>
+        <li><code>gap-[3cqi]</code></li>
+        <li><code>size-[12cqi]</code></li>
+        <li><code>rounded-[2cqi]</code></li>
+        <li><code>w-[calc(100cqw-2rem)]</code></li>
+      </ul>
+      <p class="sc-note">Units follow the nearest container. <code>cqw</code> and <code>cqi</code> work in any <code>@container</code>; <code>cqh</code>, <code>cqb</code>, <code>cqmin</code> and <code>cqmax</code> also need the block size, so use <code>@container-size</code> (below). Without a container they silently fall back to viewport units.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-container-query-units" target="_blank" rel="noopener">Docs: responsive design, container query units</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A card that keeps its proportions at any width</figcaption>
+        <div class="sc-demo" id="container-units-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-full min-w-56">
+            <div class="p-3">
+              <div class="flex items-center gap-[3cqi] rounded-[2cqi] bg-white p-[4cqi] ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <span class="size-[12cqi] shrink-0 rounded-full bg-linear-to-br from-indigo-300 to-violet-400 dark:from-indigo-600 dark:to-violet-700"></span>
+                <div class="min-w-0">
+                  <p class="truncate text-[3.5cqi] leading-tight font-semibold text-slate-900 dark:text-white">Alex Rivera</p>
+                  <p class="truncate text-[2.5cqi] leading-tight text-slate-600 dark:text-slate-300">Product designer · 6 years</p>
+                </div>
+              </div>
+              <div class="mt-[3cqi] h-[1.5cqi] w-[50cqw] rounded-full bg-indigo-500"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-units-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Gaps and padding as a share of the width</figcaption>
+        <div class="sc-demo" id="container-units-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[28rem] max-w-full min-w-40">
+            <div class="grid grid-cols-3 gap-[5cqw] p-[5cqw]">
+              <div class="aspect-square rounded-[2cqw] bg-linear-to-br from-sky-300 to-indigo-400 dark:from-sky-700 dark:to-indigo-800"></div>
+              <div class="aspect-square rounded-[2cqw] bg-linear-to-br from-rose-300 to-orange-300 dark:from-rose-700 dark:to-orange-700"></div>
+              <div class="aspect-square rounded-[2cqw] bg-linear-to-br from-emerald-300 to-teal-400 dark:from-emerald-700 dark:to-teal-800"></div>
+              <div class="aspect-square rounded-[2cqw] bg-linear-to-br from-amber-200 to-pink-300 dark:from-amber-700 dark:to-pink-800"></div>
+              <div class="aspect-square rounded-[2cqw] bg-linear-to-br from-violet-300 to-fuchsia-300 dark:from-violet-700 dark:to-fuchsia-800"></div>
+              <div class="aspect-square rounded-[2cqw] bg-linear-to-br from-cyan-300 to-sky-400 dark:from-cyan-700 dark:to-sky-800"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-units-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A banner whose height is a share of its width, with <code>calc()</code></figcaption>
+        <div class="sc-demo" id="container-units-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[30rem] max-w-full min-w-40">
+            <div class="py-4">
+              <div class="mx-auto grid h-[22cqi] w-[calc(100cqw-2rem)] max-w-[90cqw] place-items-center rounded-[3cqi] bg-linear-to-r from-indigo-600 to-sky-600 text-[5cqi] font-bold text-white dark:from-indigo-700 dark:to-sky-700">Autumn catalogue</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-units-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 14. fluid type ===================== -->
+  <article class="sc-feature" id="fluid-type">
+    <div class="sc-notes">
+      <h2>Fluid type with <code>cqi</code></h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>Wrap a <code>cqi</code> term in <code>clamp()</code> so text scales smoothly with its container, between a minimum and a maximum. Tailwind passes the whole <code>clamp()</code> through as an arbitrary font size.</p>
+      <ul class="sc-parts">
+        <li><code>text-[clamp(1rem,7cqi,3rem)]</code></li>
+        <li><code>text-[5cqi]</code></li>
+        <li><code>leading-[1.1]</code></li>
+      </ul>
+      <p class="sc-note">Prefer <code>cqi</code> over <code>cqw</code>, since it follows the writing direction. Always clamp: unclamped container units are unreadable in a small box.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-container-query-units" target="_blank" rel="noopener">Docs: responsive design, container query units</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>One headline in three containers: each scales to its own box</figcaption>
+        <div class="sc-demo" id="fluid-type-1">
+          <div class="flex flex-col items-start gap-4">
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-300">w-56 · 14rem</p>
+              <div class="@container w-56 rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <h3 class="text-[clamp(1rem,7cqi,3rem)] leading-[1.1] font-bold tracking-tight text-slate-900 dark:text-white">Ship faster with fewer files</h3>
+                <p class="mt-2 text-[clamp(0.75rem,3cqi,1.125rem)] text-slate-600 dark:text-slate-300">Body copy scales gently with the card.</p>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-300">w-[22rem]</p>
+              <div class="@container w-[22rem] rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <h3 class="text-[clamp(1rem,7cqi,3rem)] leading-[1.1] font-bold tracking-tight text-slate-900 dark:text-white">Ship faster with fewer files</h3>
+                <p class="mt-2 text-[clamp(0.75rem,3cqi,1.125rem)] text-slate-600 dark:text-slate-300">Body copy scales gently with the card.</p>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-1 font-mono text-xs text-slate-600 dark:text-slate-300">w-[34rem]</p>
+              <div class="@container w-[34rem] rounded-xl bg-white p-4 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <h3 class="text-[clamp(1rem,7cqi,3rem)] leading-[1.1] font-bold tracking-tight text-slate-900 dark:text-white">Ship faster with fewer files</h3>
+                <p class="mt-2 text-[clamp(0.75rem,3cqi,1.125rem)] text-slate-600 dark:text-slate-300">Body copy scales gently with the card.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="fluid-type-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Raw <code>5cqi</code> vs clamped: why you clamp</figcaption>
+        <div class="sc-demo" id="fluid-type-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[28rem] max-w-full min-w-24">
+            <div class="grid gap-3 p-3">
+              <p class="font-medium text-slate-900 dark:text-white text-[5cqi]">Unclamped: text-[5cqi]</p>
+              <p class="font-medium text-slate-900 dark:text-white text-[clamp(1rem,5cqi,2rem)]">Clamped: clamp(1rem, 5cqi, 2rem)</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="fluid-type-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Fluid size plus a discrete switch at <code>@md</code></figcaption>
+        <div class="sc-demo" id="fluid-type-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[32rem] max-w-full min-w-40">
+            <div class="p-4">
+              <h3 class="text-[clamp(1rem,4cqi,1.75rem)] font-semibold text-slate-900 @md:text-center @md:font-bold dark:text-white">Fluid size, stepped alignment</h3>
+              <p class="mt-1 text-sm text-slate-600 @md:text-center dark:text-slate-300">The size changes smoothly with the box. Alignment and weight change once, at 28rem.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="fluid-type-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 15. @container-size ===================== -->
+  <article class="sc-feature" id="container-size">
+    <div class="sc-notes">
+      <h2><code>@container-size</code>: size containers</h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p><code>@container-size</code> sets <code>container-type: size</code> instead of <code>inline-size</code>, so the block size is available too. That unlocks the <code>cqb</code>, <code>cqh</code>, <code>cqmin</code> and <code>cqmax</code> units. <code>@container-size/name</code> names it, like <code>@container/name</code>.</p>
+      <ul class="sc-parts">
+        <li><code>@container-size</code></li>
+        <li><code>@container-size/poster</code></li>
+        <li><code>h-[50cqb]</code></li>
+        <li><code>text-[12cqmin]</code></li>
+        <li><code>text-[10cqh]</code></li>
+      </ul>
+      <p class="sc-note">A size container ignores its content when sizing, so give it a height (<code>h-*</code>, an aspect ratio, or a stretching flex or grid parent) or it collapses to zero. Width variants such as <code>@md/poster:</code> still work. Keep plain <code>@container</code> for things that grow with their content.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-size-containers" target="_blank" rel="noopener">Docs: responsive design, size containers</a> · <a href="https://tailwindcss.com/blog/tailwindcss-v4-3#new-container-size-utility" target="_blank" rel="noopener">v4.3 post</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Poster: the title scales to the shorter side of the box</figcaption>
+        <div class="sc-demo" id="container-size-1">
+          <div data-sc-omit data-cq-bar="wh" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="224" max="900" class="w-full accent-indigo-600" aria-label="Container width"></label><label class="flex min-w-40 flex-1 items-center gap-2">height<input data-cq-range="h" type="range" min="96" max="420" class="w-full accent-indigo-600" aria-label="Container height"></label></div>
+          <div class="@container-size resize overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 h-56 w-full min-h-24 min-w-48">
+            <div class="grid size-full place-items-center bg-linear-to-br from-indigo-200 to-sky-200 dark:from-indigo-900 dark:to-sky-900">
+              <p class="text-[12cqmin] leading-none font-bold tracking-tight text-slate-900 dark:text-white">Poster</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-size-1"></pre>
+        <div class="p-3"><p class="sc-note">Drag the corner or use the sliders. <code>12cqmin</code> is 12% of whichever side is shorter, so the word fits when you squash either dimension.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Plain <code>@container</code> vs <code>@container-size</code>, same <code>h-[50cqb]</code></figcaption>
+        <div class="sc-demo" id="container-size-2">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-rose-700 dark:text-rose-300">@container: no block size, falls back to the viewport</p>
+              <div class="@container h-40 overflow-hidden rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                <div class="h-[50cqb] w-[50cqw] rounded-br-lg bg-rose-500/60"></div>
+              </div>
+            </div>
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-emerald-700 dark:text-emerald-300">@container-size: half of the box height</p>
+              <div class="@container-size h-40 overflow-hidden rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+                <div class="h-[50cqb] w-[50cqw] rounded-br-lg bg-emerald-500/60"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-size-2"></pre>
+        <div class="p-3"><p class="sc-note">Both boxes are 10rem tall. In the left one, <code>cqb</code> has no block size to use and falls back to the small viewport height, so the red block is half the window tall and gets clipped. That silent fallback is why <code>@container-size</code> exists.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Named size container: a panel that is half the tile in both axes</figcaption>
+        <div class="sc-demo" id="container-size-3">
+          <div data-sc-omit data-cq-bar="wh" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="224" max="900" class="w-full accent-indigo-600" aria-label="Container width"></label><label class="flex min-w-40 flex-1 items-center gap-2">height<input data-cq-range="h" type="range" min="96" max="420" class="w-full accent-indigo-600" aria-label="Container height"></label></div>
+          <div class="@container-size/tile resize overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 h-64 w-96 max-w-full min-h-24 min-w-48">
+            <div class="grid size-full place-items-center">
+              <div class="grid h-[50cqb] w-[50cqw] place-items-center rounded-[4cqmin] bg-linear-to-br from-violet-600 to-sky-600 p-2 text-center text-[min(10cqw,14cqh)] leading-tight font-bold text-white @md/tile:from-emerald-600 @md/tile:to-teal-600 dark:from-violet-700 dark:to-sky-700 dark:@md/tile:from-emerald-700 dark:@md/tile:to-teal-700">Half size</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-size-3"></pre>
+        <div class="p-3"><p class="sc-note">The corner radius uses <code>cqmin</code>, the text uses <code>min(10cqw, 14cqh)</code>, and the width variant <code>@md/tile:</code> swaps the gradient once the tile reaches 28rem wide.</p></div>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 16. height queries ===================== -->
+  <article class="sc-feature" id="container-height">
+    <div class="sc-notes">
+      <h2>Height and aspect-ratio container queries</h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Tailwind has no <code>@h-*</code> variants, but a size container can be queried by height or aspect ratio with an arbitrary variant that wraps the at-rule, with underscores for spaces. Use it for panels that show more detail the taller they get.</p>
+      <ul class="sc-parts">
+        <li><code>[@container_(height>=16rem)]:</code></li>
+        <li><code>[@container_panel_(height>=20rem)]:</code></li>
+        <li><code>[@container_(aspect-ratio>1)]:</code></li>
+        <li><code>@container-size/panel</code></li>
+      </ul>
+      <p class="sc-note">The query only works against a size container, never a plain <code>@container</code>. Sizes are measured on the content box. Container size queries are Baseline 2023.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#using-size-containers" target="_blank" rel="noopener">Docs: size containers</a> · <a href="https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants" target="_blank" rel="noopener">arbitrary variants</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Kanban column that reveals more as it gets taller</figcaption>
+        <div class="sc-demo" id="container-height-1">
+          <div data-sc-omit data-cq-bar="wh" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">height<input data-cq-range="h" type="range" min="120" max="440" class="w-full accent-indigo-600" aria-label="Container height"></label></div>
+          <div class="@container-size/col resize-y overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 h-60 w-72 max-w-full min-h-24">
+            <div class="grid gap-2 p-3">
+              <div class="rounded-lg bg-white p-2.5 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <p class="text-sm font-medium text-slate-900 dark:text-white">Ship v4.3 release notes</p>
+                <p class="mt-1 hidden text-xs text-slate-600 [@container_col_(height>=12rem)]:block dark:text-slate-300">Draft the changelog entry, review the screenshots and schedule the post.</p>
+                <p class="mt-1 hidden text-xs font-medium text-indigo-700 [@container_col_(height>=18rem)]:block dark:text-indigo-300">Assigned to Maya · due Friday</p>
+              </div>
+              <div class="rounded-lg bg-white p-2.5 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+                <p class="text-sm font-medium text-slate-900 dark:text-white">Fix mobile nav overflow</p>
+                <p class="mt-1 hidden text-xs text-slate-600 [@container_col_(height>=12rem)]:block dark:text-slate-300">The menu button wraps under 340px on small phones.</p>
+                <p class="mt-1 hidden text-xs font-medium text-indigo-700 [@container_col_(height>=18rem)]:block dark:text-indigo-300">Assigned to Tomás · due Monday</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-height-1"></pre>
+        <div class="p-3"><p class="sc-note">Drag the bottom edge down or use the slider. The description appears at 12rem tall and the assignee line at 18rem.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Tile that switches between row and column by aspect ratio</figcaption>
+        <div class="sc-demo" id="container-height-2">
+          <div data-sc-omit data-cq-bar="wh" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">width<input data-cq-range type="range" min="192" max="700" class="w-full accent-indigo-600" aria-label="Container width"></label><label class="flex min-w-40 flex-1 items-center gap-2">height<input data-cq-range="h" type="range" min="120" max="420" class="w-full accent-indigo-600" aria-label="Container height"></label></div>
+          <div class="@container-size resize overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 h-48 w-96 max-w-full min-h-24 min-w-40">
+            <div class="flex size-full flex-col [@container_(aspect-ratio>1)]:flex-row">
+              <div class="flex-1 bg-linear-to-br from-amber-200 to-rose-300 dark:from-amber-700 dark:to-rose-800"></div>
+              <div class="flex-1 p-3">
+                <p class="text-xs font-medium tracking-wide text-slate-600 uppercase dark:text-slate-300">
+                  <span class="[@container_(aspect-ratio>1)]:hidden">portrait</span>
+                  <span class="hidden [@container_(aspect-ratio>1)]:inline">landscape</span>
+                </p>
+                <p class="mt-1 text-sm font-medium text-slate-900 dark:text-white">Autumn trail guide</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-height-2"></pre>
+        <div class="p-3"><p class="sc-note">Make the box taller than it is wide and the layout flips to a column.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Chat panel that hides its formatting row when short</figcaption>
+        <div class="sc-demo" id="container-height-3">
+          <div data-sc-omit data-cq-bar="wh" class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><label class="flex min-w-40 flex-1 items-center gap-2">height<input data-cq-range="h" type="range" min="144" max="420" class="w-full accent-indigo-600" aria-label="Container height"></label></div>
+          <div class="@container-size/panel resize-y overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 h-64 w-80 max-w-full min-h-36">
+            <div class="flex h-full flex-col bg-white dark:bg-slate-800">
+              <div class="border-b border-slate-200 px-3 py-2 dark:border-slate-700">
+                <p class="text-sm font-semibold text-slate-900 dark:text-white">Design review</p>
+                <p class="hidden text-xs text-slate-600 [@container_panel_(height>=14rem)]:block dark:text-slate-300">4 members · 2 online</p>
+              </div>
+              <div class="flex-1 overflow-hidden px-3 py-2 text-sm text-slate-800 dark:text-slate-100">Maya: updated the grid, take a look?</div>
+              <div class="border-t border-slate-200 p-2 dark:border-slate-700">
+                <div class="mb-2 hidden gap-1 text-xs text-slate-600 [@container_panel_(height>=18rem)]:flex dark:text-slate-300"><span class="rounded bg-slate-500/15 px-2 py-0.5 font-bold">B</span><span class="rounded bg-slate-500/15 px-2 py-0.5 italic">I</span><span class="rounded bg-slate-500/15 px-2 py-0.5 underline">U</span><span class="rounded bg-slate-500/15 px-2 py-0.5">Link</span></div>
+                <div class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-500 dark:border-slate-600 dark:text-slate-400">Write a message…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-height-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 17. not-@ ===================== -->
+  <article class="sc-feature" id="container-not">
+    <div class="sc-notes">
+      <h2>Negated container queries (<code>not-@md:</code>)</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The <code>not-*</code> variant works with container variants: <code>not-@md:hidden</code> applies when the container is <em>not</em> at least 28rem wide, and <code>not-@sm/side:</code> does the same for a named container. <code>@max-md:</code> is usually the clearer way to write it.</p>
+      <ul class="sc-parts">
+        <li><code>not-@md:</code></li>
+        <li><code>not-@lg:block</code></li>
+        <li><code>not-@sm/side:hidden</code></li>
+      </ul>
+      <p class="sc-note"><code>not-*</code> shipped in v4.0, but negating a container query was buggy until v4.3.1 fixed it. The pinned v4.3.3 is fine; use 4.3.1 or later.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#not" target="_blank" rel="noopener">Docs: not variant</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption><code>@max-md:</code> and <code>not-@md:</code> light up together</figcaption>
+        <div class="sc-demo" id="container-not-1">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[32rem] max-w-full min-w-40">
+            <div class="flex flex-wrap gap-2 p-4 font-mono text-xs">
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @max-md:bg-lime-500/55 dark:text-slate-100">@max-md:</span>
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 not-@md:bg-lime-500/55 dark:text-slate-100">not-@md:</span>
+              <span class="rounded-md bg-slate-500/15 px-2 py-1 text-slate-800 @md:bg-sky-500/55 dark:text-slate-100">@md:</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-not-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A hint that shows only while the panel is not wide</figcaption>
+        <div class="sc-demo" id="container-not-2">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>drag the corner ↘</span></div>
+          <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[34rem] max-w-full min-w-48">
+            <div class="p-4">
+              <p class="text-sm font-medium text-slate-900 dark:text-white">Order #4821 · 3 items</p>
+              <p class="mt-2 hidden rounded bg-amber-500/25 px-2 py-1 text-xs text-slate-900 not-@lg:block dark:text-slate-100">Widen the panel to see the line items.</p>
+              <ul class="mt-2 hidden gap-1 text-sm text-slate-700 @lg:grid dark:text-slate-200">
+                <li>1 × Trail runner · $129</li>
+                <li>1 × Merino socks · $18</li>
+                <li>1 × Daypack · $95</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-not-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Named negation on a sidebar</figcaption>
+        <div class="sc-demo" id="container-not-3">
+          <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container/side</span></div>
+          <div class="@container/side resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-52 max-w-full min-w-16">
+            <ul class="grid gap-1 p-2 text-sm text-slate-800 dark:text-slate-100">
+              <li class="flex items-center gap-2 rounded-md bg-indigo-500/15 px-2 py-1.5"><span class="size-2 shrink-0 rounded-full bg-indigo-500"></span><span class="not-@sm/side:hidden">Inbox</span></li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1.5"><span class="size-2 shrink-0 rounded-full bg-emerald-500"></span><span class="not-@sm/side:hidden">Drafts</span></li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1.5"><span class="size-2 shrink-0 rounded-full bg-amber-500"></span><span class="not-@sm/side:hidden">Archive</span></li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-not-3"></pre>
+        <div class="p-3"><p class="sc-note">The sidebar starts at 13rem, below <code>@sm</code> (24rem), so the labels are hidden. Drag it past 24rem to show them.</p></div>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 18. legacy container ===================== -->
+  <article class="sc-feature" id="container-utility">
+    <div class="sc-notes">
+      <h2><code>container</code> is not <code>@container</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The plain <code>container</code> class is the old fixed-width helper: <code>width: 100%</code> plus a <code>max-width</code> at each viewport breakpoint. It does not query anything. In v4 you customize it with <code>@utility container</code> instead of the v3 <code>center</code> and <code>padding</code> options.</p>
+      <ul class="sc-parts">
+        <li><code>container</code></li>
+        <li><code>@utility container</code></li>
+        <li><code>@container</code></li>
+      </ul>
+      <p class="sc-note">This page extends <code>container</code> with the override below, so every <code>container</code> here is centered and padded by 1rem. Without it, <code>container</code> does not center itself or add padding.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#container-configuration" target="_blank" rel="noopener">Docs: upgrade guide, container configuration</a> · <a href="https://tailwindcss.com/docs/max-width#using-breakpoints-container" target="_blank" rel="noopener">max-width</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Centered and padded with <code>@utility container</code></figcaption>
+        <div class="sc-demo" id="container-utility-1">
+          <p data-sc-omit data-mw-out class="mb-3 w-fit rounded-md bg-slate-900 px-2 py-1 font-mono text-xs text-white dark:bg-slate-100 dark:text-slate-900"></p>
+          <div class="container w-3/4 rounded-xl bg-indigo-500/20 py-4 text-sm text-slate-900 dark:text-slate-100">
+            <code>container w-3/4</code>: the override centers it with <code>margin-inline: auto</code> and insets the text with <code>padding-inline: 1rem</code>.
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-utility-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+}</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Show which max-width the container class has at the current viewport.
+function widthReadout() {
+  for (const out of document.querySelectorAll('[data-mw-out]')) {
+    const box = out.nextElementSibling
+    out.textContent = 'viewport ' + innerWidth + 'px · max-width ' + getComputedStyle(box).maxWidth
+  }
+}
+addEventListener('resize', widthReadout)
+widthReadout()</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>container</code> follows the window, <code>@container</code> follows the box</figcaption>
+        <div class="sc-demo" id="container-utility-2">
+          <div class="grid gap-5">
+            <div>
+              <p data-sc-omit class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-300">container: resize the browser window, not this box</p>
+              <p data-sc-omit data-mw-out class="mb-2 w-fit rounded-md bg-slate-900 px-2 py-1 font-mono text-xs text-white dark:bg-slate-100 dark:text-slate-900"></p>
+              <div class="container rounded-xl bg-white py-4 text-sm text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">The width cap steps with the viewport breakpoints: 40, 48, 64, 80 and 96rem.</div>
+            </div>
+            <div>
+              <div data-sc-omit data-cq-bar class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 dark:text-slate-300"><span data-cq-text class="rounded-md bg-slate-900 px-2 py-1 text-white dark:bg-slate-100 dark:text-slate-900"></span><span>@container: drag the corner ↘</span></div>
+              <div class="@container resize-x overflow-auto rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25 w-[30rem] max-w-full min-w-48">
+                <div class="flex flex-col gap-2 p-4 text-sm text-slate-800 @md:flex-row @md:items-center dark:text-slate-100">
+                  <span class="rounded-md bg-indigo-500/20 px-2 py-1 font-mono text-xs">@container</span>
+                  <span>The children react to this box, and the window size does not matter.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-utility-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What each class compiles to (code only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="CSS · generated">
+/* container: a width, then a max-width at each --breakpoint-* */
+.container {
+  width: 100%;
+  @media (width >= 40rem) { max-width: 40rem; }
+  @media (width >= 48rem) { max-width: 48rem; }
+  @media (width >= 64rem) { max-width: 64rem; }
+  @media (width >= 80rem) { max-width: 80rem; }
+  @media (width >= 96rem) { max-width: 96rem; }
+}
+
+/* @container: only a containment type, nothing about width */
+.\@container {
+  container-type: inline-size;
+}</pre>
+        <div class="p-3"><p class="sc-note">Code only: this is what the engine emits, which is easier to read than to demonstrate. The live examples above show the effect.</p></div>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 19. container-normal ===================== -->
+  <article class="sc-feature" id="container-normal">
+    <div class="sc-notes">
+      <h2><code>@container-normal</code> and <code>@container-[…]</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>@container-normal</code> sets <code>container-type: normal</code>, which switches containment off, for example above a viewport breakpoint. <code>@container-[size]</code> sets any container type directly.</p>
+      <ul class="sc-parts">
+        <li><code>@container-normal</code></li>
+        <li><code>lg:@container-normal</code></li>
+        <li><code>@container-[size]</code></li>
+        <li><code>@container-[inline-size]/card</code></li>
+      </ul>
+      <p class="sc-note">Inline-size containment means a container's width can never come from its content, so <code>@container</code> on a shrink-to-fit element (a flex item with no width, <code>w-fit</code>, <code>inline-block</code>) collapses to zero. A container is also an independent formatting context. The last container utility on an element wins.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/responsive-design#what-are-container-queries" target="_blank" rel="noopener">Docs: container queries</a> · utilities are not listed separately in the docs</p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Switch containment off and the variants stop matching</figcaption>
+        <div class="sc-demo" id="container-normal-1">
+          <div class="@container has-checked:@container-normal w-[32rem] max-w-full rounded-xl bg-white/50 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+            <label class="flex cursor-pointer items-center gap-2 p-3 text-sm font-medium text-slate-800 dark:text-slate-100"><input type="checkbox" class="size-4 accent-indigo-600"> Turn the container off with <code>@container-normal</code></label>
+            <div class="flex flex-col gap-3 p-3 pt-0 @sm:flex-row">
+              <div class="flex-1 rounded-lg bg-white p-3 text-sm text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Panel A</div>
+              <div class="flex-1 rounded-lg bg-white p-3 text-sm text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Panel B</div>
+            </div>
+          </div>
+          <p data-sc-omit data-ct-out class="mt-3 w-fit rounded-md bg-slate-900 px-2 py-1 font-mono text-xs text-white dark:bg-slate-100 dark:text-slate-900"></p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-normal-1"></pre>
+        <div class="p-3"><p class="sc-note">At 32rem the panels sit side by side because <code>@sm:flex-row</code> matches. Tick the box and the container becomes <code>normal</code>: with no container to measure, <code>@sm:</code> never matches and the panels stack. On a phone the box is narrower than 24rem, so the panels already stack.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Why a bare <code>@container</code> can collapse inside a flex row</figcaption>
+        <div class="sc-demo" id="container-normal-2">
+          <div class="group/demo">
+            <label class="mb-3 flex w-fit cursor-pointer items-center gap-2 text-sm font-medium text-slate-800 dark:text-slate-100"><input id="container-collapse" type="checkbox" class="size-4 accent-indigo-600"> Turn the container off with <code>@container-normal</code></label>
+            <div class="flex items-start gap-3 rounded-xl bg-white/50 p-3 ring-1 ring-slate-900/20 dark:bg-slate-950/50 dark:ring-white/25">
+              <div class="rounded-lg bg-white p-3 text-sm text-slate-800 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">Delivery options</div>
+              <div class="@container group-has-[#container-collapse:checked]/demo:@container-normal rounded-lg bg-indigo-500/25 p-3 ring-1 ring-indigo-500/50">
+                <p class="text-sm font-medium whitespace-nowrap text-slate-900 dark:text-white">Order summary</p>
+                <p class="text-xs whitespace-nowrap text-slate-700 dark:text-slate-200">3 items · $242</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-normal-2"></pre>
+        <div class="p-3"><p class="sc-note">The blue box is a flex item with no width. As a container it ignores its content width, so it shrinks to its padding and the text spills out. Tick the box and it sizes to its content again. In real code, keep <code>@container</code> and give the element a width (<code>flex-1</code>, <code>w-full</code>, <code>w-64</code>) instead.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What each class sets, read live from the browser</figcaption>
+        <div class="sc-demo" id="container-normal-3">
+          <div class="grid gap-3">
+            <div>
+              <div class="@container h-8 rounded bg-indigo-500/20 px-2 py-1 text-xs text-slate-900 dark:text-slate-100">@container</div>
+              <p data-sc-omit data-ct-out class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-200"></p>
+            </div>
+            <div>
+              <div class="@container-size h-8 rounded bg-indigo-500/20 px-2 py-1 text-xs text-slate-900 dark:text-slate-100">@container-size</div>
+              <p data-sc-omit data-ct-out class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-200"></p>
+            </div>
+            <div>
+              <div class="@container-normal h-8 rounded bg-indigo-500/20 px-2 py-1 text-xs text-slate-900 dark:text-slate-100">@container-normal</div>
+              <p data-sc-omit data-ct-out class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-200"></p>
+            </div>
+            <div>
+              <div class="@container-[size] h-8 rounded bg-indigo-500/20 px-2 py-1 text-xs text-slate-900 dark:text-slate-100">@container-[size]</div>
+              <p data-sc-omit data-ct-out class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-200"></p>
+            </div>
+            <div>
+              <div class="@container/card h-8 rounded bg-indigo-500/20 px-2 py-1 text-xs text-slate-900 dark:text-slate-100">@container/card</div>
+              <p data-sc-omit data-ct-out class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-200"></p>
+            </div>
+            <div>
+              <div class="@container-[inline-size]/card h-8 rounded bg-indigo-500/20 px-2 py-1 text-xs text-slate-900 dark:text-slate-100">@container-[inline-size]/card</div>
+              <p data-sc-omit data-ct-out class="mt-1 font-mono text-xs text-slate-700 dark:text-slate-200"></p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-normal-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// Print the computed container-type and container-name of the element before each readout.
+function typeReadout() {
+  for (const out of document.querySelectorAll('[data-ct-out]')) {
+    const style = getComputedStyle(out.previousElementSibling)
+    const name = style.containerName === 'none' ? '' : ' · container-name: ' + style.containerName
+    out.textContent = 'container-type: ' + style.containerType + name
+  }
+}
+document.addEventListener('change', typeReadout)
+typeReadout()</pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ===================== 20. style queries ===================== -->
+  <article class="sc-feature" id="container-style-queries">
+    <div class="sc-notes">
+      <h2>Container style queries (bonus)</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>Tailwind does not document it, but an arbitrary variant can write a CSS container <em>style</em> query. Set a custom property on a wrapper and any descendant can restyle itself from its value, without a class on each child.</p>
+      <ul class="sc-parts">
+        <li><code>[@container_style(--tone:dark)]:</code></li>
+        <li><code>[@container_tone_style(--tone:dark)]:</code></li>
+        <li><code>[--tone:dark]</code></li>
+        <li><code>has-checked:[--tone:dark]</code></li>
+      </ul>
+      <p class="sc-note">Browser support is narrower than for size queries: style queries on custom properties work in Chromium (111+) and Safari (18+). Firefox support is newer or limited, so check caniuse before relying on it.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants" target="_blank" rel="noopener">Docs: arbitrary variants</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Theme a card from one custom property</figcaption>
+        <div class="sc-demo" id="container-style-queries-1">
+          <div class="[--tone:light] has-checked:[--tone:dark] w-[24rem] max-w-full rounded-xl bg-white p-4 ring-1 ring-slate-900/10 has-checked:bg-slate-800">
+            <label class="mb-3 flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-900 [@container_style(--tone:dark)]:text-white"><input type="checkbox" class="size-4 accent-indigo-600"> Dark tone</label>
+            <p class="font-semibold text-slate-900 [@container_style(--tone:dark)]:text-white">Quarterly report</p>
+            <p class="text-sm text-slate-600 [@container_style(--tone:dark)]:text-slate-300">Neither text element has a dark variant: both read <code>--tone</code> from the card.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-style-queries-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Density mode on a list</figcaption>
+        <div class="sc-demo" id="container-style-queries-2">
+          <div class="[--density:comfortable] has-checked:[--density:compact] w-[24rem] max-w-full rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+            <label class="mb-2 flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-900 dark:text-white"><input type="checkbox" class="size-4 accent-indigo-600"> Compact rows</label>
+            <ul class="divide-y divide-slate-200 text-sm text-slate-800 dark:divide-slate-700 dark:text-slate-100">
+              <li class="py-3 [@container_style(--density:compact)]:py-1">Inbox</li>
+              <li class="py-3 [@container_style(--density:compact)]:py-1">Drafts</li>
+              <li class="py-3 [@container_style(--density:compact)]:py-1">Archive</li>
+              <li class="py-3 [@container_style(--density:compact)]:py-1">Trash</li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-style-queries-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Status accent from <code>--status</code></figcaption>
+        <div class="sc-demo" id="container-style-queries-3">
+          <div class="flex flex-wrap gap-3">
+            <div class="[--status:ok] rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="rounded-full bg-slate-500/20 px-2.5 py-1 text-xs font-medium text-slate-900 [@container_style(--status:ok)]:bg-emerald-500/40 dark:text-slate-100">Operational</span>
+            </div>
+            <div class="[--status:warn] rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="rounded-full bg-slate-500/20 px-2.5 py-1 text-xs font-medium text-slate-900 [@container_style(--status:ok)]:bg-emerald-500/40 [@container_style(--status:warn)]:bg-amber-500/45 dark:text-slate-100">Degraded</span>
+            </div>
+            <div class="[--status:down] rounded-xl bg-white p-3 ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+              <span class="rounded-full bg-slate-500/20 px-2.5 py-1 text-xs font-medium text-slate-900 [@container_style(--status:ok)]:bg-emerald-500/40 [@container_style(--status:warn)]:bg-amber-500/45 [@container_style(--status:down)]:bg-rose-500/45 dark:text-slate-100">Outage</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="container-style-queries-3"></pre>
+      </figure>
+    </div>
+  </article>
+</main>
+
+<footer data-sc-foot></footer>
+
+<script>
+  // ---- readouts, sliders and the swap button used by the demos on this page ----
+  // Everything is delegated or re-run safely; the Tailwind examples need none of it.
+
+  // 1. width readout + slider for every [data-cq-bar]: it controls the element right after it
+  const SCALE = '3xs:16,2xs:18,xs:20,sm:24,md:28,lg:32,xl:36,2xl:42,3xl:48,4xl:56,5xl:64,6xl:72,7xl:80'
+  const bars = new WeakMap() // box -> its readout bar
+
+  const observer = new ResizeObserver((entries) => {
+    for (const entry of entries) paint(entry.target, entry.contentBoxSize[0])
+  })
+
+  function paint(box, size) {
+    const bar = bars.get(box)
+    if (!bar) return
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    const steps = (bar.dataset.cqSteps || SCALE).split(',').map((s) => s.split(':'))
+    const reached = steps.filter(([, r]) => r * rem <= size.inlineSize).pop()
+    const w = Math.round(size.inlineSize)
+    const text =
+      bar.dataset.cqBar === 'wh'
+        ? w + ' × ' + Math.round(size.blockSize) + ' px'
+        : w + 'px · ' + (reached ? '@' + reached[0] : 'below @' + steps[0][0])
+    bar.querySelector('[data-cq-text]').textContent = text
+    for (const range of bar.querySelectorAll('[data-cq-range]')) {
+      range.value = Math.round(range.dataset.cqRange === 'h' ? size.blockSize : size.inlineSize)
+    }
+  }
+
+  for (const bar of document.querySelectorAll('[data-cq-bar]')) {
+    const box = bar.nextElementSibling
+    if (!box) continue
+    bars.set(box, bar)
+    observer.observe(box)
+  }
+
+  document.addEventListener('input', (e) => {
+    const range = e.target.closest('[data-cq-range]')
+    if (!range) return
+    const box = range.closest('[data-cq-bar]').nextElementSibling
+    box.style[range.dataset.cqRange === 'h' ? 'height' : 'width'] = range.value + 'px'
+  })
+
+  // 2. swap the two cards between the sidebar and main slots
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-swap]')) return
+    const [a, b] = e.target.closest('.sc-demo').querySelectorAll('.js-slot')
+    const first = a.firstElementChild
+    a.append(b.firstElementChild)
+    b.append(first)
+  })
+
+  // 3. viewport readout (md = 48rem) and the container class's current max-width
+  function viewportReadout() {
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+    for (const out of document.querySelectorAll('[data-vw-out]')) {
+      out.textContent = 'viewport ' + innerWidth + 'px · md: ' + (innerWidth >= 48 * rem ? 'on' : 'off')
+    }
+  }
+  function widthReadout() {
+    for (const out of document.querySelectorAll('[data-mw-out]')) {
+      const box = out.nextElementSibling
+      out.textContent = 'viewport ' + innerWidth + 'px · max-width ' + getComputedStyle(box).maxWidth
+    }
+  }
+  addEventListener('resize', viewportReadout)
+  addEventListener('resize', widthReadout)
+  viewportReadout()
+  widthReadout()
+
+  // 4. computed container-type / container-name of the element before each readout
+  function typeReadout() {
+    for (const out of document.querySelectorAll('[data-ct-out]')) {
+      const style = getComputedStyle(out.previousElementSibling)
+      const name = style.containerName === 'none' ? '' : ' · container-name: ' + style.containerName
+      out.textContent = 'container-type: ' + style.containerType + name
+    }
+  }
+  document.addEventListener('change', typeReadout)
+  typeReadout()
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+/*
+ * Runtime theming: CSS variables written by React, read by @theme tokens.
+ *
+ * The plan has two halves.
+ *   1. React writes plain custom properties on a wrapper element:
+ *        style={{ '--brand-h': 245, '--brand-c': 0.17 }}
+ *   2. Tailwind tokens defined with `@theme inline` read them, so
+ *      bg-brand-600, text-brand-800, ring-brand-500/40 ... follow the wrapper.
+ *
+ * WHY `inline`. A plain @theme token becomes `--color-brand-600: oklch(...)`
+ * declared on :root, and CSS resolves var() where the property is DECLARED,
+ * so --brand-h would be read from :root and a wrapper could never change it.
+ * With `inline`, Tailwind pastes the value into every utility instead
+ * (`background-color: oklch(0.55 var(--brand-c) var(--brand-h))`), and the
+ * var() is then resolved on the element that uses it, where the wrapper's
+ * value is visible. The same mechanism makes the app's own bg-accent and
+ * text-ink follow the theme menu (section 6 of src/index.css).
+ *
+ * `--spacing` needs no token work at all: every p-*, gap-*, size-*, m-* class
+ * is calc(var(--spacing) * n), so overriding --spacing on a wrapper rescales
+ * everything inside it.
+ *
+ * THE SECOND ENTRY POINT. Utilities such as bg-brand-600 can only be generated
+ * by the stylesheet that knows the --color-brand-* tokens. src/index.css does
+ * not (and belongs to the app shell), so this file borrows its theme with
+ * @reference and adds a utilities generator without automatic scanning
+ * (source(none)). In your own app the @theme block would simply sit in the
+ * main stylesheet and the scanner would do the rest.
+ *
+ * It lists the brand classes with @source inline() instead of scanning this
+ * demo's markup. Scanning would also re-emit every ordinary class in that
+ * file (px-4, text-sm, flex ...) a second time, AFTER the main stylesheet,
+ * and a later copy of a rule beats an earlier one of equal specificity: that
+ * is how px-4 here would start to override px-8 in another demo. Every class
+ * below contains "brand", so nothing in the main stylesheet can clash.
+ */
+@reference "../index.css";
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+/* backgrounds, text and borders in all 11 steps, plain and dark: (66 classes) */
+@source inline("{,dark:}{bg,text,border}-brand-{50,{100..900..100},950}");
+/* the one hover colour, the focus outline and the slider colour */
+@source inline("hover:bg-brand-700");
+@source inline("focus-visible:outline-brand-500");
+@source inline("accent-brand-600");
+
+@theme inline {
+  /* lightness steps are fixed; chroma is scaled per step and hue is the input */
+  --color-brand-50: oklch(0.97 calc(var(--brand-c, 0.17) * 0.12) var(--brand-h, 245));
+  --color-brand-100: oklch(0.94 calc(var(--brand-c, 0.17) * 0.22) var(--brand-h, 245));
+  --color-brand-200: oklch(0.89 calc(var(--brand-c, 0.17) * 0.4) var(--brand-h, 245));
+  --color-brand-300: oklch(0.82 calc(var(--brand-c, 0.17) * 0.65) var(--brand-h, 245));
+  --color-brand-400: oklch(0.73 calc(var(--brand-c, 0.17) * 0.9) var(--brand-h, 245));
+  --color-brand-500: oklch(0.64 var(--brand-c, 0.17) var(--brand-h, 245));
+  --color-brand-600: oklch(0.55 var(--brand-c, 0.17) var(--brand-h, 245));
+  --color-brand-700: oklch(0.47 calc(var(--brand-c, 0.17) * 0.9) var(--brand-h, 245));
+  --color-brand-800: oklch(0.39 calc(var(--brand-c, 0.17) * 0.75) var(--brand-h, 245));
+  --color-brand-900: oklch(0.31 calc(var(--brand-c, 0.17) * 0.6) var(--brand-h, 245));
+  --color-brand-950: oklch(0.24 calc(var(--brand-c, 0.17) * 0.5) var(--brand-h, 245));
+}
+
+/*
+ * For comparison only: the SAME colour as a plain @theme token would make it,
+ * a variable declared on :root. The tile that uses it in the demo stays put.
+ */
+:root {
+  --demo-frozen: oklch(0.55 var(--brand-c, 0.17) var(--brand-h, 245));
+}

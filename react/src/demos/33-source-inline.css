@@ -1,0 +1,47 @@
+/*
+ * Safelisting classes that are built at runtime: @source inline().
+ *
+ * Tailwind finds classes by reading your source files as plain text and
+ * keeping every token that looks like a utility. A string assembled at
+ * runtime, such as `bg-${color}-500`, never appears in the source as a whole
+ * word, so the scanner never sees it and no CSS is generated. The picker in
+ * 33-source-inline.jsx does exactly that.
+ *
+ * `@source inline("...")` hands the compiler a list of candidates directly.
+ * The argument is brace-expanded like a shell glob:
+ *
+ *   {hover:,}            ->  "" and "hover:"
+ *   bg-{rose,sky}-500    ->  bg-rose-500  bg-sky-500
+ *   {100,300,500}        ->  100  300  500
+ *   {100..900..200}      ->  100  300  500  700  900   (start..end..step)
+ *
+ * WHERE THIS LINE LIVES. In a normal app it sits in app.css, beside
+ * `@import "tailwindcss"`. In this guide src/index.css belongs to the app
+ * shell, so this demo ships its own small entry point: the same two imports
+ * that "tailwindcss" itself is made of (theme and utilities), minus preflight,
+ * and with source(none) so it scans nothing on its own. The result is a few
+ * kB of CSS containing only the safelisted classes.
+ *
+ * A file that only has `@reference` would NOT work here: @reference loads
+ * definitions and emits nothing, so there would be nowhere for the generated
+ * utilities, or the theme colours they point at, to go.
+ *
+ * WHY prefix(dyn). A second stylesheet that emitted ordinary class names
+ * (bg-rose-500, text-sky-900 ...) would put copies of them AFTER the main
+ * stylesheet's rules. Equal specificity means the later rule wins, so a copy
+ * of `.bg-sky-500` could silently beat `dark:bg-sky-300` somewhere else in the
+ * app. With prefix(dyn) every class and variable from this file is namespaced
+ * (dyn:bg-rose-500, --dyn-color-rose-500) and nothing can clash. If the
+ * safelist lived in your main stylesheet you would not need it.
+ */
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme) prefix(dyn);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(dyn) source(none);
+
+/* six palettes x five shades (a 100..900 range, step 200), each background
+   colour with a hover: twin: 60 classes. The prefix goes first: dyn:hover:bg-… */
+@source inline("dyn:{hover:,}bg-{rose,amber,emerald,sky,violet,slate}-{100..900..200}");
+
+/* the same palettes as text colours: 30 more */
+@source inline("dyn:text-{rose,amber,emerald,sky,violet,slate}-{100..900..200}");

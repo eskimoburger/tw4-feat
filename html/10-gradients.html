@@ -1,0 +1,1952 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gradients</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* page-specific v4 CSS (@theme, @utility, @keyframes, …) goes below */
+
+  /* ---- colour and image tokens ---- */
+  @theme {
+    --color-brand-300: oklch(0.82 0.12 290);
+    --color-brand-500: oklch(0.62 0.22 290);
+    --background-image-brand: linear-gradient(135deg, #6366f1, #ec4899);
+    --background-image-landscape:
+      radial-gradient(circle at 72% 38%, #fde68a 0 8%, transparent 8.5%),
+      linear-gradient(to bottom, #38bdf8, #fed7aa 58%, #115e59 58%);
+  }
+
+  /* ---- animations ---- */
+  @theme {
+    --animate-gradient-pan: gradient-pan 6s ease-in-out infinite;
+    --animate-stripes: stripes 1s linear infinite;
+    --animate-angle: spin-angle 3s linear infinite;
+    --animate-shimmer: shimmer 1.6s linear infinite;
+    --animate-drift: drift 12s ease-in-out infinite alternate;
+
+    @keyframes gradient-pan {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    @keyframes stripes {
+      to { background-position: 1rem 0; }
+    }
+    @keyframes spin-angle {
+      to { --angle: 360deg; }
+    }
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    @keyframes drift {
+      from { translate: -8% -6%; }
+      to   { translate: 8% 10%; }
+    }
+  }
+
+  /* a typed property: the browser can only tween --angle if it knows it is an angle */
+  @property --angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  /* ---- custom gradient utilities ---- */
+  @utility stripes-* {
+    background-image: repeating-linear-gradient(
+      var(--stripe-angle, 45deg),
+      --value(--color-*, [color]) 0 0.5rem,
+      transparent 0.5rem 1rem
+    );
+  }
+  @utility stripe-angle-* {
+    --stripe-angle: calc(--value(integer, --default(45)) * 1deg);
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="sc-intro">
+    <p class="sc-eyebrow">Page 10 · Visual</p>
+    <h1>Gradients</h1>
+    <p class="sc-lede">Linear, radial and conic gradients, colour stops and positions, interpolation modes, and the patterns people build from them: gradient text and borders, mesh backgrounds, animated pans, spinners and striped bars. Most of it was renamed or extended in v4.</p>
+    <nav data-sc-toc aria-label="Features on this page"></nav>
+  </section>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="linear-directions">
+    <div class="sc-notes">
+      <h2>Linear gradient directions</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>bg-linear-to-r</code> and its seven siblings point a gradient at a side or corner. They replace v3's <code>bg-gradient-to-*</code>. The colours come from <code>from-*</code>, <code>via-*</code> and <code>to-*</code>, and v4 interpolates in <code>oklab</code> by default.</p>
+      <ul class="sc-parts">
+        <li><code>bg-linear-to-t</code></li>
+        <li><code>bg-linear-to-tr</code></li>
+        <li><code>bg-linear-to-r</code></li>
+        <li><code>bg-linear-to-br</code></li>
+        <li><code>bg-linear-to-b</code></li>
+        <li><code>bg-linear-to-bl</code></li>
+        <li><code>bg-linear-to-l</code></li>
+        <li><code>bg-linear-to-tl</code></li>
+        <li><code>bg-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#adding-a-linear-gradient" target="_blank" rel="noopener">Docs: background-image</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The eight directions (hover the centre tile for <code>bg-none</code>)</figcaption>
+        <div class="sc-demo" id="linear-directions-1">
+          <div class="mx-auto grid max-w-xs grid-cols-3 gap-2 font-mono text-[11px] text-white">
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-tl from-sky-400 to-indigo-600">to-tl</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-t from-sky-400 to-indigo-600">to-t</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-tr from-sky-400 to-indigo-600">to-tr</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-l from-sky-400 to-indigo-600">to-l</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-slate-300 bg-linear-to-r from-sky-400 to-indigo-600 text-center hover:bg-none hover:text-slate-900">hover: bg-none</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-r from-sky-400 to-indigo-600">to-r</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-bl from-sky-400 to-indigo-600">to-bl</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-b from-sky-400 to-indigo-600">to-b</div>
+            <div class="grid h-16 place-items-center rounded-lg bg-linear-to-br from-sky-400 to-indigo-600">to-br</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-directions-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Pricing cards with a gradient header band</figcaption>
+        <div class="sc-demo" id="linear-directions-2">
+          <div class="flex flex-wrap justify-center gap-4">
+            <div class="w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+              <div class="bg-linear-to-br from-slate-500 to-slate-700 px-5 py-4 text-white">
+                <h3 class="text-sm font-semibold">Starter</h3>
+                <p class="text-3xl font-bold">$9<span class="text-sm font-normal opacity-80">/mo</span></p>
+              </div>
+              <ul class="space-y-2 p-5 text-sm">
+                <li>3 projects</li>
+                <li>Community support</li>
+                <li>1 GB storage</li>
+              </ul>
+            </div>
+            <div class="w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-md dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+              <div class="bg-linear-to-br from-fuchsia-500 to-orange-400 px-5 py-4 text-white">
+                <h3 class="text-sm font-semibold">Pro <span class="ml-1 rounded-full bg-white/25 px-2 py-0.5 text-[10px] uppercase tracking-wider">Popular</span></h3>
+                <p class="text-3xl font-bold">$24<span class="text-sm font-normal opacity-80">/mo</span></p>
+              </div>
+              <ul class="space-y-2 p-5 text-sm">
+                <li>Unlimited projects</li>
+                <li>Priority support</li>
+                <li>100 GB storage</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-directions-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Responsive swap: vertical on phones, horizontal from <code>md</code> up</figcaption>
+        <div class="sc-demo" id="linear-directions-3">
+          <section class="rounded-2xl bg-linear-to-b from-pink-500 to-indigo-500 p-8 text-white md:bg-linear-to-r">
+            <h3 class="text-xl font-bold">Spring launch</h3>
+            <p class="mt-1 max-w-sm text-sm text-white/90">Resize the window across the 768px breakpoint and the gradient turns from top-to-bottom into left-to-right.</p>
+          </section>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-directions-3"></pre>
+      </figure>
+      <p class="sc-note">Direction utilities have no negative form (<code>-bg-linear-to-r</code> generates nothing). They all set the same property, so a responsive swap like the one above simply replaces the direction.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="color-stops">
+    <div class="sc-notes">
+      <h2>Colour stops: from, via, to</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p><code>from-*</code>, <code>via-*</code> and <code>to-*</code> set the start, middle and end colours of any gradient type. They take palette colours, theme colours, arbitrary values and CSS variables. A missing end stop fades to transparent.</p>
+      <ul class="sc-parts">
+        <li><code>from-indigo-500</code></li>
+        <li><code>via-purple-500</code></li>
+        <li><code>to-pink-500</code></li>
+        <li><code>from-[#ff0080]</code></li>
+        <li><code>from-(--brand)</code></li>
+        <li><code>from-transparent</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#setting-gradient-color-stops" target="_blank" rel="noopener">Docs: gradient color stops</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Three stops, with a pin above each one</figcaption>
+        <div class="sc-demo" id="color-stops-1">
+          <div class="mx-4">
+            <div class="relative h-12">
+              <div class="absolute top-0 left-0 flex -translate-x-1/2 flex-col items-center gap-1">
+                <span class="size-5 rounded-full bg-indigo-500 ring-2 ring-white dark:ring-slate-900"></span>
+                <span class="h-3 w-px bg-slate-400 dark:bg-slate-500"></span>
+              </div>
+              <div class="absolute top-0 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1">
+                <span class="size-5 rounded-full bg-purple-500 ring-2 ring-white dark:ring-slate-900"></span>
+                <span class="h-3 w-px bg-slate-400 dark:bg-slate-500"></span>
+              </div>
+              <div class="absolute top-0 right-0 flex translate-x-1/2 flex-col items-center gap-1">
+                <span class="size-5 rounded-full bg-pink-500 ring-2 ring-white dark:ring-slate-900"></span>
+                <span class="h-3 w-px bg-slate-400 dark:bg-slate-500"></span>
+              </div>
+            </div>
+            <div class="h-10 rounded-lg bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="color-stops-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>One-stop gradients fade to or from transparent</figcaption>
+        <div class="sc-demo" id="color-stops-2">
+          <div class="space-y-3 text-slate-700 dark:text-slate-200">
+            <div>
+              <p class="mb-1 font-mono text-[11px]">from-indigo-500</p>
+              <div class="h-8 rounded-lg bg-linear-to-r from-indigo-500"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">via-indigo-500</p>
+              <div class="h-8 rounded-lg bg-linear-to-r via-indigo-500"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">to-indigo-500</p>
+              <div class="h-8 rounded-lg bg-linear-to-r to-indigo-500"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="color-stops-2"></pre>
+      </figure>
+      <p class="sc-note">The missing stops default to transparent, so a lone <code>via-*</code> makes a soft band. That is handy for shimmer highlights and surprising everywhere else.</p>
+
+      <figure class="sc-example">
+        <figcaption>Stops from CSS variables, fed by two colour pickers</figcaption>
+        <div class="sc-demo" id="color-stops-3">
+          <div data-scope style="--a:#f59e0b;--b:#ef4444" class="space-y-3 text-sm text-slate-700 dark:text-slate-200">
+            <div class="h-24 rounded-xl bg-linear-to-r from-(--a) to-(--b)"></div>
+            <div class="flex flex-wrap gap-4">
+              <label class="flex items-center gap-2">From
+                <input type="color" value="#f59e0b" data-var="--a" class="h-8 w-12 cursor-pointer rounded border border-slate-300 bg-white p-0.5 dark:border-slate-600 dark:bg-slate-800">
+                <output class="font-mono text-xs">#f59e0b</output>
+              </label>
+              <label class="flex items-center gap-2">To
+                <input type="color" value="#ef4444" data-var="--b" class="h-8 w-12 cursor-pointer rounded border border-slate-300 bg-white p-0.5 dark:border-slate-600 dark:bg-slate-800">
+                <output class="font-mono text-xs">#ef4444</output>
+              </label>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="color-stops-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+// &lt;input data-var="--a"&gt; writes a CSS variable on its closest [data-scope]
+document.addEventListener('input', (e) => {
+  const input = e.target.closest('input[data-var]')
+  if (!input) return
+  const value = input.value + (input.dataset.unit || '')
+  input.closest('[data-scope]').style.setProperty(input.dataset.var, value)
+  const out = input.parentElement.querySelector('output')
+  if (out) out.textContent = value
+})</pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="stop-positions">
+    <div class="sc-notes">
+      <h2>Gradient stop positions</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>Add a percentage to <code>from-</code>, <code>via-</code> or <code>to-</code> to say where a colour sits along the gradient. Two stops at the same position make a hard edge. Pixel lengths need brackets, and v4 lets a CSS variable carry a position when you hint its type.</p>
+      <ul class="sc-parts">
+        <li><code>from-10%</code></li>
+        <li><code>via-30%</code></li>
+        <li><code>to-90%</code></li>
+        <li><code>from-[25px]</code></li>
+        <li><code>to-[calc(100%-25px)]</code></li>
+        <li><code>via-(length:--p)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#setting-gradient-stop-positions" target="_blank" rel="noopener">Docs: stop positions</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Stops at 10%, 30% and 90%</figcaption>
+        <div class="sc-demo" id="stop-positions-1">
+          <div class="mx-4">
+            <div class="relative h-12">
+              <div class="absolute top-0 left-[10%] flex -translate-x-1/2 flex-col items-center gap-1">
+                <span class="grid size-7 place-items-center rounded-full bg-indigo-500 font-mono text-[10px] font-bold text-white">10%</span>
+                <span class="h-3 w-px bg-slate-400 dark:bg-slate-500"></span>
+              </div>
+              <div class="absolute top-0 left-[30%] flex -translate-x-1/2 flex-col items-center gap-1">
+                <span class="grid size-7 place-items-center rounded-full bg-sky-500 font-mono text-[10px] font-bold text-white">30%</span>
+                <span class="h-3 w-px bg-slate-400 dark:bg-slate-500"></span>
+              </div>
+              <div class="absolute top-0 left-[90%] flex -translate-x-1/2 flex-col items-center gap-1">
+                <span class="grid size-7 place-items-center rounded-full bg-emerald-500 font-mono text-[10px] font-bold text-white">90%</span>
+                <span class="h-3 w-px bg-slate-400 dark:bg-slate-500"></span>
+              </div>
+            </div>
+            <div class="h-10 rounded-lg bg-linear-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stop-positions-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Quota bar: a hard edge at 60%, then a ramp that ends at 85%</figcaption>
+        <div class="sc-demo" id="stop-positions-2">
+          <div class="mx-auto max-w-md space-y-2 text-slate-700 dark:text-slate-200">
+            <div class="h-3 rounded-full bg-linear-to-r from-emerald-500 from-60% via-amber-400 via-60% to-rose-500 to-85%"></div>
+            <div class="flex text-[11px] font-mono">
+              <span class="w-[60%]">0 to 60%: solid</span>
+              <span class="w-[25%]">ramp</span>
+              <span class="flex-1 text-right">85%+</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stop-positions-2"></pre>
+      </figure>
+      <p class="sc-note"><code>from-60%</code> and <code>via-60%</code> sit on the same position, so green stops dead at 60% and amber begins. Amber then ramps to rose, which holds from <code>to-85%</code> onward. There are only three stops, so a bar with two hard edges needs an arbitrary <code>bg-[linear-gradient(…)]</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>Fade only the last 2rem of a scrolling tag row: <code>from-[calc(100%-2rem)]</code></figcaption>
+        <div class="sc-demo" id="stop-positions-3">
+          <div class="relative mx-auto max-w-sm overflow-hidden rounded-xl bg-white p-3 dark:bg-slate-900">
+            <div class="scrollbar-none flex gap-2 overflow-x-auto text-sm text-slate-700 dark:text-slate-200">
+              <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 dark:bg-slate-800">Design</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 dark:bg-slate-800">Engineering</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 dark:bg-slate-800">Marketing</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 dark:bg-slate-800">Customer support</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 dark:bg-slate-800">Finance</span>
+              <span class="shrink-0 rounded-full bg-slate-100 px-3 py-1 dark:bg-slate-800">Legal</span>
+            </div>
+            <div class="pointer-events-none absolute inset-0 bg-linear-to-r from-transparent from-[calc(100%-2rem)] to-white dark:to-slate-900"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stop-positions-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A position from a CSS variable: <code>via-(length:--p)</code></figcaption>
+        <div class="sc-demo" id="stop-positions-4">
+          <div data-scope style="--p:65%" class="mx-auto max-w-md space-y-3 text-sm text-slate-700 dark:text-slate-200">
+            <div class="h-4 rounded-full bg-linear-to-r from-emerald-500 via-emerald-500 via-(length:--p) to-slate-300 to-(length:--p) dark:to-slate-700"></div>
+            <label class="flex items-center gap-3">Used
+              <input type="range" min="0" max="100" value="65" data-var="--p" data-unit="%" class="flex-1">
+              <output class="w-10 text-right font-mono text-xs">65%</output>
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stop-positions-4"></pre>
+      </figure>
+      <p class="sc-note">Write <code>from-[25px]</code>, not <code>from-25px</code>: bare lengths are not generated. A variable on its own, as in <code>via-(--p)</code>, is read as a colour, so add the <code>length:</code> hint (the reference calls this resolving ambiguities).</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="linear-angles">
+    <div class="sc-notes">
+      <h2>Linear gradient angles</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>bg-linear-45</code> sets the angle in degrees, and any positive whole number works. A leading minus negates it. 0 points up, 90 points right, 180 points down. Decimals and variables go through the arbitrary forms.</p>
+      <ul class="sc-parts">
+        <li><code>bg-linear-0</code></li>
+        <li><code>bg-linear-45</code></li>
+        <li><code>bg-linear-65</code></li>
+        <li><code>-bg-linear-45</code></li>
+        <li><code>bg-linear-[22.5deg]</code></li>
+        <li><code>bg-linear-(angle:--a)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/blog/tailwindcss-v4#linear-gradient-angles" target="_blank" rel="noopener">Blog: linear gradient angles</a> · <a href="https://tailwindcss.com/docs/background-image#adding-a-linear-gradient" target="_blank" rel="noopener">Docs</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>An angle fan: 0deg is "to top"</figcaption>
+        <div class="sc-demo" id="linear-angles-1">
+          <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            <div class="grid aspect-square place-items-center rounded-lg bg-linear-0 from-indigo-500 to-pink-500 font-mono text-[11px] text-white">0</div>
+            <div class="grid aspect-square place-items-center rounded-lg bg-linear-45 from-indigo-500 to-pink-500 font-mono text-[11px] text-white">45</div>
+            <div class="grid aspect-square place-items-center rounded-lg bg-linear-90 from-indigo-500 to-pink-500 font-mono text-[11px] text-white">90</div>
+            <div class="grid aspect-square place-items-center rounded-lg bg-linear-135 from-indigo-500 to-pink-500 font-mono text-[11px] text-white">135</div>
+            <div class="grid aspect-square place-items-center rounded-lg bg-linear-180 from-indigo-500 to-pink-500 font-mono text-[11px] text-white">180</div>
+            <div class="grid aspect-square place-items-center rounded-lg bg-linear-225 from-indigo-500 to-pink-500 font-mono text-[11px] text-white">225</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-angles-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A negative angle mirrors the sweep</figcaption>
+        <div class="sc-demo" id="linear-angles-2">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="grid h-24 place-items-center rounded-xl bg-linear-45 from-indigo-500 via-purple-500 to-pink-500 font-mono text-xs text-white">bg-linear-45</div>
+            <div class="grid h-24 place-items-center rounded-xl -bg-linear-45 from-indigo-500 via-purple-500 to-pink-500 font-mono text-xs text-white">-bg-linear-45</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-angles-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Product tile with a 65deg pastel wash and a gradient price</figcaption>
+        <div class="sc-demo" id="linear-angles-3">
+          <article class="mx-auto w-52 rounded-2xl bg-linear-65 from-amber-100 to-rose-200 p-5 text-slate-900">
+            <svg viewBox="0 0 64 64" class="mx-auto h-24" fill="none" aria-hidden="true">
+              <path d="M22 8l-14 9 6 12 6-3v31h24V26l6 3 6-12-14-9c-2 5-6 8-10 8s-8-3-10-8z" fill="#fff" stroke="#be123c" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+            <p class="mt-3 font-semibold">Linen overshirt</p>
+            <p class="bg-linear-to-r from-rose-600 to-amber-600 bg-clip-text text-xl font-bold text-transparent">$89</p>
+          </article>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-angles-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A live angle slider with <code>bg-linear-(angle:--a)</code></figcaption>
+        <div class="sc-demo" id="linear-angles-4">
+          <div data-scope style="--a:45deg" class="mx-auto max-w-md space-y-3 text-sm text-slate-700 dark:text-slate-200">
+            <div class="h-36 rounded-xl bg-linear-(angle:--a) from-indigo-500 to-pink-500"></div>
+            <label class="flex items-center gap-3">Angle
+              <input type="range" min="0" max="360" value="45" data-var="--a" data-unit="deg" class="flex-1">
+              <output class="w-14 text-right font-mono text-xs">45deg</output>
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-angles-4"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS (same handler as the colour pickers)">
+document.addEventListener('input', (e) => {
+  const input = e.target.closest('input[data-var]')
+  if (!input) return
+  const value = input.value + (input.dataset.unit || '')
+  input.closest('[data-scope]').style.setProperty(input.dataset.var, value)
+  const out = input.parentElement.querySelector('output')
+  if (out) out.textContent = value
+})</pre>
+      </figure>
+      <p class="sc-note"><code>bg-linear-22.5</code> is not generated, so use <code>bg-linear-[22.5deg]</code>. Arbitrary angles also skip the <code>oklab</code> hint and refuse an interpolation modifier.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="linear-arbitrary">
+    <div class="sc-notes">
+      <h2>Arbitrary and variable gradients</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>bg-linear-[...]</code> takes a raw gradient: either a whole list of angle and stops, or just an angle that you combine with <code>from-*</code> and <code>to-*</code>. <code>bg-linear-(--my-gradient)</code> reads it from a CSS variable.</p>
+      <ul class="sc-parts">
+        <li><code>bg-linear-[25deg,red_5%,yellow_60%]</code></li>
+        <li><code>bg-linear-(--my-gradient)</code></li>
+        <li><code>bg-linear-[25deg]</code></li>
+        <li><code>bg-linear-[to_right_in_oklch]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#using-a-custom-value" target="_blank" rel="noopener">Docs: custom value</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The docs' three forms of a custom value</figcaption>
+        <div class="sc-demo" id="linear-arbitrary-1">
+          <div class="space-y-3" style="--my-gradient: 25deg, red 5%, yellow 60%, lime 90%, teal">
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-[25deg,red_5%,yellow_60%,lime_90%,teal]</p>
+              <div class="h-12 rounded-lg bg-linear-[25deg,red_5%,yellow_60%,lime_90%,teal]"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-(--my-gradient)</p>
+              <div class="h-12 rounded-lg bg-linear-(--my-gradient)"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-[25deg] from-red-500 to-blue-500</p>
+              <div class="h-12 rounded-lg bg-linear-[25deg] from-red-500 to-blue-500"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-arbitrary-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>One banner class, two brands: the variable decides <button class="sc-btn" type="button" data-brand-toggle>Switch brand</button></figcaption>
+        <div class="sc-demo" id="linear-arbitrary-2">
+          <div data-brand="ocean" class="[--my-gradient:135deg,var(--color-sky-400),var(--color-indigo-600)] data-[brand=sunset]:[--my-gradient:135deg,var(--color-amber-400),var(--color-rose-600)]">
+            <div class="grid h-32 place-items-center rounded-xl bg-linear-(--my-gradient) text-center text-white">
+              <div>
+                <p class="text-lg font-bold">Quarterly report</p>
+                <p class="text-sm text-white/90">Same markup, new look</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-arbitrary-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-brand-toggle]')
+  if (!btn) return
+  // the button sits in the figure caption, so look up the figure for the demo
+  const scope = btn.closest('figure').querySelector('[data-brand]')
+  scope.dataset.brand = scope.dataset.brand === 'sunset' ? 'ocean' : 'sunset'
+})</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The hidden interpolation default, shown with hex colours</figcaption>
+        <div class="sc-demo" id="linear-arbitrary-3">
+          <div class="space-y-3">
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-to-r (adds <i>in oklab</i>)</p>
+              <div class="h-10 rounded-lg bg-linear-to-r from-[#ef4444] to-[#3b82f6]"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-[to_right] (browser default, sRGB)</p>
+              <div class="h-10 rounded-lg bg-linear-[to_right] from-[#ef4444] to-[#3b82f6]"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-[to_right_in_oklab]</p>
+              <div class="h-10 rounded-lg bg-linear-[to_right_in_oklab] from-[#ef4444] to-[#3b82f6]"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-[to_right_in_oklch]</p>
+              <div class="h-10 rounded-lg bg-linear-[to_right_in_oklch] from-[#ef4444] to-[#3b82f6]"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="linear-arbitrary-3"></pre>
+      </figure>
+      <p class="sc-note">Do not mix a full arbitrary list with <code>from-*</code>/<code>to-*</code>: the whole list lands in the gradient's position slot and the stop utilities get appended after it. Use an angle-only (or position-only) value when you also use stops. Arbitrary values skip the <code>in oklab</code> hint that named utilities add, so spell it out for hex or rgb colours.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="interpolation-modifiers">
+    <div class="sc-notes">
+      <h2>Interpolation modifiers</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Add <code>/&lt;mode&gt;</code> to <code>bg-linear-*</code>, <code>bg-radial</code> or <code>bg-conic</code> to pick the colour space the browser blends in. v4 defaults to <code>oklab</code>. Polar modes (<code>oklch</code>, <code>hsl</code>) travel around the hue wheel, and the hue modifiers choose which way.</p>
+      <ul class="sc-parts">
+        <li><code>/srgb</code></li>
+        <li><code>/hsl</code></li>
+        <li><code>/oklab</code></li>
+        <li><code>/oklch</code></li>
+        <li><code>/longer</code></li>
+        <li><code>/shorter</code></li>
+        <li><code>/increasing</code></li>
+        <li><code>/decreasing</code></li>
+        <li><code>/[in_hsl_longer_hue]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#changing-interpolation-mode" target="_blank" rel="noopener">Docs: interpolation mode</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The same two colours in every mode</figcaption>
+        <div class="sc-demo" id="interpolation-modifiers-1">
+          <div class="grid grid-cols-[5.5rem_1fr] items-center gap-x-3 gap-y-2 font-mono text-xs text-slate-600 sm:grid-cols-[6.5rem_1fr] dark:text-slate-300">
+            <span>default</span><div class="h-9 rounded-lg bg-linear-to-r from-red-500 to-blue-500"></div>
+            <span>/srgb</span><div class="h-9 rounded-lg bg-linear-to-r/srgb from-red-500 to-blue-500"></div>
+            <span>/hsl</span><div class="h-9 rounded-lg bg-linear-to-r/hsl from-red-500 to-blue-500"></div>
+            <span>/oklab</span><div class="h-9 rounded-lg bg-linear-to-r/oklab from-red-500 to-blue-500"></div>
+            <span>/oklch</span><div class="h-9 rounded-lg bg-linear-to-r/oklch from-red-500 to-blue-500"></div>
+            <span>/longer</span><div class="h-9 rounded-lg bg-linear-to-r/longer from-red-500 to-blue-500"></div>
+            <span>/shorter</span><div class="h-9 rounded-lg bg-linear-to-r/shorter from-red-500 to-blue-500"></div>
+            <span>/increasing</span><div class="h-9 rounded-lg bg-linear-to-r/increasing from-red-500 to-blue-500"></div>
+            <span>/decreasing</span><div class="h-9 rounded-lg bg-linear-to-r/decreasing from-red-500 to-blue-500"></div>
+            <span class="[overflow-wrap:anywhere]">/[in_hsl_longer_hue]</span><div class="h-9 rounded-lg bg-linear-to-r/[in_hsl_longer_hue] from-red-500 to-blue-500"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="interpolation-modifiers-1"></pre>
+      </figure>
+      <p class="sc-note">The <code>default</code> row is identical to <code>/oklab</code>. For any two colours there are only two hue paths, so <code>/shorter</code> matches one of <code>/increasing</code> or <code>/decreasing</code>, and <code>/longer</code> matches the other. Greys, white and black have no hue, so hue modifiers do little with them. Gradient colour spaces need Chrome 111+, Safari 16.2+ or Firefox 127+; older browsers fall back to their default blend.</p>
+
+      <figure class="sc-example">
+        <figcaption>Swap the endpoints and the hue paths swap too</figcaption>
+        <div class="sc-demo" id="interpolation-modifiers-2">
+          <div class="grid grid-cols-[5.5rem_1fr_1fr] items-center gap-x-2 gap-y-2 font-mono text-[11px] text-slate-600 dark:text-slate-300">
+            <span></span><span>red to blue</span><span>blue to red</span>
+            <span>/longer</span>
+            <div class="h-9 rounded-lg bg-linear-to-r/longer from-red-500 to-blue-500"></div>
+            <div class="h-9 rounded-lg bg-linear-to-r/longer from-blue-500 to-red-500"></div>
+            <span>/shorter</span>
+            <div class="h-9 rounded-lg bg-linear-to-r/shorter from-red-500 to-blue-500"></div>
+            <div class="h-9 rounded-lg bg-linear-to-r/shorter from-blue-500 to-red-500"></div>
+            <span>/increasing</span>
+            <div class="h-9 rounded-lg bg-linear-to-r/increasing from-red-500 to-blue-500"></div>
+            <div class="h-9 rounded-lg bg-linear-to-r/increasing from-blue-500 to-red-500"></div>
+            <span>/decreasing</span>
+            <div class="h-9 rounded-lg bg-linear-to-r/decreasing from-red-500 to-blue-500"></div>
+            <div class="h-9 rounded-lg bg-linear-to-r/decreasing from-blue-500 to-red-500"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="interpolation-modifiers-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A health meter that stays vivid: red to green</figcaption>
+        <div class="sc-demo" id="interpolation-modifiers-3">
+          <div class="space-y-4 text-slate-700 dark:text-slate-200">
+            <div>
+              <p class="mb-1 font-mono text-[11px]">default (oklab): the middle goes muddy</p>
+              <div class="h-3 rounded-full bg-linear-to-r from-red-500 to-emerald-500"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">/srgb: just as muddy</p>
+              <div class="h-3 rounded-full bg-linear-to-r/srgb from-red-500 to-emerald-500"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">/shorter: orange and yellow on the way</p>
+              <div class="h-3 rounded-full bg-linear-to-r/shorter from-red-500 to-emerald-500"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="interpolation-modifiers-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Modifiers on conic gradients: colour wheels from one hue</figcaption>
+        <div class="sc-demo" id="interpolation-modifiers-4">
+          <div class="flex flex-wrap justify-center gap-6 text-center font-mono text-[11px] text-slate-600 dark:text-slate-300">
+            <div><div class="mx-auto size-24 rounded-full bg-conic/longer from-red-500 to-red-500"></div><p class="mt-2">/longer</p></div>
+            <div><div class="mx-auto size-24 rounded-full bg-conic/[in_hsl_longer_hue] from-red-600 to-red-600"></div><p class="mt-2">/[in_hsl_longer_hue]</p></div>
+            <div><div class="mx-auto size-24 rounded-full bg-conic/decreasing from-violet-700 via-lime-300 to-violet-700"></div><p class="mt-2">/decreasing</p></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="interpolation-modifiers-4"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="radial">
+    <div class="sc-notes">
+      <h2>Radial gradients</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>bg-radial</code> draws a gradient outward from a centre point. Put a shape, size or position in brackets (<code>bg-radial-[at_25%_25%]</code>) and the same <code>from-*</code>, <code>via-*</code>, <code>to-*</code> stops and <code>/mode</code> modifiers apply.</p>
+      <ul class="sc-parts">
+        <li><code>bg-radial</code></li>
+        <li><code>bg-radial-[at_25%_25%]</code></li>
+        <li><code>bg-radial-[circle_at_center]</code></li>
+        <li><code>bg-radial-[circle_at_center,…]</code></li>
+        <li><code>bg-radial/srgb</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#adding-a-radial-gradient" target="_blank" rel="noopener">Docs: radial gradient</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Glossy spheres: the highlight moves with <code>at_…</code></figcaption>
+        <div class="sc-demo" id="radial-1">
+          <div class="flex flex-wrap justify-around gap-4">
+            <div class="size-24 rounded-full bg-radial from-pink-400 from-40% to-fuchsia-700"></div>
+            <div class="size-24 rounded-full bg-radial-[at_50%_75%] from-sky-200 via-blue-400 to-indigo-900 to-90%"></div>
+            <div class="size-24 rounded-full bg-radial-[at_25%_25%] from-white to-zinc-900 to-75%"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="radial-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Ellipse, circle, and a full arbitrary list on a wide box</figcaption>
+        <div class="sc-demo" id="radial-2">
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-radial</p>
+              <div class="h-24 rounded-lg bg-radial from-sky-400 to-indigo-800"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-radial-[circle_at_center]</p>
+              <div class="h-24 rounded-lg bg-radial-[circle_at_center] from-sky-400 to-indigo-800"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-radial-[circle_at_center,…]</p>
+              <div class="h-24 rounded-lg bg-radial-[circle_at_center,var(--color-sky-400),var(--color-indigo-800)]"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="radial-2"></pre>
+      </figure>
+      <p class="sc-note">The default shape is an ellipse sized to the farthest corner, so it stretches on wide boxes. Add <code>circle</code> when you want round. There are no bare-number forms (<code>bg-radial-45</code> generates nothing).</p>
+
+      <figure class="sc-example">
+        <figcaption>Spotlight hero: an indigo glow from the top centre</figcaption>
+        <div class="sc-demo" id="radial-3">
+          <section class="relative isolate overflow-hidden rounded-2xl bg-slate-950 px-6 py-14 text-center text-white">
+            <div class="absolute inset-0 -z-10 bg-radial-[at_50%_0%] from-indigo-500/40 to-transparent to-70%"></div>
+            <p class="font-mono text-xs uppercase tracking-widest text-indigo-300">Changelog</p>
+            <h3 class="mt-3 text-3xl font-bold">Ship faster with previews</h3>
+            <p class="mx-auto mt-2 max-w-sm text-sm text-slate-300">Every pull request gets its own URL, built in under a minute.</p>
+            <a href="#radial" class="mt-6 inline-block rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900">Start free</a>
+          </section>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="radial-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A card glow that follows the pointer (move over it)</figcaption>
+        <div class="sc-demo" id="radial-4">
+          <div data-glow style="--x:30%;--y:30%" class="mx-auto max-w-sm rounded-xl bg-slate-900 bg-radial-[at_var(--x,50%)_var(--y,50%)] from-white/25 to-transparent to-60% p-6 text-white ring-1 ring-white/10">
+            <p class="font-mono text-xs uppercase tracking-widest text-slate-400">Usage</p>
+            <p class="mt-2 text-2xl font-semibold">48,210 requests</p>
+            <p class="mt-1 text-sm text-slate-300">Hover this card and the highlight tracks your cursor.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="radial-4"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+document.addEventListener('pointermove', (e) => {
+  const card = e.target.closest('[data-glow]')
+  if (!card) return
+  const box = card.getBoundingClientRect()
+  card.style.setProperty('--x', e.clientX - box.left + 'px')
+  card.style.setProperty('--y', e.clientY - box.top + 'px')
+})</pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="conic">
+    <div class="sc-notes">
+      <h2>Conic gradients</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>bg-conic</code> sweeps colours around a centre point, like a colour wheel or pie chart. <code>bg-conic-180</code> sets the start angle, a leading minus reverses it, and brackets take a start angle plus position.</p>
+      <ul class="sc-parts">
+        <li><code>bg-conic</code></li>
+        <li><code>bg-conic-180</code></li>
+        <li><code>-bg-conic-90</code></li>
+        <li><code>bg-conic/decreasing</code></li>
+        <li><code>bg-conic-[from_45deg_at_30%_70%]</code></li>
+        <li><code>bg-conic-(--my-conic)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#adding-a-conic-gradient" target="_blank" rel="noopener">Docs: conic gradient</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Colour wheels and a hard half</figcaption>
+        <div class="sc-demo" id="conic-1">
+          <div class="flex flex-wrap justify-center gap-4">
+            <div class="size-24 rounded-full bg-conic/longer from-red-500 to-red-500"></div>
+            <div class="size-24 rounded-full bg-conic-[from_0deg,red,yellow,lime,aqua,blue,magenta,red]"></div>
+            <div class="size-24 rounded-full bg-conic-180 from-indigo-600 via-indigo-50 to-indigo-600"></div>
+            <div class="size-24 rounded-full bg-conic from-blue-600 to-sky-400 to-50%"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-1"></pre>
+      </figure>
+      <p class="sc-note">Write <code>bg-conic-[from_0deg,red,blue]</code>, not <code>bg-conic-[conic-gradient(…)]</code>: the engine wraps the value in <code>conic-gradient()</code> itself. A stop at <code>to-50%</code> ends the sweep at the half-way angle, which makes the hard half-disc.</p>
+
+      <figure class="sc-example">
+        <figcaption>Dashboard donuts: hard stops plus a ring cut from a mask</figcaption>
+        <div class="sc-demo" id="conic-2">
+          <div class="flex flex-wrap justify-center gap-8 text-slate-900 dark:text-white">
+            <div class="relative size-28">
+              <div style="--p:40%" class="size-full rounded-full bg-conic from-emerald-500 via-emerald-500 via-(length:--p) to-slate-300 to-(length:--p) [mask:radial-gradient(farthest-side,transparent_calc(100%-12px),#000_calc(100%-11px))] dark:to-slate-700"></div>
+              <span class="absolute inset-0 grid place-items-center text-lg font-semibold">40%</span>
+            </div>
+            <div class="relative size-28">
+              <div style="--p:65%" class="size-full rounded-full bg-conic from-indigo-500 via-indigo-500 via-(length:--p) to-slate-300 to-(length:--p) [mask:radial-gradient(farthest-side,transparent_calc(100%-12px),#000_calc(100%-11px))] dark:to-slate-700"></div>
+              <span class="absolute inset-0 grid place-items-center text-lg font-semibold">65%</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Story-ring avatars: a conic border padded around the photo</figcaption>
+        <div class="sc-demo" id="conic-3">
+          <div class="flex flex-wrap justify-center gap-5">
+            <div class="size-16 rounded-full bg-conic from-fuchsia-500 via-amber-400 to-fuchsia-500 p-[3px]">
+              <div class="grid size-full place-items-center rounded-full bg-white p-0.5 dark:bg-slate-900">
+                <span class="grid size-full place-items-center rounded-full bg-sky-200 text-lg font-semibold text-sky-900">MR</span>
+              </div>
+            </div>
+            <div class="size-16 rounded-full bg-conic from-sky-500 via-emerald-400 to-sky-500 p-[3px]">
+              <div class="grid size-full place-items-center rounded-full bg-white p-0.5 dark:bg-slate-900">
+                <span class="grid size-full place-items-center rounded-full bg-rose-200 text-lg font-semibold text-rose-900">JT</span>
+              </div>
+            </div>
+            <div class="size-16 rounded-full bg-slate-300 p-[3px] dark:bg-slate-700">
+              <div class="grid size-full place-items-center rounded-full bg-white p-0.5 dark:bg-slate-900">
+                <span class="grid size-full place-items-center rounded-full bg-amber-200 text-lg font-semibold text-amber-900">AK</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Start angle, reversed angle and an off-centre origin</figcaption>
+        <div class="sc-demo" id="conic-4">
+          <div class="flex flex-wrap justify-center gap-6 text-center font-mono text-[11px] text-slate-600 dark:text-slate-300">
+            <div><div class="mx-auto size-16 rounded-full bg-conic-90 from-amber-300 to-rose-500"></div><p class="mt-2">bg-conic-90</p></div>
+            <div><div class="mx-auto size-16 rounded-full -bg-conic-90 from-amber-300 to-rose-500"></div><p class="mt-2">-bg-conic-90</p></div>
+            <div><div class="mx-auto size-16 rounded-full bg-conic-[from_45deg_at_30%_70%] from-amber-300 to-rose-500"></div><p class="mt-2">[from_45deg_at_30%_70%]</p></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-4"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="stops-with-opacity">
+    <div class="sc-notes">
+      <h2>Stops with opacity</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The usual <code>/50</code> opacity modifier works on <code>from-*</code>, <code>via-*</code> and <code>to-*</code>. A translucent stop shows whatever is behind it, so put a solid colour or image underneath. It is how scrims, tints and edge lights are built.</p>
+      <ul class="sc-parts">
+        <li><code>from-sky-500/50</code></li>
+        <li><code>via-white/60</code></li>
+        <li><code>from-black/70</code></li>
+        <li><code>to-[#0ea5e9]/40</code></li>
+        <li><code>to-transparent</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#setting-gradient-color-stops" target="_blank" rel="noopener">Docs: color stops</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Caption scrim over a photo</figcaption>
+        <div class="sc-demo" id="stops-with-opacity-1">
+          <figure class="relative mx-auto aspect-video max-w-sm overflow-hidden rounded-xl bg-landscape">
+            <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+            <figcaption class="absolute bottom-3 left-3 text-white">
+              <p class="text-sm font-semibold">Dolomites at dusk</p>
+              <p class="text-xs text-white/80">Photo by Lena Moretti</p>
+            </figcaption>
+          </figure>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stops-with-opacity-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS (a stand-in photo, so the page needs no image file)">
+@theme {
+  --background-image-landscape:
+    radial-gradient(circle at 72% 38%, #fde68a 0 8%, transparent 8.5%),
+    linear-gradient(to bottom, #38bdf8, #fed7aa 58%, #115e59 58%);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The same translucent gradient on two surfaces</figcaption>
+        <div class="sc-demo" id="stops-with-opacity-2">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl bg-white bg-linear-to-r from-sky-500/50 to-indigo-500/50 p-5 text-slate-900">
+              <p class="text-xs font-medium uppercase tracking-wider">On white</p>
+              <p class="mt-1 text-2xl font-bold">2,418 visits</p>
+            </div>
+            <div class="rounded-xl bg-slate-900 bg-linear-to-r from-sky-500/50 to-indigo-500/50 p-5 text-white">
+              <p class="text-xs font-medium uppercase tracking-wider">On slate</p>
+              <p class="mt-1 text-2xl font-bold">2,418 visits</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stops-with-opacity-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Success toast with a faint emerald wash</figcaption>
+        <div class="sc-demo" id="stops-with-opacity-3">
+          <div class="mx-auto flex max-w-sm items-center gap-3 rounded-xl bg-white bg-linear-to-r from-emerald-500/15 via-emerald-500/5 to-transparent p-4 text-slate-900 ring-1 ring-emerald-500/30 dark:bg-slate-900 dark:text-white">
+            <svg viewBox="0 0 20 20" class="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <p class="text-sm font-medium">Deployment finished</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stops-with-opacity-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Edge light: a 1px highlight line across the top of a dark card</figcaption>
+        <div class="sc-demo" id="stops-with-opacity-4">
+          <div class="relative mx-auto max-w-sm rounded-xl bg-slate-900 p-6 text-white">
+            <div class="absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-white/80 to-transparent"></div>
+            <p class="text-sm font-semibold">Team plan</p>
+            <p class="mt-1 text-sm text-slate-300">Unlimited seats, SSO and audit logs.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="stops-with-opacity-4"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="variants-per-stop">
+    <div class="sc-notes">
+      <h2>Variants change only that stop</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>In v4, <code>dark:from-blue-500</code> or <code>hover:to-teal-400</code> overrides just that one stop and keeps the others. In v3 it reset the whole gradient and left the end transparent. To collapse a three-stop gradient to two in some state, add <code>via-none</code>.</p>
+      <ul class="sc-parts">
+        <li><code>dark:from-blue-500</code></li>
+        <li><code>hover:to-teal-400</code></li>
+        <li><code>md:via-purple-500</code></li>
+        <li><code>dark:via-none</code></li>
+        <li><code>data-[state=error]:from-rose-500</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#using-variants-with-gradients" target="_blank" rel="noopener">Docs: upgrade guide, variants with gradients</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Dark mode repaints only the changed stops</figcaption>
+        <div class="sc-demo" id="variants-per-stop-1">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="space-y-2 rounded-xl bg-white p-3 dark:bg-slate-900">
+              <p class="font-mono text-[11px] text-slate-600 dark:text-slate-300">Follows the theme menu</p>
+              <div class="h-14 rounded-lg bg-linear-to-r from-red-500 to-yellow-400 dark:from-blue-500"></div>
+              <div class="h-14 rounded-lg bg-linear-to-r from-red-500 via-orange-400 to-yellow-400 dark:via-none dark:from-blue-500 dark:to-teal-400"></div>
+            </div>
+            <div data-theme="dark" class="space-y-2 rounded-xl bg-slate-900 p-3">
+              <p class="font-mono text-[11px] text-slate-600 dark:text-slate-300">Forced dark with data-theme</p>
+              <div class="h-14 rounded-lg bg-linear-to-r from-red-500 to-yellow-400 dark:from-blue-500"></div>
+              <div class="h-14 rounded-lg bg-linear-to-r from-red-500 via-orange-400 to-yellow-400 dark:via-none dark:from-blue-500 dark:to-teal-400"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variants-per-stop-1"></pre>
+      </figure>
+      <p class="sc-note">Top row: only <code>from</code> changes, so the yellow end stays (blue to yellow). Bottom row: <code>via-none</code> drops the orange middle and <code>dark:to-teal-400</code> swaps the end (blue to teal). The right column pins the page's <code>dark</code> variant on with a <code>data-theme="dark"</code> wrapper so you can compare without touching the theme menu.</p>
+
+      <figure class="sc-example">
+        <figcaption>Hover repaints one end</figcaption>
+        <div class="sc-demo" id="variants-per-stop-2">
+          <div class="flex flex-wrap justify-center gap-3">
+            <a href="#variants-per-stop" class="rounded-full bg-linear-to-r from-indigo-500 to-pink-500 px-5 py-2 text-sm font-semibold text-white transition-colors duration-500 hover:to-amber-400 focus-visible:to-amber-400">Explore</a>
+            <a href="#variants-per-stop" class="rounded-full bg-linear-to-r from-sky-500 to-emerald-500 px-5 py-2 text-sm font-semibold text-white transition-colors duration-500 hover:from-violet-500 focus-visible:from-violet-500">Browse</a>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variants-per-stop-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Responsive stop count: a middle stop appears from <code>md</code></figcaption>
+        <div class="sc-demo" id="variants-per-stop-3">
+          <div class="grid h-24 place-items-center rounded-xl bg-linear-to-r from-indigo-500 to-pink-500 text-center text-sm font-semibold text-white md:via-purple-500">
+            Two colours below 768px, three above
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variants-per-stop-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Status banners: <code>data-[state=…]</code> swaps the start colour only</figcaption>
+        <div class="sc-demo" id="variants-per-stop-4">
+          <div class="space-y-2 text-sm font-semibold text-white">
+            <div data-state="ok" class="rounded-lg bg-linear-to-r from-emerald-600 to-slate-800 p-3 data-[state=error]:from-rose-600 data-[state=warn]:from-amber-600">All systems operational</div>
+            <div data-state="warn" class="rounded-lg bg-linear-to-r from-emerald-600 to-slate-800 p-3 data-[state=error]:from-rose-600 data-[state=warn]:from-amber-600">Elevated API latency</div>
+            <div data-state="error" class="rounded-lg bg-linear-to-r from-emerald-600 to-slate-800 p-3 data-[state=error]:from-rose-600 data-[state=warn]:from-amber-600">Payments are down</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variants-per-stop-4"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="gradient-text">
+    <div class="sc-notes">
+      <h2>Gradient text</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>Paint a gradient on the element, clip it to the letters with <code>bg-clip-text</code>, and hide the real text colour with <code>text-transparent</code>. For inline text that wraps, <code>box-decoration-clone</code> gives every line its own copy of the gradient.</p>
+      <ul class="sc-parts">
+        <li><code>bg-clip-text</code></li>
+        <li><code>text-transparent</code></li>
+        <li><code>bg-linear-to-r</code></li>
+        <li><code>box-decoration-clone</code></li>
+        <li><code>bg-size-[200%_100%]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-clip#cropping-to-text" target="_blank" rel="noopener">Docs: background-clip</a> · <a href="https://tailwindcss.com/docs/box-decoration-break" target="_blank" rel="noopener">box-decoration-break</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Hero headline</figcaption>
+        <div class="sc-demo" id="gradient-text-1">
+          <h3 class="bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-center text-5xl font-extrabold tracking-tight text-transparent">Hello world</h3>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-text-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Dashboard metrics with gradient numbers</figcaption>
+        <div class="sc-demo" id="gradient-text-2">
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Revenue</p>
+              <p class="bg-linear-to-r from-rose-600 to-amber-500 bg-clip-text pb-1 text-3xl font-bold text-transparent">$1,284.50</p>
+            </div>
+            <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Sign-ups</p>
+              <p class="bg-linear-to-r from-emerald-600 to-sky-500 bg-clip-text pb-1 text-3xl font-bold text-transparent">3,902</p>
+            </div>
+            <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">
+              <p class="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Churn</p>
+              <p class="bg-linear-to-r from-indigo-600 to-fuchsia-500 bg-clip-text pb-1 text-3xl font-bold text-transparent">1.8%</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-text-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A wrapped highlight: <code>box-decoration-clone</code> restarts the gradient on every line</figcaption>
+        <div class="sc-demo" id="gradient-text-3">
+          <p class="mx-auto max-w-xs text-2xl leading-10 font-bold">
+            <span class="bg-linear-to-r from-yellow-300 to-pink-400 box-decoration-clone px-2 text-slate-900">Highlighted text that wraps across several lines</span>
+          </p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-text-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Animated gradient heading</figcaption>
+        <div class="sc-demo" id="gradient-text-4">
+          <h3 class="animate-gradient-pan bg-linear-to-r from-pink-500 via-indigo-500 to-pink-500 bg-size-[200%_100%] bg-clip-text text-center text-4xl font-extrabold text-transparent motion-reduce:animate-none">Always moving</h3>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-text-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-gradient-pan: gradient-pan 6s ease-in-out infinite;
+  @keyframes gradient-pan {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+}</pre>
+      </figure>
+      <p class="sc-note">Without <code>text-transparent</code> the solid text colour paints over the gradient. Tight line heights can clip descenders (g, y), so add a little bottom padding. Check contrast against the lightest stop.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="gradient-border">
+    <div class="sc-notes">
+      <h2>Gradient borders</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>CSS cannot put a gradient on <code>border</code> directly, so you fake it. Either pad a gradient wrapper around an opaque inner box, or paint two backgrounds, one clipped to the padding box and one to the border box, behind a transparent border.</p>
+      <ul class="sc-parts">
+        <li><code>p-px</code></li>
+        <li><code>rounded-[calc(var(--radius-2xl)-1px)]</code></li>
+        <li><code>border-transparent</code></li>
+        <li><code>bg-origin-border</code></li>
+        <li><code>[background-clip:padding-box,border-box]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-origin" target="_blank" rel="noopener">Docs: background-origin</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Wrapper technique: a featured pricing card</figcaption>
+        <div class="sc-demo" id="gradient-border-1">
+          <div class="mx-auto w-60 rounded-2xl bg-linear-to-b from-indigo-400 to-pink-500 p-px">
+            <div class="rounded-[calc(var(--radius-2xl)-1px)] bg-white p-6 text-slate-900 dark:bg-slate-900 dark:text-white">
+              <span class="rounded-full bg-indigo-100 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200">Most popular</span>
+              <p class="mt-3 text-3xl font-bold">$24<span class="text-sm font-normal text-slate-500 dark:text-slate-400">/mo</span></p>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Unlimited projects and priority support.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-border-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A search field whose border lights up on <code>focus-within</code> (click into it)</figcaption>
+        <div class="sc-demo" id="gradient-border-2">
+          <div class="mx-auto max-w-xs rounded-xl bg-linear-to-r from-slate-400/50 to-slate-400/50 p-0.5 transition-colors focus-within:from-indigo-500 focus-within:to-pink-500">
+            <input type="search" placeholder="Search documentation" aria-label="Search documentation" class="w-full rounded-[calc(var(--radius-xl)-2px)] bg-white px-3 py-2 text-sm text-slate-900 outline-hidden placeholder:text-slate-500 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400">
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-border-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>One element: padding-box and border-box layers, with a <code>dark:</code> twin</figcaption>
+        <div class="sc-demo" id="gradient-border-3">
+          <div class="mx-auto max-w-xs rounded-2xl border-2 border-transparent p-5 text-sm text-slate-900 [background:linear-gradient(var(--color-white),var(--color-white))_padding-box,linear-gradient(135deg,var(--color-pink-500),var(--color-indigo-500))_border-box] dark:text-white dark:[background:linear-gradient(var(--color-slate-900),var(--color-slate-900))_padding-box,linear-gradient(135deg,var(--color-pink-500),var(--color-indigo-500))_border-box]">
+            <p class="font-semibold">Single element</p>
+            <p class="mt-1 text-slate-600 dark:text-slate-300">The border is transparent, so the border-box layer shows through it.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-border-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The same idea with utilities: <code>bg-origin-border</code> and a per-layer clip</figcaption>
+        <div class="sc-demo" id="gradient-border-4">
+          <div class="mx-auto max-w-xs rounded-2xl border-2 border-transparent bg-[linear-gradient(var(--color-white),var(--color-white)),linear-gradient(135deg,var(--color-pink-500),var(--color-indigo-500))] bg-origin-border p-5 text-sm text-slate-900 [background-clip:padding-box,border-box] dark:bg-[linear-gradient(var(--color-slate-900),var(--color-slate-900)),linear-gradient(135deg,var(--color-pink-500),var(--color-indigo-500))] dark:text-white">
+            <p class="font-semibold">bg-origin-border</p>
+            <p class="mt-1 text-slate-600 dark:text-slate-300">Without it, the gradient layer would start at the padding edge and repeat under the border.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-border-4"></pre>
+      </figure>
+      <p class="sc-note">The wrapper is the most robust: it works with <code>from-*</code>, <code>hover:from-*</code> and <code>dark:</code>. Make the inner radius the outer radius minus the padding, and keep the inner fill opaque. The two single-element forms need a border width above zero (<code>border-transparent</code>, not <code>border-0</code>). <code>bg-clip-*</code> utilities set one value for every layer, so per-layer clipping needs the arbitrary property. For a spinning border see the conic spinner card.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="gradient-transitions">
+    <div class="sc-notes">
+      <h2>Animating gradients</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>v4 registers the stop colours and positions as typed properties, and <code>transition-colors</code> includes the colour stops. So <code>hover:from-*</code> fades smoothly. Positions need an explicit transition list. The angle and shape cannot tween through utilities.</p>
+      <ul class="sc-parts">
+        <li><code>transition-colors</code></li>
+        <li><code>transition-[--tw-gradient-from-position,--tw-gradient-to-position]</code></li>
+        <li><code>transition-[background-position]</code></li>
+        <li><code>transition-[background-size]</code></li>
+        <li><code>hover:bg-right</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/transition-property" target="_blank" rel="noopener">Docs: transition-property</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A button that recolours both stops on hover or focus</figcaption>
+        <div class="sc-demo" id="gradient-transitions-1">
+          <div class="flex justify-center">
+            <button type="button" class="rounded-lg bg-linear-to-r from-indigo-500 to-pink-500 px-5 py-2.5 font-medium text-white transition-colors duration-300 hover:from-emerald-500 hover:to-sky-500 focus-visible:from-emerald-500 focus-visible:to-sky-500 motion-reduce:transition-none">Deploy</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-transitions-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Stops that open up: animating the position properties</figcaption>
+        <div class="sc-demo" id="gradient-transitions-2">
+          <a href="#gradient-transitions" class="group mx-auto block max-w-xs rounded-xl bg-white p-4 text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white">
+            <div class="h-3 rounded-full bg-linear-to-r from-indigo-500 from-0% to-pink-500 to-100% transition-[--tw-gradient-from-position,--tw-gradient-to-position] duration-700 group-hover:from-40% group-hover:to-60% motion-reduce:transition-none"></div>
+            <p class="mt-3 text-sm font-semibold">Hover the card</p>
+            <p class="text-sm text-slate-600 dark:text-slate-300">The solid colours squeeze together in the middle.</p>
+          </a>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-transitions-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Slide-across: a 200% wide gradient parked left, moved right</figcaption>
+        <div class="sc-demo" id="gradient-transitions-3">
+          <div class="flex justify-center">
+            <button type="button" class="rounded-lg bg-linear-to-r from-indigo-500 via-pink-500 to-indigo-500 bg-size-[200%_100%] bg-left px-5 py-2.5 font-medium text-white transition-[background-position] duration-500 hover:bg-right focus-visible:bg-right motion-reduce:transition-none">Shop now</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-transitions-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A gradient underline that grows (hover or focus the link)</figcaption>
+        <div class="sc-demo" id="gradient-transitions-4">
+          <div class="text-center">
+            <a href="#gradient-transitions" class="bg-linear-to-r from-pink-500 to-indigo-500 bg-size-[0%_2px] bg-bottom bg-no-repeat pb-1 font-medium text-slate-900 transition-[background-size] duration-500 hover:bg-size-[100%_2px] focus-visible:bg-size-[100%_2px] motion-reduce:transition-none dark:text-white">Read the guide</a>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-transitions-4"></pre>
+      </figure>
+      <p class="sc-note">Switching <code>bg-linear-to-r</code> for <code>bg-linear-to-l</code>, or changing an angle, snaps instead of animating, because the angle lives in an untyped variable. Animate the colours, the positions, <code>background-position</code> or <code>background-size</code>. To animate an angle, register your own typed <code>@property</code> (see the conic spinner card).</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="mesh-background">
+    <div class="sc-notes">
+      <h2>Mesh backgrounds</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>A mesh or aurora look is three to five offset radial gradients stacked on a flat base. Use one layer per blob (each <code>bg-radial-[at_x%_y%]</code>), or write the whole stack as one arbitrary <code>background-image</code>.</p>
+      <ul class="sc-parts">
+        <li><code>bg-radial-[at_15%_20%]</code></li>
+        <li><code>from-indigo-500/80 to-transparent</code></li>
+        <li><code>isolate</code></li>
+        <li><code>-z-10</code></li>
+        <li><code>blur-3xl</code></li>
+        <li><code>bg-[radial-gradient(…),radial-gradient(…)]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#adding-a-radial-gradient" target="_blank" rel="noopener">Docs: radial gradient</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Aurora hero from four utility layers</figcaption>
+        <div class="sc-demo" id="mesh-background-1">
+          <section class="relative isolate overflow-hidden rounded-2xl bg-slate-950 py-20 text-white">
+            <div class="absolute inset-0 -z-10 bg-radial-[at_15%_20%] from-indigo-500/80 to-transparent to-60%"></div>
+            <div class="absolute inset-0 -z-10 bg-radial-[at_85%_10%] from-pink-500/70 to-transparent to-55%"></div>
+            <div class="absolute inset-0 -z-10 bg-radial-[at_10%_90%] from-sky-500/70 to-transparent to-55%"></div>
+            <div class="absolute inset-0 -z-10 bg-radial-[at_90%_90%] from-violet-500/70 to-transparent to-60%"></div>
+            <h3 class="text-center text-3xl font-bold">Build in the open</h3>
+            <p class="mt-2 text-center text-sm text-white/80">Four layers, no images.</p>
+          </section>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="mesh-background-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The same idea as one element with a multi-layer value</figcaption>
+        <div class="sc-demo" id="mesh-background-2">
+          <div class="grid h-40 place-items-center rounded-2xl bg-slate-950 bg-[radial-gradient(at_20%_20%,var(--color-indigo-500)_0,transparent_50%),radial-gradient(at_80%_0%,var(--color-pink-500)_0,transparent_50%),radial-gradient(at_0%_80%,var(--color-sky-500)_0,transparent_50%)] text-lg font-semibold text-white">One class list</div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="mesh-background-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A soft light backdrop behind pricing cards</figcaption>
+        <div class="sc-demo" id="mesh-background-3">
+          <section class="relative isolate overflow-hidden rounded-2xl bg-white px-4 py-8 text-slate-900">
+            <div class="absolute inset-0 -z-10 bg-radial-[at_20%_0%] from-indigo-200/60 to-transparent to-50%"></div>
+            <div class="absolute inset-0 -z-10 bg-radial-[at_80%_10%] from-pink-200/60 to-transparent to-50%"></div>
+            <div class="absolute inset-0 -z-10 bg-radial-[at_50%_100%] from-sky-200/60 to-transparent to-50%"></div>
+            <div class="mx-auto grid max-w-md grid-cols-3 gap-3 text-center text-sm">
+              <div class="rounded-xl bg-white/80 p-3 shadow-sm ring-1 ring-slate-900/5"><p class="font-semibold">Free</p><p class="text-slate-600">$0</p></div>
+              <div class="rounded-xl bg-white/80 p-3 shadow-sm ring-1 ring-slate-900/5"><p class="font-semibold">Pro</p><p class="text-slate-600">$24</p></div>
+              <div class="rounded-xl bg-white/80 p-3 shadow-sm ring-1 ring-slate-900/5"><p class="font-semibold">Team</p><p class="text-slate-600">$60</p></div>
+            </div>
+          </section>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="mesh-background-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Drifting blobs behind a login card</figcaption>
+        <div class="sc-demo" id="mesh-background-4">
+          <section class="relative isolate overflow-hidden rounded-2xl bg-slate-950 px-4 py-10">
+            <div class="absolute -top-10 left-4 -z-10 size-44 animate-drift rounded-full bg-indigo-500/60 blur-3xl motion-reduce:animate-none"></div>
+            <div class="absolute right-2 bottom-0 -z-10 size-44 animate-drift rounded-full bg-pink-500/50 blur-3xl [animation-delay:-4s] motion-reduce:animate-none"></div>
+            <div class="absolute top-1/2 left-1/2 -z-10 size-40 animate-drift rounded-full bg-sky-500/40 blur-3xl [animation-delay:-8s] motion-reduce:animate-none"></div>
+            <div class="mx-auto max-w-xs rounded-xl bg-white/10 p-5 text-white ring-1 ring-white/20 backdrop-blur-sm">
+              <p class="text-sm font-semibold">Sign in</p>
+              <div class="mt-3 rounded-lg bg-white/10 px-3 py-2 text-sm text-white/70">you@example.com</div>
+              <div class="mt-3 rounded-lg bg-white px-3 py-2 text-center text-sm font-semibold text-slate-900">Continue</div>
+            </div>
+          </section>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="mesh-background-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-drift: drift 12s ease-in-out infinite alternate;
+  @keyframes drift {
+    from { translate: -8% -6%; }
+    to   { translate: 8% 10%; }
+  }
+}</pre>
+      </figure>
+      <p class="sc-note">Keep it to three to five layers. Large blurred layers are heavy on the GPU, so avoid animating them on phones, and check text contrast against the brightest blob.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="animated-gradient-pan">
+    <div class="sc-notes">
+      <h2>Animated gradient pan</h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>Make the gradient twice as wide as its box with <code>bg-size-[200%_100%]</code>, then move <code>background-position</code> back and forth with a keyframe animation. Use a symmetric colour list (A, B, A) so the loop is seamless. Arbitrary <code>bg-size-[…]</code> arrived in 4.1; in 4.0 write <code>bg-[size:200%_100%]</code>.</p>
+      <ul class="sc-parts">
+        <li><code>bg-size-[200%_100%]</code></li>
+        <li><code>animate-gradient-pan</code></li>
+        <li><code>motion-reduce:animate-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/animation#customizing-your-theme" target="_blank" rel="noopener">Docs: animation, customizing your theme</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A "processing" strip under a toolbar</figcaption>
+        <div class="sc-demo" id="animated-gradient-pan-1">
+          <div class="mx-auto max-w-md overflow-hidden rounded-lg bg-white shadow-sm dark:bg-slate-800">
+            <div class="flex items-center justify-between px-4 py-3 text-sm text-slate-900 dark:text-white">
+              <span class="font-semibold">Exporting report.pdf</span>
+              <span class="text-slate-500 dark:text-slate-400">Working…</span>
+            </div>
+            <div class="h-1.5 w-full animate-gradient-pan bg-linear-to-r from-indigo-500 via-pink-500 to-indigo-500 bg-size-[200%_100%] motion-reduce:animate-none"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="animated-gradient-pan-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-gradient-pan: gradient-pan 6s ease-in-out infinite;
+  @keyframes gradient-pan {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>An animated gradient border around a button</figcaption>
+        <div class="sc-demo" id="animated-gradient-pan-2">
+          <div class="flex justify-center">
+            <div class="w-fit animate-gradient-pan rounded-xl bg-linear-to-r from-pink-500 via-amber-400 to-pink-500 bg-size-[200%_100%] p-0.5 motion-reduce:animate-none">
+              <button type="button" class="rounded-[calc(var(--radius-xl)-2px)] bg-white px-5 py-2 text-sm font-semibold text-slate-900 dark:bg-slate-900 dark:text-white">Subscribe</button>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="animated-gradient-pan-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A live banner</figcaption>
+        <div class="sc-demo" id="animated-gradient-pan-3">
+          <div class="animate-gradient-pan rounded-2xl bg-linear-to-r from-indigo-600 via-fuchsia-500 to-indigo-600 bg-size-[200%_100%] p-6 text-white motion-reduce:animate-none">
+            <span class="rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider">Live</span>
+            <p class="mt-3 text-xl font-bold">Product Hunt launch day</p>
+            <p class="text-sm text-white/90">Join the maker chat at 9am Pacific.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="animated-gradient-pan-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="striped-progress">
+    <div class="sc-notes">
+      <h2>Striped and animated progress bars</h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>Two ways to stripe. A tiled hard-stop gradient with <code>bg-size-[1rem_1rem]</code> can slide sideways with a keyframe (the barber-pole bar). A <code>repeating-linear-gradient</code> needs no tile size but cannot be slid.</p>
+      <ul class="sc-parts">
+        <li><code>bg-[linear-gradient(45deg,…)]</code></li>
+        <li><code>bg-size-[1rem_1rem]</code></li>
+        <li><code>animate-stripes</code></li>
+        <li><code>bg-[repeating-linear-gradient(…)]</code></li>
+        <li><code>motion-reduce:animate-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-size#using-a-custom-value" target="_blank" rel="noopener">Docs: background-size</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Upload progress with a moving barber-pole fill</figcaption>
+        <div class="sc-demo" id="striped-progress-1">
+          <div class="mx-auto max-w-sm rounded-xl bg-white p-4 text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white">
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium">design-system-v4.fig</span>
+              <span class="font-mono text-xs text-slate-500 dark:text-slate-400">66%</span>
+            </div>
+            <div class="mt-3 h-3 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+              <div class="h-full w-2/3 animate-stripes rounded-full bg-indigo-500 bg-[linear-gradient(45deg,rgb(255_255_255/0.25)_25%,transparent_25%,transparent_50%,rgb(255_255_255/0.25)_50%,rgb(255_255_255/0.25)_75%,transparent_75%,transparent)] bg-size-[1rem_1rem] motion-reduce:animate-none"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="striped-progress-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-stripes: stripes 1s linear infinite;
+  @keyframes stripes {
+    to { background-position: 1rem 0; }
+  }
+}</pre>
+      </figure>
+      <p class="sc-note">The keyframe distance (<code>1rem</code>) must equal the tile width, or the loop jumps. The colour comes from <code>bg-indigo-500</code> beneath the translucent white image layer. Do not add a <code>bg-linear-*</code> class to the same element, because it would replace the stripe image.</p>
+
+      <figure class="sc-example">
+        <figcaption>Static hazard stripes</figcaption>
+        <div class="sc-demo" id="striped-progress-2">
+          <div class="mx-auto max-w-md space-y-3 text-sm text-slate-900 dark:text-white">
+            <div class="h-3 w-full rounded bg-[repeating-linear-gradient(45deg,var(--color-amber-400)_0_12px,var(--color-slate-900)_12px_24px)]"></div>
+            <p class="font-medium">Scheduled maintenance tonight at 22:00 UTC.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="striped-progress-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Capacity gauge: a hard edge at 60%, a ramp to 85%, and a stripe overlay</figcaption>
+        <div class="sc-demo" id="striped-progress-3">
+          <div class="mx-auto max-w-md text-xs text-slate-700 dark:text-slate-200">
+            <div class="relative h-3 overflow-hidden rounded-full bg-linear-to-r from-emerald-500 from-60% via-amber-400 via-60% to-rose-500 to-85%">
+              <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgb(255_255_255/0.3)_0_8px,transparent_8px_16px)]"></div>
+            </div>
+            <div class="mt-1 flex justify-between font-mono"><span>0</span><span>60</span><span>85</span><span>100</span></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="striped-progress-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="conic-spinner">
+    <div class="sc-notes">
+      <h2>Conic gradient spinners</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>A conic gradient from transparent to a colour, cut into a ring with a mask, makes a spinner. <code>animate-spin</code> rotates the element. To rotate only the gradient, register a typed <code>@property --angle</code> and animate that.</p>
+      <ul class="sc-parts">
+        <li><code>bg-conic from-transparent to-indigo-500</code></li>
+        <li><code>animate-spin</code></li>
+        <li><code>bg-conic-[from_var(--angle)_in_oklab]</code></li>
+        <li><code>animate-angle</code></li>
+        <li><code>[mask:radial-gradient(…)]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#adding-a-conic-gradient" target="_blank" rel="noopener">Docs: conic gradient</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A loading ring inside a disabled button</figcaption>
+        <div class="sc-demo" id="conic-spinner-1">
+          <div class="flex justify-center">
+            <button type="button" disabled class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white dark:bg-indigo-600">
+              <span class="size-4 animate-spin rounded-full bg-conic from-transparent to-white [mask:radial-gradient(farthest-side,transparent_calc(100%-2px),#000_calc(100%-1px))] motion-reduce:animate-none" role="status" aria-label="Saving"></span>
+              Saving…
+            </button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-spinner-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Rotating only the gradient with a typed <code>--angle</code></figcaption>
+        <div class="sc-demo" id="conic-spinner-2">
+          <div class="flex justify-center gap-6">
+            <div class="size-16 animate-angle rounded-full bg-conic-[from_var(--angle)_in_oklab] from-transparent to-pink-500 [mask:radial-gradient(farthest-side,transparent_calc(100%-6px),#000_calc(100%-5px))] motion-reduce:animate-none" role="status" aria-label="Loading"></div>
+            <div class="size-16 animate-angle rounded-full bg-conic-[from_var(--angle)_in_oklab] from-sky-200 via-indigo-500 to-sky-200 [mask:radial-gradient(farthest-side,transparent_calc(100%-6px),#000_calc(100%-5px))] motion-reduce:animate-none" role="status" aria-label="Loading"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-spinner-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@property --angle {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+@theme {
+  --animate-angle: spin-angle 3s linear infinite;
+  @keyframes spin-angle {
+    to { --angle: 360deg; }
+  }
+}</pre>
+      </figure>
+      <p class="sc-note">The browser can only tween <code>--angle</code> because <code>@property</code> says it is an <code>&lt;angle&gt;</code> (Chrome 85+, Safari 16.4+, Firefox 128+). Do not try to animate <code>--tw-gradient-position</code>: it is untyped and would just snap. Rotating the whole element with <code>animate-spin</code> works everywhere, but it also turns shadows and children.</p>
+
+      <figure class="sc-example">
+        <figcaption>A radar sweep widget</figcaption>
+        <div class="sc-demo" id="conic-spinner-3">
+          <div class="flex justify-center">
+            <div class="relative size-32 rounded-full bg-slate-900 ring-1 ring-emerald-500/40">
+              <div class="absolute inset-4 rounded-full border border-emerald-500/30"></div>
+              <div class="absolute inset-9 rounded-full border border-emerald-500/30"></div>
+              <div class="absolute inset-0 animate-spin rounded-full bg-conic from-transparent to-emerald-400/60 [animation-duration:3s] motion-reduce:animate-none"></div>
+              <span class="absolute top-7 left-20 size-1.5 rounded-full bg-emerald-300"></span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-spinner-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A card with a rotating gradient border</figcaption>
+        <div class="sc-demo" id="conic-spinner-4">
+          <div class="mx-auto max-w-xs animate-angle rounded-2xl bg-conic-[from_var(--angle)_in_oklab] from-indigo-500 via-pink-500 to-indigo-500 p-0.5 motion-reduce:animate-none">
+            <div class="rounded-[calc(var(--radius-2xl)-2px)] bg-white p-5 text-slate-900 dark:bg-slate-900 dark:text-white">
+              <p class="text-sm font-semibold">Spotlight feature</p>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">The border turns while the card holds still.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="conic-spinner-4"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="arbitrary-bg-image-and-theme">
+    <div class="sc-notes">
+      <h2>Arbitrary background images and tokens</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>When you need a gradient the stop utilities cannot express, write it straight into <code>bg-[…]</code>, or hold it in a variable with <code>bg-(image:--g)</code>. A <code>--background-image-*</code> theme variable becomes a named utility. These set <code>background-image</code> directly, with no <code>from-*</code>/<code>to-*</code> wiring.</p>
+      <ul class="sc-parts">
+        <li><code>bg-[linear-gradient(…)]</code></li>
+        <li><code>bg-[repeating-linear-gradient(…)]</code></li>
+        <li><code>bg-(image:--g)</code></li>
+        <li><code>bg-none</code></li>
+        <li><code>--background-image-brand</code></li>
+        <li><code>bg-blend-multiply</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image#using-a-custom-value" target="_blank" rel="noopener">Docs: custom value</a> · <a href="https://tailwindcss.com/docs/background-blend-mode" target="_blank" rel="noopener">blend mode</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Dot-grid background from a tiny radial gradient</figcaption>
+        <div class="sc-demo" id="arbitrary-bg-image-and-theme-1">
+          <div class="grid h-40 place-items-center rounded-xl bg-white bg-[radial-gradient(var(--color-slate-300)_1px,transparent_1px)] bg-size-[16px_16px] text-sm font-medium text-slate-700 dark:bg-slate-900 dark:bg-[radial-gradient(var(--color-slate-600)_1px,transparent_1px)] dark:text-slate-200">Canvas</div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-bg-image-and-theme-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A design token: <code>bg-brand</code> from <code>--background-image-brand</code></figcaption>
+        <div class="sc-demo" id="arbitrary-bg-image-and-theme-2">
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <div class="h-16 w-40 rounded-xl bg-brand"></div>
+            <button type="button" class="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white">Upgrade</button>
+            <span class="rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white">New</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-bg-image-and-theme-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --background-image-brand: linear-gradient(135deg, #6366f1, #ec4899);
+}
+/* generates: .bg-brand { background-image: var(--background-image-brand); } */</pre>
+      </figure>
+      <p class="sc-note">This works in 4.3.3, but the <code>--background-image-*</code> namespace is not listed in the theme docs' namespace table, so treat it as an engine feature rather than a documented one.</p>
+
+      <figure class="sc-example">
+        <figcaption>Gradients handed in by a variable: <code>bg-(image:--g)</code></figcaption>
+        <div class="sc-demo" id="arbitrary-bg-image-and-theme-3">
+          <div class="space-y-3">
+            <div style="--g:linear-gradient(90deg,#f0f,#0ff)" class="h-12 rounded-lg bg-(image:--g)"></div>
+            <div style="--g:linear-gradient(90deg,#f97316,#facc15 50%,#22c55e)" class="h-12 rounded-lg bg-(image:--g)"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-bg-image-and-theme-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Duotone with <code>bg-blend-multiply</code>: a greyscale layer multiplied by a colour gradient</figcaption>
+        <div class="sc-demo" id="arbitrary-bg-image-and-theme-4">
+          <div class="grid h-40 place-items-center rounded-xl bg-[radial-gradient(circle_at_30%_30%,#fff,#000),linear-gradient(135deg,var(--color-indigo-600),var(--color-pink-500))] bg-blend-multiply text-xl font-bold text-white">Duotone</div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-bg-image-and-theme-4"></pre>
+      </figure>
+      <p class="sc-note">Swap the first layer for <code>url(…)</code> to tint a real photo. This demo uses a gradient so the page needs no image file. <code>bg-none</code> removes any background image, for example <code>md:bg-none</code>.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="bg-size-position-arbitrary">
+    <div class="sc-notes">
+      <h2>Arbitrary bg-size and bg-position</h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>4.1 added <code>bg-size-[…]</code>, <code>bg-size-(--var)</code>, <code>bg-position-[…]</code> and <code>bg-position-(--var)</code>. They control tile size and placement for patterns, pans and underlines. Before 4.1 you wrote <code>bg-[size:…]</code>, which still works.</p>
+      <ul class="sc-parts">
+        <li><code>bg-size-[200%_100%]</code></li>
+        <li><code>bg-size-(--s)</code></li>
+        <li><code>bg-position-[80%_20%]</code></li>
+        <li><code>bg-top-left</code></li>
+        <li><code>bg-left</code></li>
+        <li><code>bg-right</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-size#using-a-custom-value" target="_blank" rel="noopener">Docs: background-size</a> · <a href="https://tailwindcss.com/docs/background-position#using-a-custom-value" target="_blank" rel="noopener">position</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Column guides: the tile width comes from a variable, <code>bg-size-(--s)</code></figcaption>
+        <div class="sc-demo" id="bg-size-position-arbitrary-1">
+          <div data-scope style="--s:16px" class="mx-auto max-w-md space-y-3 text-sm text-slate-700 dark:text-slate-200">
+            <div class="h-28 rounded-xl bg-white bg-[linear-gradient(90deg,var(--color-sky-400)_1px,transparent_1px)] bg-size-(--s) dark:bg-slate-900"></div>
+            <label class="flex items-center gap-3">Column
+              <input type="range" min="8" max="64" value="16" data-var="--s" data-unit="px" class="flex-1">
+              <output class="w-12 text-right font-mono text-xs">16px</output>
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="bg-size-position-arbitrary-1"></pre>
+      </figure>
+      <p class="sc-note">One value sets the width and leaves the height at <code>auto</code>, which for a gradient means "fill the box". That is why this draws vertical lines. For a square tile (a dot grid) give two values: <code>bg-size-[16px_16px]</code>, or <code>bg-size-[var(--s)_var(--s)]</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>Placing a fixed-size glow: named positions and <code>bg-position-[…]</code></figcaption>
+        <div class="sc-demo" id="bg-size-position-arbitrary-2">
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-top-left</p>
+              <div class="h-24 rounded-lg bg-white bg-[radial-gradient(closest-side,var(--color-indigo-500)_0_92%,transparent_93%)] bg-size-[2.5rem_2.5rem] bg-top-left bg-no-repeat dark:bg-slate-900"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-bottom-right</p>
+              <div class="h-24 rounded-lg bg-white bg-[radial-gradient(closest-side,var(--color-indigo-500)_0_92%,transparent_93%)] bg-size-[2.5rem_2.5rem] bg-bottom-right bg-no-repeat dark:bg-slate-900"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-position-[80%_20%]</p>
+              <div class="h-24 rounded-lg bg-white bg-[radial-gradient(closest-side,var(--color-indigo-500)_0_92%,transparent_93%)] bg-size-[2.5rem_2.5rem] bg-position-[80%_20%] bg-no-repeat dark:bg-slate-900"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="bg-size-position-arbitrary-2"></pre>
+      </figure>
+      <p class="sc-note">4.1 also deprecated the reversed names (<code>bg-left-top</code>) in favour of <code>bg-top-left</code>, <code>bg-top-right</code>, <code>bg-bottom-left</code> and <code>bg-bottom-right</code>. There are no bare numbers: <code>bg-size-200</code> is not a utility.</p>
+
+      <figure class="sc-example">
+        <figcaption>A 200% wide gradient shows a different slice at each position</figcaption>
+        <div class="sc-demo" id="bg-size-position-arbitrary-3">
+          <div class="space-y-3 text-slate-600 dark:text-slate-300">
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-left</p>
+              <div class="h-10 rounded-lg bg-linear-to-r from-indigo-500 via-pink-500 to-amber-400 bg-size-[200%_100%] bg-left"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-center</p>
+              <div class="h-10 rounded-lg bg-linear-to-r from-indigo-500 via-pink-500 to-amber-400 bg-size-[200%_100%] bg-center"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-right</p>
+              <div class="h-10 rounded-lg bg-linear-to-r from-indigo-500 via-pink-500 to-amber-400 bg-size-[200%_100%] bg-right"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="bg-size-position-arbitrary-3"></pre>
+      </figure>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="gradient-masks">
+    <div class="sc-notes">
+      <h2>Gradients as masks</h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>The <code>mask-*</code> utilities use gradient stops to fade an element's own pixels: images, gradients, even text. That is different from an overlay gradient, which paints on top. Reach for a mask when you want to fade out, not tint.</p>
+      <ul class="sc-parts">
+        <li><code>mask-b-from-50%</code></li>
+        <li><code>mask-l-from-90%</code></li>
+        <li><code>mask-r-from-90%</code></li>
+        <li><code>mask-radial-from-70%</code></li>
+        <li><code>mask-linear-45</code></li>
+        <li><code>mask-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/mask-image" target="_blank" rel="noopener">Docs: mask-image</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A scroller whose edges fade out</figcaption>
+        <div class="sc-demo" id="gradient-masks-1">
+          <div class="scrollbar-none mx-auto max-w-sm overflow-x-auto mask-l-from-90% mask-r-from-90%">
+            <div class="flex w-max gap-6 px-6 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+              <span>Northwind</span><span>Contoso</span><span>Fabrikam</span><span>Globex</span><span>Initech</span><span>Umbrella</span><span>Hooli</span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-masks-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A photo that melts into the card below it</figcaption>
+        <div class="sc-demo" id="gradient-masks-2">
+          <div class="mx-auto max-w-xs overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-slate-800">
+            <div class="aspect-video bg-landscape mask-b-from-50%"></div>
+            <div class="p-4 text-slate-900 dark:text-white">
+              <p class="text-sm font-semibold">Weekend in the Alps</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Three days, two huts, one very long staircase.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-masks-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS (the stand-in photo)">
+@theme {
+  --background-image-landscape:
+    radial-gradient(circle at 72% 38%, #fde68a 0 8%, transparent 8.5%),
+    linear-gradient(to bottom, #38bdf8, #fed7aa 58%, #115e59 58%);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A radial mask turns a rectangle into a soft oval</figcaption>
+        <div class="sc-demo" id="gradient-masks-3">
+          <div class="h-40 bg-linear-to-r from-pink-500 to-indigo-500 mask-radial-from-70%"></div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-masks-3"></pre>
+      </figure>
+      <p class="sc-note">Masks fade alpha, so they cannot be recoloured by <code>from-*</code>/<code>to-*</code> (those belong to the background). The mask utilities keep their own <code>--tw-mask-*</code> variables. Masking works in all current browsers (Chrome 120+, Safari 15.4+, Firefox 53+). For a ring cut-out, the arbitrary <code>[mask:radial-gradient(…)]</code> used in the donut is simpler.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="custom-gradient-utilities">
+    <div class="sc-notes">
+      <h2>Custom gradient tokens and utilities</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Register brand colours in <code>@theme</code> and they feed <code>from-*</code>/<code>to-*</code>. Build parametric gradients with a functional <code>@utility</code> and <code>--value()</code>. Since 4.3, <code>--default()</code> gives that utility a value when none is written.</p>
+      <ul class="sc-parts">
+        <li><code>@theme { --color-brand-500 }</code></li>
+        <li><code>from-brand-300</code></li>
+        <li><code>@utility stripes-*</code></li>
+        <li><code>--value(--color-*, [color])</code></li>
+        <li><code>--default(45)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#functional-utilities" target="_blank" rel="noopener">Docs: functional utilities</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Brand tokens: one edit rethemes every gradient</figcaption>
+        <div class="sc-demo" id="custom-gradient-utilities-1">
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <div class="h-14 w-40 rounded-lg bg-linear-to-r from-brand-300 to-brand-500"></div>
+            <button type="button" class="rounded-lg bg-linear-to-r from-brand-300 to-brand-500 px-4 py-2 text-sm font-semibold text-slate-900">Upgrade</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-gradient-utilities-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --color-brand-300: oklch(0.82 0.12 290);
+  --color-brand-500: oklch(0.62 0.22 290);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A <code>stripes-*</code> utility family that accepts theme colours and arbitrary values</figcaption>
+        <div class="sc-demo" id="custom-gradient-utilities-2">
+          <div class="space-y-3">
+            <div class="h-8 rounded-lg bg-white stripes-indigo-500 dark:bg-slate-900"></div>
+            <div class="h-8 rounded-lg bg-white stripes-rose-500 dark:bg-slate-900"></div>
+            <div class="h-8 rounded-lg bg-white stripes-[#10b981] dark:bg-slate-900"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-gradient-utilities-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@utility stripes-* {
+  background-image: repeating-linear-gradient(
+    var(--stripe-angle, 45deg),
+    --value(--color-*, [color]) 0 0.5rem,
+    transparent 0.5rem 1rem
+  );
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>v4.3 <code>--default()</code>: <code>stripe-angle</code> works with and without a number</figcaption>
+        <div class="sc-demo" id="custom-gradient-utilities-3">
+          <div class="grid grid-cols-2 gap-3 text-slate-600 sm:grid-cols-4 dark:text-slate-300">
+            <div><p class="mb-1 font-mono text-[11px]">default (45deg)</p><div class="h-16 rounded-lg bg-white stripes-rose-500 dark:bg-slate-900"></div></div>
+            <div><p class="mb-1 font-mono text-[11px]">stripe-angle</p><div class="h-16 rounded-lg bg-white stripes-rose-500 stripe-angle dark:bg-slate-900"></div></div>
+            <div><p class="mb-1 font-mono text-[11px]">stripe-angle-20</p><div class="h-16 rounded-lg bg-white stripes-rose-500 stripe-angle-20 dark:bg-slate-900"></div></div>
+            <div><p class="mb-1 font-mono text-[11px]">stripe-angle-135</p><div class="h-16 rounded-lg bg-white stripes-rose-500 stripe-angle-135 dark:bg-slate-900"></div></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-gradient-utilities-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@utility stripe-angle-* {
+  --stripe-angle: calc(--value(integer, --default(45)) * 1deg);
+}</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A shimmer skeleton with a keyframe from <code>@theme</code></figcaption>
+        <div class="sc-demo" id="custom-gradient-utilities-4">
+          <div class="mx-auto flex max-w-xs items-center gap-3 rounded-xl bg-white p-4 dark:bg-slate-800">
+            <div class="relative size-12 shrink-0 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+              <div class="absolute inset-0 animate-shimmer bg-linear-to-r from-transparent via-white/70 to-transparent motion-reduce:animate-none dark:via-white/15"></div>
+            </div>
+            <div class="flex-1 space-y-2">
+              <div class="relative h-3 overflow-hidden rounded bg-slate-200 dark:bg-slate-700">
+                <div class="absolute inset-0 animate-shimmer bg-linear-to-r from-transparent via-white/70 to-transparent motion-reduce:animate-none dark:via-white/15"></div>
+              </div>
+              <div class="relative h-3 w-2/3 overflow-hidden rounded bg-slate-200 dark:bg-slate-700">
+                <div class="absolute inset-0 animate-shimmer bg-linear-to-r from-transparent via-white/70 to-transparent motion-reduce:animate-none dark:via-white/15"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-gradient-utilities-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+@theme {
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}</pre>
+      </figure>
+      <p class="sc-note">A custom <code>@utility</code> that sets <code>background-image</code> competes with <code>bg-linear-*</code> on the same element, and only one wins. <code>@theme</code>, <code>@utility</code>, <code>@property</code> and <code>@custom-variant</code> run in the browser build; <code>@plugin</code> and <code>@config</code> do not.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="rename-migration">
+    <div class="sc-notes">
+      <h2>bg-gradient-to-* is now bg-linear-to-*</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>v4 renamed the direction utilities to <code>bg-linear-to-*</code> to sit beside <code>bg-radial</code> and <code>bg-conic</code>. The upgrade tool rewrites your templates. In 4.3.3 the old names still compile through a compatibility shim, but teach and write the new ones.</p>
+      <ul class="sc-parts">
+        <li><code>bg-gradient-to-r</code> → <code>bg-linear-to-r</code></li>
+        <li><code>bg-gradient-to-br</code> → <code>bg-linear-to-br</code></li>
+        <li><code>npx @tailwindcss/upgrade</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/blog/tailwindcss-v4#expanded-gradient-apis" target="_blank" rel="noopener">Blog: expanded gradient APIs</a> · <a href="https://tailwindcss.com/docs/upgrade-guide#using-variants-with-gradients" target="_blank" rel="noopener">Upgrade guide</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Old and new side by side (they look the same)</figcaption>
+        <div class="sc-demo" id="rename-migration-1">
+          <div class="space-y-3">
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-gradient-to-r (legacy)</p>
+              <div class="h-9 rounded-lg bg-gradient-to-r from-indigo-500 to-pink-500"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px] text-slate-600 dark:text-slate-300">bg-linear-to-r (v4)</p>
+              <div class="h-9 rounded-lg bg-linear-to-r from-indigo-500 to-pink-500"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="rename-migration-1"></pre>
+      </figure>
+      <p class="sc-note">The generated CSS differs: the legacy shim adds <code>in oklab</code> without the <code>@supports</code> guard and has no modifier support, so <code>bg-gradient-to-r/srgb</code> does nothing. The upgrade guide does not list the rename in its table; the v4 blog post and the changelog are the sources. Do not say the old names were removed.</p>
+
+      <figure class="sc-example">
+        <figcaption>Before and after, with the changed variant behaviour</figcaption>
+        <pre class="sc-code" data-code="html" data-label="v3">
+&lt;!-- v3: dark:from-* reset the whole gradient, so "to" became transparent --&gt;
+&lt;div class="bg-gradient-to-r from-red-500 to-yellow-400 dark:from-blue-500"&gt;
+  ...
+&lt;/div&gt;</pre>
+        <pre class="sc-code" data-code="html" data-label="v4">
+&lt;!-- v4: renamed, and only the "from" stop changes in dark mode --&gt;
+&lt;div class="bg-linear-to-r from-red-500 to-yellow-400 dark:from-blue-500"&gt;
+  ...
+&lt;/div&gt;
+
+&lt;!-- to go from three stops back to two in a state, use via-none --&gt;
+&lt;div class="bg-linear-to-r from-red-500 via-orange-400 to-yellow-400 dark:via-none dark:from-blue-500 dark:to-teal-400"&gt;
+  ...
+&lt;/div&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only: this is a before and after comparison of source text, so there is nothing extra to run. The live proof of the variant change is the "Variants change only that stop" card above.</p>
+
+      <figure class="sc-example">
+        <figcaption>The upgrade tool rewrites the classes for you</figcaption>
+        <pre class="sc-code" data-code="bash" data-label="Terminal">
+$ npx @tailwindcss/upgrade
+  src/Hero.tsx       bg-gradient-to-r   -&gt; bg-linear-to-r
+  src/Pricing.tsx    bg-gradient-to-br  -&gt; bg-linear-to-br</pre>
+      </figure>
+      <p class="sc-note">Code-only: the upgrade tool is a CLI that reads and rewrites files on disk, so it cannot run in a browser page. The output above is an illustration, not a recording. It needs Node.js 20 or newer, and the docs recommend running it in a new branch and reviewing the diff.</p>
+    </div>
+  </article>
+
+  <!-- ============================================================ -->
+  <article class="sc-feature" id="gradient-gotchas">
+    <div class="sc-notes">
+      <h2>Gradient gotchas</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The mistakes that come up most, each checked against 4.3.3. Left is the common wrong guess, right is what to write.</p>
+      <ul class="sc-parts">
+        <li><code>from-[25px]</code></li>
+        <li><code>bg-linear-[22.5deg]</code></li>
+        <li><code>via-(length:--p)</code></li>
+        <li><code>bg-conic-[from_0deg,…]</code></li>
+        <li><code>via-none</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image" target="_blank" rel="noopener">Docs: background-image</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Wrong guesses and their fixes</figcaption>
+        <div class="sc-demo" id="gradient-gotchas-1">
+          <div class="grid gap-3 text-xs sm:grid-cols-2">
+            <div class="rounded-lg border border-rose-300 p-3 dark:border-rose-500/60">
+              <p class="font-semibold text-rose-700 dark:text-rose-300">Generates nothing</p>
+              <p class="mt-1 font-mono text-slate-700 dark:text-slate-200">from-25px to-90%</p>
+              <p class="mt-2 font-mono text-slate-700 dark:text-slate-200">bg-linear-22.5</p>
+              <p class="mt-2 font-mono text-slate-700 dark:text-slate-200">-bg-linear-to-r</p>
+              <p class="mt-2 font-mono text-slate-700 dark:text-slate-200">bg-radial-45</p>
+            </div>
+            <div class="rounded-lg border border-emerald-300 p-3 dark:border-emerald-500/60">
+              <p class="font-semibold text-emerald-700 dark:text-emerald-300">Write this</p>
+              <p class="mt-1 font-mono text-slate-700 dark:text-slate-200">from-[25px] to-90%</p>
+              <p class="mt-2 font-mono text-slate-700 dark:text-slate-200">bg-linear-[22.5deg]</p>
+              <p class="mt-2 font-mono text-slate-700 dark:text-slate-200">-bg-linear-45</p>
+              <p class="mt-2 font-mono text-slate-700 dark:text-slate-200">bg-radial-[at_25%_25%]</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-gotchas-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Mixing a full arbitrary list with stops makes a junk gradient</figcaption>
+        <div class="sc-demo" id="gradient-gotchas-2">
+          <div class="space-y-3 text-slate-600 dark:text-slate-300">
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-linear-[25deg,red_30%,blue_60%] from-green-500 to-yellow-400 (do not)</p>
+              <div class="h-10 rounded-lg bg-linear-[25deg,red_30%,blue_60%] from-green-500 to-yellow-400"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-linear-[25deg] from-green-500 to-yellow-400 (angle only)</p>
+              <div class="h-10 rounded-lg bg-linear-[25deg] from-green-500 to-yellow-400"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-linear-[25deg,red_30%,blue_60%] (list only)</p>
+              <div class="h-10 rounded-lg bg-linear-[25deg,red_30%,blue_60%]"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-gotchas-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>One-stop gradients and the background-image tug of war</figcaption>
+        <div class="sc-demo" id="gradient-gotchas-3">
+          <div class="space-y-3 text-slate-600 dark:text-slate-300">
+            <div>
+              <p class="mb-1 font-mono text-[11px]">from-indigo-500 alone: the missing to-* is transparent</p>
+              <div class="h-8 rounded-lg bg-linear-to-r from-indigo-500"></div>
+            </div>
+            <div>
+              <p class="mb-1 font-mono text-[11px]">bg-linear-to-r from-indigo-500 to-pink-500 plus bg-[radial-gradient(…)]: only one background-image survives (here, the dots)</p>
+              <div class="h-8 rounded-lg bg-white bg-linear-to-r from-indigo-500 to-pink-500 bg-[radial-gradient(var(--color-slate-500)_1px,transparent_1px)] bg-size-[12px_12px] dark:bg-slate-900"></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="gradient-gotchas-3"></pre>
+      </figure>
+      <p class="sc-note">Layer instead: put the second image on a child or pseudo-element, or write one multi-layer <code>bg-[…]</code> value.</p>
+
+      <figure class="sc-example">
+        <figcaption>The cheat sheet</figcaption>
+        <div class="sc-demo" id="gradient-gotchas-4">
+          <div class="sc-table-wrap">
+            <table class="sc-table">
+              <thead><tr><th>Situation</th><th>What happens</th><th>Do this</th></tr></thead>
+              <tbody>
+                <tr><td>Arbitrary gradients</td><td>No <code>in oklab</code> hint, so hex and rgb colours blend in sRGB</td><td>Add <code>_in_oklab</code>, or use a named utility</td></tr>
+                <tr><td>Interpolation modifier on an arbitrary value</td><td><code>bg-linear-[25deg]/oklch</code> generates nothing</td><td>Put <code>in oklch</code> inside the value</td></tr>
+                <tr><td>Hue modifiers</td><td>Only two hue paths exist for any pair</td><td>Pick far-apart saturated hues to see a difference</td></tr>
+                <tr><td>Angle or shape change</td><td>Does not animate (<code>--tw-gradient-position</code> is untyped)</td><td>Own <code>@property --angle</code>, or animate position or size</td></tr>
+                <tr><td>Unknown modifier</td><td><code>/foo</code> compiles, and the browser drops it</td><td>Stick to the eight documented words</td></tr>
+                <tr><td>Variable as a stop</td><td><code>via-(--p)</code> is read as a colour</td><td><code>via-(length:--p)</code></td></tr>
+                <tr><td><code>bg-conic-[…]</code> value</td><td>The engine wraps it in <code>conic-gradient()</code></td><td>Write <code>from_0deg,red,blue</code> only</td></tr>
+                <tr><td>Three stops in one state, two in another</td><td>No <code>from-none</code> or <code>to-none</code> exists</td><td>Use <code>via-none</code> under the same variant</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </article>
+</main>
+
+<footer data-sc-foot></footer>
+
+<script>
+  // 1) <input data-var="--a" data-unit="deg"> writes a CSS variable on its closest [data-scope]
+  document.addEventListener('input', (e) => {
+    const input = e.target.closest('input[data-var]')
+    if (!input) return
+    const value = input.value + (input.dataset.unit || '')
+    input.closest('[data-scope]').style.setProperty(input.dataset.var, value)
+    const out = input.parentElement.querySelector('output')
+    if (out) out.textContent = value
+  })
+
+  // 2) [data-glow] cards follow the pointer through --x and --y
+  document.addEventListener('pointermove', (e) => {
+    const card = e.target.closest('[data-glow]')
+    if (!card) return
+    const box = card.getBoundingClientRect()
+    card.style.setProperty('--x', e.clientX - box.left + 'px')
+    card.style.setProperty('--y', e.clientY - box.top + 'px')
+  })
+
+  // 3) [data-brand-toggle] flips data-brand on the demo in the same figure
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-brand-toggle]')
+    if (!btn) return
+    const scope = btn.closest('figure').querySelector('[data-brand]')
+    scope.dataset.brand = scope.dataset.brand === 'sunset' ? 'ocean' : 'sunset'
+  })
+</script>
+</body>
+</html>

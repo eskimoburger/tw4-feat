@@ -1,0 +1,3610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Directives &amp; functions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/showcase.css">
+<!-- Tailwind CSS v4 browser build: compiles utilities in the page, no build step -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+<style type="text/tailwindcss">
+  /* dark: follows the OS setting, unless the page's theme menu pins light or dark */
+  @custom-variant dark {
+    &:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }
+
+  /* page-specific v4 CSS (@theme, @utility, @keyframes, …) goes below */
+  /* ---- 01-checker ---- */
+  @utility bg-checker {
+    background-color: var(--color-white);
+    background-image: conic-gradient(
+      var(--color-slate-200) 25%,
+      transparent 0 50%,
+      var(--color-slate-200) 0 75%,
+      transparent 0
+    );
+    background-size: 16px 16px;
+  }
+
+  /* ---- 01-content-auto ---- */
+  @utility content-auto {
+    content-visibility: auto;
+  }
+
+  /* ---- 01-glass ---- */
+  @utility glass {
+    background: --alpha(var(--color-white) / 20%);
+    backdrop-filter: blur(14px) saturate(1.5);
+    border: 1px solid --alpha(var(--color-white) / 35%);
+  }
+
+  /* ---- 02-link-underline ---- */
+  @utility link-underline {
+    position: relative;
+    &::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: -2px;
+      height: 2px;
+      background: currentColor;
+      scale: 0 1;
+      transform-origin: left;
+      transition: scale 0.25s;
+    }
+    &:hover::after,
+    &:focus-visible::after {
+      scale: 1 1;
+    }
+  }
+
+  /* ---- 02-scrollbar-hidden ---- */
+  @utility scrollbar-hidden {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* ---- 02-stack-sm ---- */
+  @utility stack-sm {
+    & > * + * {
+      margin-top: --spacing(2);
+    }
+  }
+
+  /* ---- 02-tip ---- */
+  @utility tip {
+    position: relative;
+    &::after {
+      content: attr(data-tip);
+      position: absolute;
+      z-index: 10;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      translate: -50% 0;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 12px;
+      background: var(--color-slate-700);
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    &:hover::after,
+    &:focus-visible::after {
+      opacity: 1;
+    }
+  }
+
+  /* ---- 03-apply-badge ---- */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300;
+  }
+
+  /* ---- 03-apply-btn ---- */
+  @utility btn {
+    @apply inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700;
+  }
+
+  /* ---- 03-apply-combo ---- */
+  .combo-option {
+    @apply px-3 py-2 text-sm hover:bg-sky-50 aria-selected:bg-sky-100 aria-selected:font-semibold dark:hover:bg-slate-700 dark:aria-selected:bg-slate-600;
+  }
+
+  /* ---- 03-apply-vendor ---- */
+  /* vendor.css: a widget stylesheet you cannot edit */
+  .s2-dropdown {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+  }
+  .s2-search {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 4px;
+  }
+
+  /* your overrides, written with Tailwind syntax */
+  .s2-dropdown {
+    @apply rounded-b-lg border-0! shadow-md dark:bg-slate-800 dark:text-slate-100;
+  }
+  .s2-search {
+    @apply w-full rounded-md border-slate-300 px-2 py-1.5 dark:border-slate-600 dark:bg-slate-900;
+  }
+
+  /* ---- 04-btn-util ---- */
+  @utility btn-util {
+    padding: --spacing(2) --spacing(4);
+    border-radius: var(--radius-lg);
+    background: var(--color-sky-700);
+    color: white;
+  }
+
+  /* ---- 04-layer-components ---- */
+  @layer components {
+    .btn-layer {
+      padding: --spacing(2) --spacing(4);
+      border-radius: var(--radius-lg);
+      background: var(--color-sky-700);
+      color: white;
+    }
+  }
+
+  /* ---- 05-variant-card ---- */
+  .card {
+    background: var(--color-white);
+    color: var(--color-slate-900);
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-xl);
+    padding: --spacing(5);
+    transition: border-color 0.15s;
+    @variant dark {
+      background: var(--color-slate-900);
+      color: var(--color-slate-100);
+      border-color: var(--color-slate-700);
+    }
+    @variant md {
+      padding: --spacing(8);
+    }
+    @variant group-hover {
+      border-color: var(--color-sky-400);
+    }
+  }
+
+  /* ---- 05-variant-field ---- */
+  .field {
+    width: 100%;
+    background: var(--color-white);
+    color: var(--color-slate-900);
+    border: 1px solid var(--color-slate-300);
+    border-radius: var(--radius-lg);
+    padding: --spacing(2) --spacing(3);
+    @variant dark {
+      background: var(--color-slate-900);
+      color: var(--color-slate-100);
+      border-color: var(--color-slate-600);
+    }
+    @variant focus-visible {
+      outline: 2px solid var(--color-sky-500);
+    }
+    @variant aria-invalid {
+      border-color: var(--color-red-500);
+    }
+    @variant disabled {
+      opacity: 0.5;
+    }
+  }
+
+  /* ---- 05-variant-md-body ---- */
+  .md-body a {
+    color: var(--color-sky-700);
+    @variant hover {
+      text-decoration: underline;
+    }
+    @variant dark {
+      color: var(--color-sky-400);
+    }
+  }
+
+  /* ---- 06-stacked-btn ---- */
+  .btn-solid {
+    background: var(--color-sky-600);
+    color: white;
+    transition: translate 0.15s;
+    @variant hover, focus-visible {
+      background: var(--color-sky-700);
+    }
+    @variant hover:focus {
+      outline: 2px solid var(--color-sky-300);
+      outline-offset: 2px;
+    }
+    @variant dark:hover {
+      background: var(--color-sky-500);
+    }
+    @variant md:hover {
+      translate: 0 -1px;
+    }
+  }
+
+  /* ---- 06-stacked-nav ---- */
+  .nav-link {
+    color: var(--color-slate-600);
+    @variant hover, focus-visible, aria-[current=page] {
+      color: var(--color-slate-950);
+    }
+    @variant dark {
+      color: var(--color-slate-400);
+    }
+    @variant dark:hover, dark:focus-visible, dark:aria-[current=page] {
+      color: white;
+    }
+  }
+
+  /* ---- 06-stacked-row ---- */
+  .row-actions {
+    opacity: 0;
+    @variant group-hover, group-focus-within {
+      opacity: 1;
+    }
+  }
+
+  /* ---- 07-hocus ---- */
+  @custom-variant hocus (&:is(:hover, :focus-visible));
+
+  /* ---- 07-loading ---- */
+  @custom-variant loading (&[data-loading="true"]);
+
+  /* ---- 07-narrow-card ---- */
+  @custom-variant narrow-card (@container (width < 24rem));
+
+  /* ---- 07-theme-midnight ---- */
+  @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+
+  /* ---- 08-any-hover ---- */
+  @custom-variant any-hover {
+    @media (any-hover: hover) {
+      &:hover {
+        @slot;
+      }
+    }
+  }
+
+  /* ---- 08-group-hocus ---- */
+  @custom-variant group-hocus {
+    &:is(:where(.group):hover *, :where(.group):focus-visible *) {
+      @slot;
+    }
+  }
+
+  /* ---- 08-sidebar-open ---- */
+  @custom-variant sidebar-open {
+    :where([data-sidebar="open"]) & {
+      @slot;
+    }
+  }
+
+  /* ---- 09-hocus-nested ---- */
+  @custom-variant hocus-nested {
+    @variant hover {
+      @slot;
+    }
+    @variant focus-visible {
+      @slot;
+    }
+  }
+
+  /* ---- 09-nav-open ---- */
+  @custom-variant nav-open {
+    @variant max-md {
+      &:where([data-nav="open"] *) {
+        @slot;
+      }
+    }
+  }
+
+  /* ---- 10-elevate ---- */
+  @utility elevate-* {
+    box-shadow: --value(--elevation-*);
+  }
+
+  /* ---- 10-elevation-tokens ---- */
+  @theme {
+    --elevation-1: 0 1px 2px rgb(0 0 0 / 0.12);
+    --elevation-2: 0 6px 16px rgb(0 0 0 / 0.16);
+    --elevation-3: 0 18px 40px rgb(0 0 0 / 0.22);
+  }
+
+  /* ---- 10-glow ---- */
+  @theme {
+    --glow-sm: 0 0 8px rgb(56 189 248 / 0.55);
+    --glow-md: 0 0 18px rgb(56 189 248 / 0.6);
+    --glow-lg: 0 0 36px rgb(56 189 248 / 0.65);
+  }
+  @utility glow-* {
+    box-shadow: --value(--glow-*);
+  }
+
+  /* ---- 10-shape ---- */
+  @theme {
+    --shape-pill: 9999px;
+    --shape-blob: 63% 37% 54% 46% / 55% 48% 52% 45%;
+    --shape-leaf: 0 70% 0 70%;
+  }
+  @utility shape-* {
+    border-radius: --value(--shape-*);
+  }
+
+  /* ---- 11-hue-shift ---- */
+  @utility hue-shift-* {
+    filter: hue-rotate(calc(--value(number) * 1deg));
+  }
+
+  /* ---- 11-progress ---- */
+  @utility progress-* {
+    --progress: --value(percentage);
+    width: var(--progress);
+  }
+
+  /* ---- 11-rise-in ---- */
+  /* longhands, not the animation shorthand, so stagger-* can set the delay */
+  @utility rise-in {
+    animation-name: rise;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+  }
+  @utility stagger-* {
+    animation-delay: calc(--value(integer) * 80ms);
+  }
+
+  /* ---- 11-rise-keyframes ---- */
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 12px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  /* ---- 12-font-axis ---- */
+  @utility font-axis-* {
+    font-variation-settings: --value([*]);
+  }
+
+  /* ---- 12-stripe ---- */
+  @utility stripe-* {
+    background-image: repeating-linear-gradient(
+      45deg,
+      --value(--color-*, [color]) 0 8px,
+      transparent 8px 16px
+    );
+  }
+
+  /* ---- 12-sweep ---- */
+  @utility sweep-* {
+    background: conic-gradient(
+      var(--color-sky-500) --value([angle]),
+      --alpha(var(--color-slate-500) / 30%) 0
+    );
+    border-radius: 9999px;
+  }
+
+  /* ---- 12-typeface ---- */
+  @utility typeface-* {
+    font-family: --value([family-name], [generic-name]);
+  }
+
+  /* ---- 13-autofit ---- */
+  @utility autofit-* {
+    grid-template-columns: repeat(auto-fit, minmax(--value(--container-*, [length]), 1fr));
+  }
+
+  /* ---- 13-measure ---- */
+  @utility measure-* {
+    max-width: calc(--value(integer) * 1ch);
+    max-width: --value(--container-*, [length]);
+  }
+
+  /* ---- 13-ring-fill ---- */
+  @utility ring-fill-* {
+    background: conic-gradient(
+      var(--color-sky-500) calc(--value(integer) * 1%),
+      --alpha(var(--color-slate-500) / 30%) 0
+    );
+    background: conic-gradient(
+      var(--color-sky-500) --value([percentage]),
+      --alpha(var(--color-slate-500) / 30%) 0
+    );
+    border-radius: 9999px;
+  }
+
+  /* ---- 14-aura ---- */
+  @utility aura-* {
+    --aura: --value(--color-*, [color]);
+    /* no modifier: the second line is dropped and this one stays */
+    box-shadow: 0 0 28px var(--aura);
+    box-shadow: 0 0 28px --alpha(var(--aura) / calc(--modifier(integer) * 1%));
+  }
+
+  /* ---- 14-pad ---- */
+  @utility pad-* {
+    padding-inline: --spacing(--value(integer));
+    padding-block: --spacing(--modifier(integer));
+  }
+
+  /* ---- 14-type ---- */
+  @utility type-* {
+    font-size: --value(--text-*, [length]);
+    line-height: --modifier(--leading-*, [length], [*]);
+  }
+
+  /* ---- 15-shift ---- */
+  @utility shift-x-* {
+    translate: --spacing(--value(integer)) 0;
+    translate: --value([percentage], [length]) 0;
+  }
+  @utility -shift-x-* {
+    translate: --spacing(--value(integer) * -1) 0;
+    translate: calc(--value([percentage], [length]) * -1) 0;
+  }
+
+  /* ---- 16-frame ---- */
+  @theme {
+    --frame-video: 16/9;
+    --frame-square: 1;
+    --frame-poster: 2/3;
+  }
+  @utility frame-* {
+    aspect-ratio: --value(--frame-*, ratio, [ratio]);
+  }
+
+  /* ---- 17-last-line ---- */
+  @utility last-line-* {
+    text-align-last: --value('start', 'center', 'end', 'justify');
+  }
+
+  /* ---- 17-reveal ---- */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; translate: 0 16px; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  @keyframes zoom-in {
+    from { opacity: 0; scale: 0.9; }
+    to { opacity: 1; scale: 1; }
+  }
+  @utility reveal-* {
+    animation: --value('fade-in', 'slide-up', 'zoom-in') 0.6s ease-out both;
+  }
+
+  /* ---- 17-writing ---- */
+  @utility writing-* {
+    writing-mode: --value('vertical-rl', 'vertical-lr', 'horizontal-tb');
+  }
+
+  /* ---- 18-avatar ---- */
+  @utility avatar-* {
+    width: --spacing(--value(integer, --default(10)));
+    height: --spacing(--value(integer, --default(10)));
+    border-radius: --modifier(--radius-*, [length], --default(9999px));
+  }
+
+  /* ---- 18-enter ---- */
+  @utility enter-* {
+    animation: rise calc(--value(integer, --default(4)) * 100ms) ease-out both;
+    animation-delay: calc(--modifier(integer, --default(0)) * 100ms);
+  }
+
+  /* ---- 18-lift ---- */
+  @utility lift-* {
+    translate: 0 calc(--spacing(--value(integer, --default(1))) * -1);
+  }
+
+  /* ---- 18-rule ---- */
+  /* one-token default; the spaces stay outside --default() */
+  @utility rule-* {
+    border-top: calc(--value(integer, --default(1)) * 1px) solid var(--color-slate-400);
+  }
+
+  /* ---- 19-chip-base ---- */
+  @utility chip-base {
+    border-radius: 9999px;
+  }
+  @utility chip-base {
+    padding: 2px 10px;
+  }
+
+  /* ---- 19-elev-arbitrary ---- */
+  @utility elev-* {
+    box-shadow: --value([*]);
+  }
+
+  /* ---- 19-elev-theme ---- */
+  @utility elev-* {
+    box-shadow: --value(--elevation-*);
+  }
+
+  /* ---- 20-chip-outline ---- */
+  .chip-outline {
+    border: 1px solid --alpha(currentColor / 25%);
+    background: --alpha(currentColor / 8%);
+  }
+
+  /* ---- 21-rhythm ---- */
+  .rhythm {
+    display: grid;
+    gap: --spacing(3);
+    padding: --spacing(5);
+    border-radius: var(--radius-xl);
+    background: var(--color-white);
+    color: var(--color-slate-900);
+    @variant dark {
+      background: var(--color-slate-800);
+      color: var(--color-slate-100);
+    }
+  }
+  .rhythm > div {
+    padding: --spacing(3);
+    border-radius: var(--radius-lg);
+    background: var(--color-sky-100);
+    color: var(--color-sky-900);
+    @variant dark {
+      background: var(--color-sky-950);
+      color: var(--color-sky-200);
+    }
+  }
+
+  /* ---- 22-theme-breakpoint ---- */
+  .bp-narrow {
+    display: block;
+  }
+  .bp-wide {
+    display: none;
+  }
+  @media (width >= --theme(--breakpoint-md)) {
+    .bp-narrow {
+      display: none;
+    }
+    .bp-wide {
+      display: block;
+    }
+  }
+
+  /* ---- 22-theme-container ---- */
+  .token-box {
+    container-type: inline-size;
+  }
+  .token-card {
+    display: grid;
+    gap: --spacing(3);
+  }
+  @container (width >= --theme(--container-md)) {
+    .token-card {
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
+  }
+
+  /* ---- 22-theme-fonts ---- */
+  /* --font-brand is not defined, so the fallback list is used */
+  .panel-fallback {
+    font-family: --theme(--font-brand, Georgia, serif);
+  }
+  /* --font-mono exists in the default theme */
+  .panel-token {
+    font-family: --theme(--font-mono);
+  }
+
+  /* ---- 23-legacy-box ---- */
+  .legacy-box {
+    padding: theme(spacing.4);
+    border-left: 4px solid theme(colors.red.500);
+    background: theme(colors.red.50);
+    color: theme(colors.red.800);
+    @variant dark {
+      background: theme(colors.red.950);
+      color: theme(colors.red.200);
+    }
+  }
+  .modern-box {
+    padding: --spacing(4);
+    border-left: 4px solid var(--color-sky-500);
+    background: var(--color-sky-50);
+    color: var(--color-sky-800);
+    @variant dark {
+      background: var(--color-sky-950);
+      color: var(--color-sky-200);
+    }
+  }
+
+  /* ---- 23-legacy-media ---- */
+  .mq-chip {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 13px;
+    background: var(--color-slate-200);
+    color: var(--color-slate-800);
+    @variant dark {
+      background: var(--color-slate-700);
+      color: var(--color-slate-100);
+    }
+  }
+  @media (width >= theme(screens.lg)) {
+    .mq-v3 { background: var(--color-emerald-600); color: white; }
+  }
+  @media (width >= theme(--breakpoint-lg)) {
+    .mq-compat { background: var(--color-emerald-600); color: white; }
+  }
+  @media (width >= --theme(--breakpoint-lg)) {
+    .mq-v4 { background: var(--color-emerald-600); color: white; }
+  }
+
+  /* ---- 25-config-legacy-color ---- */
+  @theme {
+    --color-legacy: #0e7490;
+  }
+
+  /* ---- 26-plugin-halo ---- */
+  @utility halo {
+    box-shadow: 0 0 12px skyblue;
+  }
+</style>
+<script src="assets/showcase.js" defer></script>
+</head>
+<body>
+<header data-sc-nav></header>
+
+<main class="sc-main">
+  <section class="sc-intro">
+    <p class="sc-eyebrow">Page 03 · Foundations</p>
+    <h1>Directives &amp; functions</h1>
+    <p class="sc-lede">The at-rules and build-time functions that extend Tailwind from your own CSS: custom utilities and variants, <code>@apply</code>, <code>@variant</code>, and <code>--alpha()</code>, <code>--spacing()</code> and <code>--theme()</code>. Whatever the in-browser build can compile runs live on this page; directives that need a build step are shown as code, and <code>@theme</code> has its own page (<a href="02-theme.html">Theme variables</a>).</p>
+    <nav data-sc-toc aria-label="Features on this page"></nav>
+  </section>
+
+  <article class="sc-feature" id="utility-simple">
+    <div class="sc-notes">
+      <h2>Simple <code class="whitespace-nowrap">@utility</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Register a one-class utility with <code>@utility</code> and it behaves like a built-in: it lands in the utilities layer, works with every variant (<code>hover:</code>, <code>md:</code>, <code>dark:</code>, <code>group-hover:</code>) and needs no extra config. Use it for a CSS feature Tailwind has no class for. Utilities with more declarations sort first, so a plain <code>px-8</code> or <code>rounded-none</code> still overrides them.</p>
+      <ul class="sc-parts">
+        <li><code>@utility glass { … }</code></li>
+        <li><code>hover:glass</code></li>
+        <li><code>md:bg-checker</code></li>
+        <li><code>content-auto</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#simple-utilities" target="_blank" rel="noopener">Docs: simple utilities</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Frosted toast: one custom class stacked with built-in utilities</figcaption>
+        <div class="sc-demo" id="utility-simple-1">
+          <div class="grid place-items-center rounded-2xl bg-linear-to-br from-fuchsia-500 via-violet-500 to-sky-500 p-6 sm:p-8">
+            <div class="glass flex items-center gap-3 rounded-2xl px-4 py-3 text-white shadow-lg transition-transform hover:-translate-y-0.5 md:px-6">
+              <span class="size-2.5 shrink-0 rounded-full bg-emerald-300"></span>
+              <p class="text-sm font-medium">Deploy finished in 42s</p>
+              <button type="button" class="ml-2 rounded-lg bg-white/20 px-2 py-1 text-xs hover:bg-white/30">View</button>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-simple-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility glass {
+    background: --alpha(var(--color-white) / 20%);
+    backdrop-filter: blur(14px) saturate(1.5);
+    border: 1px solid --alpha(var(--color-white) / 35%);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Transparency preview: <code>bg-checker</code>, and <code>hover:bg-checker</code> on the second tile</figcaption>
+        <div class="sc-demo" id="utility-simple-2">
+          <div class="grid grid-cols-2 gap-4 text-center text-xs text-slate-600 dark:text-slate-300">
+            <div>
+              <div class="bg-checker grid h-28 place-items-center rounded-xl border border-slate-300 dark:border-slate-600">
+                <span class="size-14 rotate-12 rounded-2xl bg-sky-500/70"></span>
+              </div>
+              <p class="mt-2">bg-checker</p>
+            </div>
+            <div>
+              <div class="grid h-28 place-items-center rounded-xl border border-slate-300 bg-white hover:bg-checker dark:border-slate-600 dark:bg-slate-800">
+                <span class="size-14 rotate-12 rounded-2xl bg-fuchsia-500/70"></span>
+              </div>
+              <p class="mt-2">hover:bg-checker (hover the tile)</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-simple-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility bg-checker {
+    background-color: var(--color-white);
+    background-image: conic-gradient(
+      var(--color-slate-200) 25%,
+      transparent 0 50%,
+      var(--color-slate-200) 0 75%,
+      transparent 0
+    );
+    background-size: 16px 16px;
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Long feed: <code>content-auto</code> on every row</figcaption>
+        <div class="sc-demo" id="utility-simple-3">
+          <ul class="max-h-56 divide-y divide-slate-200 overflow-auto rounded-xl bg-white px-4 dark:divide-slate-700 dark:bg-slate-800">
+            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
+              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Ada Lovelace</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Shipped the analytical engine docs.</p>
+            </li>
+            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
+              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Grace Hopper</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Found a moth in the relay. Logged it.</p>
+            </li>
+            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
+              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Katherine Johnson</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Verified the trajectory numbers by hand.</p>
+            </li>
+            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
+              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Margaret Hamilton</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Added priority scheduling to the flight software.</p>
+            </li>
+            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
+              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Annie Easley</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Merged the Centaur rocket stage fix.</p>
+            </li>
+            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
+              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Radia Perlman</p>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Opened a PR for the spanning-tree docs.</p>
+            </li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-simple-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility content-auto {
+    content-visibility: auto;
+  }</pre>
+      </figure>
+      <p class="sc-note">This one has no visible effect: <code>content-visibility: auto</code> lets the browser skip layout and paint for rows that are scrolled out of view, and <code>contain-intrinsic-size</code> reserves their height so the scrollbar stays stable. It needs Chrome or Edge 85+, Firefox 125+ or Safari 18+. <code>backdrop-filter</code> (first example) is unprefixed in Chrome 76+, Firefox 103+ and Safari 18+.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-nested">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@utility</code> with nested selectors</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Inside <code>@utility</code> you can nest <code>&amp;::after</code>, <code>&amp;:hover</code>, <code>&amp; &gt; * + *</code> or an <code>@media</code> block. The whole block is one class, so tooltips, animated underlines and hidden WebKit scrollbars ship as a single utility that still accepts variants.</p>
+      <ul class="sc-parts">
+        <li><code>&amp;::after</code></li>
+        <li><code>&amp;:hover::after</code></li>
+        <li><code>&amp; &gt; * + *</code></li>
+        <li><code>scrollbar-hidden</code></li>
+        <li><code>motion-safe:link-underline</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#complex-utilities" target="_blank" rel="noopener">Docs: complex utilities</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Chip carousel: the second row hides its scrollbar</figcaption>
+        <div class="sc-demo" id="utility-nested-1">
+          <div class="grid gap-4">
+            <div>
+              <p class="mb-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">overflow-x-auto</p>
+              <div class="flex gap-2 overflow-x-auto rounded-xl bg-white p-3 dark:bg-slate-800">
+                <button type="button" class="shrink-0 rounded-full bg-sky-600 px-4 py-1.5 text-sm font-medium whitespace-nowrap text-white">All</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Design</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Engineering</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Product</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Marketing</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Support</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Sales</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Finance</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">People</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Legal</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Data</button>
+              </div>
+            </div>
+            <div>
+              <p class="mb-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">scrollbar-hidden overflow-x-auto</p>
+              <div class="scrollbar-hidden flex gap-2 overflow-x-auto rounded-xl bg-white p-3 dark:bg-slate-800">
+                <button type="button" class="shrink-0 rounded-full bg-sky-600 px-4 py-1.5 text-sm font-medium whitespace-nowrap text-white">All</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Design</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Engineering</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Product</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Marketing</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Support</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Sales</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Finance</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">People</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Legal</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Data</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-nested-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility scrollbar-hidden {
+    scrollbar-width: none;
+    &amp;::-webkit-scrollbar {
+      display: none;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note"><code>scrollbar-width: none</code> covers Firefox and current Chromium; the nested <code>::-webkit-scrollbar</code> rule covers older WebKit. Since v4.3 Tailwind also ships built-in <code>scrollbar-none</code> and <code>scrollbar-thin</code> (see page 14), but only this nested form also removes the WebKit pseudo-element. Classic scrollbars are only visible on systems that use them; overlay-scrollbar systems such as macOS hide both rows' bars until you scroll.</p>
+
+      <figure class="sc-example">
+        <figcaption>Pure-CSS tooltips from <code>data-tip</code> (hover or tab to a button)</figcaption>
+        <div class="sc-demo" id="utility-nested-2">
+          <div class="flex gap-3 pt-10">
+            <button type="button" class="tip grid size-10 place-items-center rounded-lg bg-white text-slate-700 shadow-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700" data-tip="Copy link" aria-label="Copy link">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.43"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.33-1.33"/></svg>
+            </button>
+            <button type="button" class="tip grid size-10 place-items-center rounded-lg bg-white text-slate-700 shadow-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700" data-tip="Share" aria-label="Share">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+            </button>
+            <button type="button" class="tip grid size-10 place-items-center rounded-lg bg-white text-slate-700 shadow-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700" data-tip="Archive" aria-label="Archive">
+              <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8M10 12h4"/></svg>
+            </button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-nested-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility tip {
+    position: relative;
+    &amp;::after {
+      content: attr(data-tip);
+      position: absolute;
+      z-index: 10;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      translate: -50% 0;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 12px;
+      background: var(--color-slate-700);
+      color: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    &amp;:hover::after,
+    &amp;:focus-visible::after {
+      opacity: 1;
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Underline that draws in; the third link only animates when motion is allowed</figcaption>
+        <div class="sc-demo" id="utility-nested-3">
+          <nav class="flex gap-6 text-sm font-medium text-slate-700 dark:text-slate-200">
+            <a class="link-underline" href="#">Features</a>
+            <a class="link-underline" href="#">Pricing</a>
+            <a class="motion-safe:link-underline" href="#">Docs</a>
+          </nav>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-nested-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility link-underline {
+    position: relative;
+    &amp;::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: -2px;
+      height: 2px;
+      background: currentColor;
+      scale: 0 1;
+      transform-origin: left;
+      transition: scale 0.25s;
+    }
+    &amp;:hover::after,
+    &amp;:focus-visible::after {
+      scale: 1 1;
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Owl-selector spacing: <code>&amp; &gt; * + *</code> inside a utility</figcaption>
+        <div class="sc-demo" id="utility-nested-4">
+          <div class="stack-sm max-w-xs">
+            <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" placeholder="Full name" aria-label="Full name">
+            <input class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" placeholder="Work email" aria-label="Work email">
+            <button type="button" class="w-full rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white hover:bg-sky-700">Request access</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-nested-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility stack-sm {
+    &amp; &gt; * + * {
+      margin-top: --spacing(2);
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">The browser build on this page emits your nested CSS as written (native CSS nesting: Chrome 120+, Safari 17.2+, Firefox 117+). A compiled build flattens it for the v4 baseline of Chrome 111, Safari 16.4 and Firefox 128.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="apply-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@apply</code> in custom CSS</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p><code>@apply</code> inlines utility classes, including variants, into your own selectors. Use it for CSS you cannot put classes on, such as a third-party widget or CMS markup. In v4 it can only apply classes Tailwind generates: built-in utilities, <code>@utility</code> rules and custom variants.</p>
+      <ul class="sc-parts">
+        <li><code>@apply px-3 py-2</code></li>
+        <li><code>@apply hover:bg-sky-50</code></li>
+        <li><code>@apply dark:bg-slate-800</code></li>
+        <li><code>@apply border-0!</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#apply-directive" target="_blank" rel="noopener">Docs: @apply</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Restyling a third-party dropdown you cannot add classes to</figcaption>
+        <div class="sc-demo" id="apply-directive-1">
+          <div class="s2-dropdown mx-auto max-w-xs overflow-hidden text-sm">
+            <div class="border-b border-slate-200 p-2 dark:border-slate-700">
+              <input class="s2-search" placeholder="Search cities" aria-label="Search cities">
+            </div>
+            <ul>
+              <li class="combo-option">Berlin</li>
+              <li class="combo-option" aria-selected="true">Bangkok</li>
+              <li class="combo-option">Buenos Aires</li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="apply-directive-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  /* vendor.css: a widget stylesheet you cannot edit */
+  .s2-dropdown {
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+  }
+  .s2-search {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 4px;
+  }
+
+  /* your overrides, written with Tailwind syntax */
+  .s2-dropdown {
+    @apply rounded-b-lg border-0! shadow-md dark:bg-slate-800 dark:text-slate-100;
+  }
+  .s2-search {
+    @apply w-full rounded-md border-slate-300 px-2 py-1.5 dark:border-slate-600 dark:bg-slate-900;
+  }
+
+  .combo-option {
+    @apply px-3 py-2 text-sm hover:bg-sky-50 aria-selected:bg-sky-100 aria-selected:font-semibold dark:hover:bg-slate-700 dark:aria-selected:bg-slate-600;
+  }</pre>
+      </figure>
+      <p class="sc-note">The <code>!</code> goes at the end of the class (<code>border-0!</code>) and compiles to <code>!important</code>, which is how you beat a vendor rule that has the same specificity as yours.</p>
+
+      <figure class="sc-example">
+        <figcaption>A status badge: <code>dark:</code> variants inside <code>@apply</code></figcaption>
+        <div class="sc-demo" id="apply-directive-2">
+          <div class="flex flex-wrap gap-2">
+            <span class="badge">Active</span>
+            <span class="badge">Verified</span>
+            <span class="badge">Paid</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="apply-directive-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300;
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption><code>@apply</code> inside <code>@utility</code>: a button recipe that stays overridable</figcaption>
+        <div class="sc-demo" id="apply-directive-3">
+          <div class="flex flex-wrap items-center gap-3">
+            <button type="button" class="btn">Default</button>
+            <button type="button" class="btn rounded-none">rounded-none</button>
+            <button type="button" class="btn md:px-8">md:px-8</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="apply-directive-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility btn {
+    @apply inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700;
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What <code>@apply</code> cannot see (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  /* Error: Cannot apply unknown utility class `btn-layer` */
+  @layer components {
+    .btn-layer { padding: --spacing(2) --spacing(4); }
+  }
+  .cta { @apply btn-layer; }
+
+  /* Works: define it with @utility instead */
+  @utility btn-util { padding: --spacing(2) --spacing(4); }
+  .cta { @apply btn-util hover:btn-util md:btn-util; }</pre>
+      </figure>
+      <p class="sc-note">Code-only: an <code>@apply</code> error makes the whole stylesheet fail to compile, which would blank every demo on this page. In Vue, Svelte and CSS-module <code>&lt;style&gt;</code> blocks you also need <code>@reference</code> first (see below). Since v4.3.1 <code>@apply</code> also accepts CSS mixins.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="layer-vs-utility">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@layer components</code> vs <code class="whitespace-nowrap">@utility</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>In v3 a class inside <code>@layer utilities</code> became a real utility. In v4 Tailwind uses native cascade layers, so only <code>@utility</code> gets variants (<code>hover:</code>, <code>md:</code>) and works with <code>@apply</code>. A class in <code>@layer components</code> is plain CSS that utilities can still override.</p>
+      <ul class="sc-parts">
+        <li><code>@layer components</code></li>
+        <li><code>@utility btn-util</code></li>
+        <li><code>hover:btn-util</code></li>
+        <li><code>md:btn-util</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#adding-custom-utilities" target="_blank" rel="noopener">Docs: upgrade guide, adding custom utilities</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Hover both chips: only the <code>@utility</code> one reacts</figcaption>
+        <div class="sc-demo" id="layer-vs-utility-1">
+          <div class="flex flex-wrap gap-4 text-sm">
+            <span class="rounded-lg border border-dashed border-slate-400 px-4 py-2 text-slate-700 hover:btn-layer dark:border-slate-500 dark:text-slate-200">hover:btn-layer</span>
+            <span class="rounded-lg border border-dashed border-slate-400 px-4 py-2 text-slate-700 hover:btn-util dark:border-slate-500 dark:text-slate-200">hover:btn-util</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="layer-vs-utility-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @layer components {
+    .btn-layer {
+      padding: --spacing(2) --spacing(4);
+      border-radius: var(--radius-lg);
+      background: var(--color-sky-700);
+      color: white;
+    }
+  }
+
+  @utility btn-util {
+    padding: --spacing(2) --spacing(4);
+    border-radius: var(--radius-lg);
+    background: var(--color-sky-700);
+    color: white;
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="Generated by Tailwind 4.3.3">
+  /* hover:btn-layer  -&gt; nothing. .btn-layer is plain CSS, not a utility. */
+
+  /* hover:btn-util and md:btn-util */
+  @media (hover: hover) {
+    .hover\:btn-util:hover {
+      padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+      border-radius: var(--radius-lg);
+      background: var(--color-sky-700);
+      color: white;
+    }
+  }
+  @media (width &gt;= 48rem) {
+    .md\:btn-util {
+      padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+      border-radius: var(--radius-lg);
+      background: var(--color-sky-700);
+      color: white;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">The first chip is deliberately broken: <code>hover:btn-layer</code> is not a class Tailwind can generate, so it produces no CSS. Tailwind silently ignores a class it cannot generate, and that is the lesson.</p>
+
+      <figure class="sc-example">
+        <figcaption>Both layers stay overridable: <code>rounded-none px-8</code> beats either recipe</figcaption>
+        <div class="sc-demo" id="layer-vs-utility-2">
+          <div class="flex flex-wrap items-center gap-4 text-sm">
+            <button type="button" class="btn-layer">@layer, as is</button>
+            <button type="button" class="btn-layer rounded-none px-8">@layer + overrides</button>
+            <button type="button" class="btn-util">@utility, as is</button>
+            <button type="button" class="btn-util rounded-none px-8">@utility + overrides</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="layer-vs-utility-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @layer components {
+    .btn-layer {
+      padding: --spacing(2) --spacing(4);
+      border-radius: var(--radius-lg);
+      background: var(--color-sky-700);
+      color: white;
+    }
+  }
+
+  @utility btn-util {
+    padding: --spacing(2) --spacing(4);
+    border-radius: var(--radius-lg);
+    background: var(--color-sky-700);
+    color: white;
+  }</pre>
+      </figure>
+      <p class="sc-note">Utilities win over <code>@layer components</code> because the layer order is <code>theme, base, components, utilities</code>. Among <code>@utility</code> rules, the one that declares more properties is emitted first, so single-property classes like <code>px-8</code> still override it.</p>
+
+      <figure class="sc-example">
+        <figcaption>Migrating from v3 (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="v3">
+  @layer components {
+    .btn {
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+    }
+  }
+  @layer utilities {
+    .tab-4 {
+      tab-size: 4;
+    }
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="v4">
+  @utility btn {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+  @utility tab-4 {
+    tab-size: 4;
+  }
+
+  /* Keep @layer components for third-party selectors and global defaults,
+     @layer base for element defaults. */</pre>
+      </figure>
+      <p class="sc-note">Code-only: a diff to copy, not something to run. Note that <code>tab-*</code> and <code>zoom-*</code> became built-in utilities in v4.3, so <code>tab-4</code> now exists without any CSS.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="variant-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@variant</code> in custom CSS</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Use <code>@variant</code> inside your own rules to apply any Tailwind variant (<code>dark</code>, <code>md</code>, <code>hover</code>, <code>group-hover</code>, <code>aria-invalid</code> and so on) without writing the media query or selector yourself. It compiles to native nested CSS.</p>
+      <ul class="sc-parts">
+        <li><code>@variant dark { … }</code></li>
+        <li><code>@variant md { … }</code></li>
+        <li><code>@variant group-hover { … }</code></li>
+        <li><code>@variant aria-invalid { … }</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#using-variants" target="_blank" rel="noopener">Docs: using variants</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A plain-CSS card that reacts to dark mode, <code>md</code> and a hovered parent group</figcaption>
+        <div class="sc-demo" id="variant-directive-1">
+          <div class="group">
+            <div class="card text-sm">
+              <p class="font-medium">Plain CSS component</p>
+              <p class="mt-1 text-slate-600 dark:text-slate-300">Hover the card to change its border, switch the theme, or widen the window past the md breakpoint to grow the padding.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-directive-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .card {
+    background: var(--color-white);
+    color: var(--color-slate-900);
+    border: 1px solid var(--color-slate-200);
+    border-radius: var(--radius-xl);
+    padding: --spacing(5);
+    transition: border-color 0.15s;
+    @variant dark {
+      background: var(--color-slate-900);
+      color: var(--color-slate-100);
+      border-color: var(--color-slate-700);
+    }
+    @variant md {
+      padding: --spacing(8);
+    }
+    @variant group-hover {
+      border-color: var(--color-sky-400);
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Styling markdown you do not control</figcaption>
+        <div class="sc-demo" id="variant-directive-2">
+          <article class="md-body max-w-md space-y-2 text-sm text-slate-800 dark:text-slate-200">
+            <h3 class="text-base font-semibold">Release notes</h3>
+            <p>Read the <a href="#">migration guide</a> and the <a href="#">v4.3 announcement</a> before you upgrade. Both links underline on hover.</p>
+          </article>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-directive-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .md-body a {
+    color: var(--color-sky-700);
+    @variant hover {
+      text-decoration: underline;
+    }
+    @variant dark {
+      color: var(--color-sky-400);
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>One <code>.field</code> class for focus, invalid and disabled states</figcaption>
+        <div class="sc-demo" id="variant-directive-3">
+          <div class="flex max-w-xs flex-col gap-3">
+            <input class="field" placeholder="Focus me (focus-visible)" aria-label="Normal field">
+            <input class="field" value="ada@" aria-label="Invalid email" aria-invalid="true">
+            <input class="field" placeholder="Disabled" aria-label="Disabled field" disabled>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-directive-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .field {
+    width: 100%;
+    background: var(--color-white);
+    color: var(--color-slate-900);
+    border: 1px solid var(--color-slate-300);
+    border-radius: var(--radius-lg);
+    padding: --spacing(2) --spacing(3);
+    @variant dark {
+      background: var(--color-slate-900);
+      color: var(--color-slate-100);
+      border-color: var(--color-slate-600);
+    }
+    @variant focus-visible {
+      outline: 2px solid var(--color-sky-500);
+    }
+    @variant aria-invalid {
+      border-color: var(--color-red-500);
+    }
+    @variant disabled {
+      opacity: 0.5;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">The output is native nested CSS: <code>@variant dark</code> becomes a nested <code>@media (prefers-color-scheme: dark)</code> (on this page, the hybrid selector defined at the top). The in-browser build ships it as written (Chrome 120+, Safari 17.2+, Firefox 117+); a compiled build flattens it. Put <code>@variant</code> inside a rule, as above: a top-level <code>@variant dark { :root { … } }</code> breaks with a selector-based dark variant like this page's. In a Vue or Svelte <code>&lt;style&gt;</code> block you need <code>@reference</code> first.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="variant-stacked-compound">
+    <div class="sc-notes">
+      <h2>Stacked and compound <code class="whitespace-nowrap">@variant</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Since v4.3, <code>@variant</code> takes stacked variants separated by colons (<code>hover:focus</code>, applied left to right like in HTML, so both must match) and compound lists separated by commas (<code>hover, focus-visible</code>, either may match) that share one block of CSS.</p>
+      <ul class="sc-parts">
+        <li><code>@variant hover:focus { … }</code></li>
+        <li><code>@variant hover, focus-visible { … }</code></li>
+        <li><code>@variant dark:hover { … }</code></li>
+        <li><code>@variant aria-[current=page]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#using-variants" target="_blank" rel="noopener">Docs: using variants</a> · <a href="https://tailwindcss.com/blog/tailwindcss-v4-3#stacked--compound-variant-support" target="_blank" rel="noopener">v4.3 release post</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Primary button: hover <em>or</em> focus darkens it, hover <em>and</em> focus adds a ring</figcaption>
+        <div class="sc-demo" id="variant-stacked-compound-1">
+          <button type="button" class="btn-solid rounded-lg px-5 py-2.5 text-sm font-medium">Upgrade plan</button>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .btn-solid {
+    background: var(--color-sky-600);
+    color: white;
+    transition: translate 0.15s;
+    @variant hover, focus-visible {
+      background: var(--color-sky-700);
+    }
+    @variant hover:focus {
+      outline: 2px solid var(--color-sky-300);
+      outline-offset: 2px;
+    }
+    @variant dark:hover {
+      background: var(--color-sky-500);
+    }
+    @variant md:hover {
+      translate: 0 -1px;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">Hover it with the mouse, then click it and keep the pointer over it: the outline ring needs both states. In dark mode the hover colour is lighter (<code>dark:hover</code>), and from the md breakpoint up it lifts by 1px (<code>md:hover</code>). Hover rules are wrapped in <code>@media (hover: hover)</code>, so touch screens never get a stuck hover.</p>
+
+      <figure class="sc-example">
+        <figcaption>Navigation: hover, keyboard focus and the current page share one rule</figcaption>
+        <div class="sc-demo" id="variant-stacked-compound-2">
+          <nav class="flex gap-5 text-sm font-medium">
+            <a class="nav-link" href="#" aria-current="page">Overview</a>
+            <a class="nav-link" href="#">Activity</a>
+            <a class="nav-link" href="#">Settings</a>
+          </nav>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .nav-link {
+    color: var(--color-slate-600);
+    @variant hover, focus-visible, aria-[current=page] {
+      color: var(--color-slate-950);
+    }
+    @variant dark {
+      color: var(--color-slate-400);
+    }
+    @variant dark:hover, dark:focus-visible, dark:aria-[current=page] {
+      color: white;
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Row actions that appear on <code>group-hover</code> or <code>group-focus-within</code></figcaption>
+        <div class="sc-demo" id="variant-stacked-compound-3">
+          <div class="grid gap-2 text-sm">
+            <div class="group flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3 text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+              <span>invoice-2043.pdf</span>
+              <span class="row-actions flex gap-2">
+                <button type="button" class="rounded bg-slate-100 px-2 py-0.5 text-slate-700 dark:bg-slate-700 dark:text-slate-100">Open</button>
+                <button type="button" class="rounded bg-slate-100 px-2 py-0.5 text-slate-700 dark:bg-slate-700 dark:text-slate-100">Delete</button>
+              </span>
+            </div>
+            <div class="group flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3 text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+              <span>invoice-2044.pdf</span>
+              <span class="row-actions flex gap-2">
+                <button type="button" class="rounded bg-slate-100 px-2 py-0.5 text-slate-700 dark:bg-slate-700 dark:text-slate-100">Open</button>
+                <button type="button" class="rounded bg-slate-100 px-2 py-0.5 text-slate-700 dark:bg-slate-700 dark:text-slate-100">Delete</button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .row-actions {
+    opacity: 0;
+    @variant group-hover, group-focus-within {
+      opacity: 1;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">Hover a row, or press Tab to move focus into it: both reveal the buttons. The docs point out that a component styled with utilities is usually better than this; reach for it when plain CSS is the right tool. Requires v4.3: older versions reject the stacked and compound forms.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="custom-variant-shorthand">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@custom-variant</code> shorthand</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Define a variant in one line with <code>@custom-variant name (selector-or-at-rule);</code>, where <code>&amp;</code> stands for the element carrying the utility. Selectors, <code>@media</code>, <code>@container</code> and <code>@supports</code> all work, and the variant stacks with the built-in ones in either order (<code>md:hocus:underline</code>).</p>
+      <ul class="sc-parts">
+        <li><code>hocus:</code></li>
+        <li><code>loading:</code></li>
+        <li><code>theme-midnight:</code></li>
+        <li><code>narrow-card:</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants" target="_blank" rel="noopener">Docs: adding custom variants</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption><code>hocus:</code> for hover or keyboard focus</figcaption>
+        <div class="sc-demo" id="custom-variant-shorthand-1">
+          <div class="flex flex-wrap gap-3 text-sm">
+            <button type="button" class="rounded-lg bg-slate-900 px-4 py-2 text-white hocus:bg-sky-600 dark:bg-slate-100 dark:text-slate-900 dark:hocus:bg-sky-400">Primary</button>
+            <button type="button" class="rounded-lg border border-slate-400 px-4 py-2 text-slate-800 hocus:border-sky-600 hocus:text-sky-700 dark:border-slate-500 dark:text-slate-100 dark:hocus:border-sky-400 dark:hocus:text-sky-300">Outline</button>
+            <button type="button" class="rounded-lg px-4 py-2 text-slate-700 hocus:bg-slate-200 dark:text-slate-200 dark:hocus:bg-slate-700">Ghost</button>
+            <button type="button" class="rounded-lg px-4 py-2 text-slate-700 md:hocus:underline dark:text-slate-200">md:hocus:underline</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-shorthand-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant hocus (&amp;:is(:hover, :focus-visible));</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>State from a data attribute <span class="sc-spacer"></span><button class="sc-btn" type="button" data-flip="custom-variant-shorthand-2" data-name="data-loading" data-on="true" data-off="false" aria-pressed="true">Toggle loading</button></figcaption>
+        <div class="sc-demo" id="custom-variant-shorthand-2">
+          <button type="button" data-loading="true" class="group inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white loading:pointer-events-none loading:opacity-60">
+            <span class="hidden size-4 animate-spin rounded-full border-2 border-white border-t-transparent group-data-[loading=true]:inline-block motion-reduce:animate-none"></span>
+            Saving changes
+          </button>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-shorthand-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant loading (&amp;[data-loading="true"]);</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // &lt;button data-flip="demo-id" data-name="data-sidebar" data-on="open" data-off="closed"&gt;
+  // flips an attribute on the first element inside #demo-id that has it
+  document.addEventListener('click', (e) =&gt; {
+    const btn = e.target.closest('[data-flip]')
+    if (!btn) return
+    const host = document.querySelector('#' + btn.dataset.flip + ' [' + btn.dataset.name + ']')
+    if (!host) return
+    const on = host.getAttribute(btn.dataset.name) !== btn.dataset.on
+    host.setAttribute(btn.dataset.name, on ? btn.dataset.on : btn.dataset.off)
+    btn.setAttribute('aria-pressed', String(on))
+  })</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A theme on any wrapper, not only <code>&lt;html&gt;</code> <span class="sc-spacer"></span><select class="sc-btn" data-theme-switch="custom-variant-shorthand-3" aria-label="Theme of the preview box"><option value="midnight">data-theme="midnight"</option><option value="default">data-theme="default"</option></select></figcaption>
+        <div class="sc-demo" id="custom-variant-shorthand-3">
+          <div data-themed data-theme="midnight" class="rounded-xl p-2">
+            <div class="rounded-lg bg-white p-4 text-slate-900 ring-1 ring-slate-300 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-600 theme-midnight:bg-indigo-950 theme-midnight:text-indigo-100 theme-midnight:ring-indigo-400">
+              <p class="font-medium">Midnight card</p>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300 theme-midnight:text-indigo-300">The variant reads <code class="font-mono">data-theme</code> from any ancestor, so a preview pane can host its own theme.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-shorthand-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant theme-midnight (&amp;:where([data-theme="midnight"] *));</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // &lt;select data-theme-switch="demo-id"&gt; sets data-theme on the [data-themed] box inside #demo-id
+  document.addEventListener('change', (e) =&gt; {
+    const select = e.target.closest('[data-theme-switch]')
+    if (!select) return
+    const box = document.querySelector('#' + select.dataset.themeSwitch + ' [data-themed]')
+    if (box) box.setAttribute('data-theme', select.value)
+  })</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A container query as a variant: <code>narrow-card:</code></figcaption>
+        <div class="sc-demo" id="custom-variant-shorthand-4">
+          <div class="@container w-full max-w-xl min-w-48 resize-x overflow-auto rounded-xl border border-dashed border-slate-400 bg-white p-3 dark:border-slate-500 dark:bg-slate-800">
+            <div class="flex items-center gap-3 narrow-card:flex-col narrow-card:items-start">
+              <span class="size-12 shrink-0 rounded-lg bg-sky-500"></span>
+              <p class="text-sm text-slate-700 dark:text-slate-200">Drag the bottom-right corner. Below 24rem of container width this layout stacks.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-shorthand-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant narrow-card (@container (width &lt; 24rem));</pre>
+      </figure>
+      <p class="sc-note">Container queries need Chrome 105+, Safari 16+ or Firefox 110+. Touch screens cannot drag the resize handle, but a narrow phone already puts the card below 24rem. Redefining a built-in name overrides it: <code>@custom-variant hover (&amp;:hover);</code> restores the pre-v4 tap-to-hover behaviour, and this page's own <code>dark</code> variant is defined the same way (see the next card). Names may use letters, digits, dashes and underscores.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="custom-variant-block">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@custom-variant</code> block form with <code class="whitespace-nowrap">@slot</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>When a variant needs nesting, write a block and put <code>@slot</code> where the utility's declarations should land. That lets you wrap them in <code>@media</code> or <code>@supports</code>, use ancestor selectors, or emit several rules that each receive the utility.</p>
+      <ul class="sc-parts">
+        <li><code>@custom-variant name { … }</code></li>
+        <li><code>@slot</code></li>
+        <li><code>any-hover:</code></li>
+        <li><code>group-hocus:</code></li>
+        <li><code>sidebar-open:</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants" target="_blank" rel="noopener">Docs: adding custom variants</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption><code>any-hover:</code> highlights rows on hybrid laptops too</figcaption>
+        <div class="sc-demo" id="custom-variant-block-1">
+          <table class="w-full overflow-hidden rounded-xl bg-white text-left text-sm text-slate-800 dark:bg-slate-800 dark:text-slate-100">
+            <thead class="text-xs text-slate-500 uppercase dark:text-slate-400">
+              <tr><th class="px-3 py-2 font-medium">Member</th><th class="px-3 py-2 font-medium">Role</th></tr>
+            </thead>
+            <tbody>
+              <tr class="any-hover:bg-slate-100 dark:any-hover:bg-slate-700"><td class="px-3 py-2">Alice Nguyen</td><td class="px-3 py-2">Admin</td></tr>
+              <tr class="any-hover:bg-slate-100 dark:any-hover:bg-slate-700"><td class="px-3 py-2">Bob Okafor</td><td class="px-3 py-2">Editor</td></tr>
+              <tr class="any-hover:bg-slate-100 dark:any-hover:bg-slate-700"><td class="px-3 py-2">Chen Wei</td><td class="px-3 py-2">Viewer</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-block-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant any-hover {
+    @media (any-hover: hover) {
+      &amp;:hover {
+        @slot;
+      }
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">Plain <code>hover:</code> only applies when the <em>primary</em> pointer can hover (<code>@media (hover: hover)</code>). <code>any-hover</code> checks every pointer, so a touch laptop with a trackpad still gets the highlight.</p>
+
+      <figure class="sc-example">
+        <figcaption><code>group-hocus:</code>: a parent <code>.group</code> hovered or focused with the keyboard</figcaption>
+        <div class="sc-demo" id="custom-variant-block-2">
+          <a class="group block max-w-xs rounded-xl border border-slate-300 bg-white p-4 dark:border-slate-600 dark:bg-slate-800" href="#custom-variant-block">
+            <p class="font-semibold text-slate-900 group-hocus:text-sky-700 dark:text-slate-100 dark:group-hocus:text-sky-300">Pro plan</p>
+            <p class="text-sm text-slate-600 group-hocus:text-slate-900 dark:text-slate-300 dark:group-hocus:text-white">$12 per month, billed yearly</p>
+          </a>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-block-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant group-hocus {
+    &amp;:is(:where(.group):hover *, :where(.group):focus-visible *) {
+      @slot;
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Ancestor state: <code>sidebar-open:</code> <span class="sc-spacer"></span><button class="sc-btn" type="button" data-flip="custom-variant-block-3" data-name="data-sidebar" data-on="open" data-off="closed" aria-pressed="true">Toggle sidebar</button></figcaption>
+        <div class="sc-demo" id="custom-variant-block-3">
+          <div data-sidebar="open" class="relative h-28 overflow-hidden rounded-xl bg-white dark:bg-slate-800">
+            <aside class="absolute inset-y-0 left-0 w-36 -translate-x-full bg-slate-900 p-3 text-sm text-white transition-transform duration-300 motion-reduce:transition-none sidebar-open:translate-x-0 dark:bg-sky-900">
+              <p class="font-medium">Menu</p>
+              <p class="text-slate-300">Projects</p>
+            </aside>
+            <p class="p-3 text-sm text-slate-700 transition-[padding] duration-300 motion-reduce:transition-none sidebar-open:pl-40 dark:text-slate-200">Page content moves over when the sidebar opens.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-block-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant sidebar-open {
+    :where([data-sidebar="open"]) &amp; {
+      @slot;
+    }
+  }</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // &lt;button data-flip="demo-id" data-name="data-sidebar" data-on="open" data-off="closed"&gt;
+  // flips an attribute on the first element inside #demo-id that has it
+  document.addEventListener('click', (e) =&gt; {
+    const btn = e.target.closest('[data-flip]')
+    if (!btn) return
+    const host = document.querySelector('#' + btn.dataset.flip + ' [' + btn.dataset.name + ']')
+    if (!host) return
+    const on = host.getAttribute(btn.dataset.name) !== btn.dataset.on
+    host.setAttribute(btn.dataset.name, on ? btn.dataset.on : btn.dataset.off)
+    btn.setAttribute('aria-pressed', String(on))
+  })</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>This page's own <code>dark</code> variant: two rules, each with its own <code>@slot</code></figcaption>
+        <div class="sc-demo" id="custom-variant-block-4">
+          <div class="flex flex-wrap items-center gap-3 text-sm font-medium">
+            <span class="rounded-full bg-amber-200 px-3 py-1 text-amber-900 dark:hidden">dark: styles are off</span>
+            <span class="hidden rounded-full bg-indigo-900 px-3 py-1 text-indigo-100 dark:inline">dark: styles are on</span>
+            <span class="text-slate-600 dark:text-slate-300">Change the Theme menu at the top to flip it.</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-block-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS (the first block of this page's stylesheet)">
+  @custom-variant dark {
+    &amp;:where([data-theme="dark"], [data-theme="dark"] *) {
+      @slot;
+    }
+    @media (prefers-color-scheme: dark) {
+      &amp;:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+        @slot;
+      }
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">The first rule pins dark when the Theme menu says so; the second follows the operating system unless the menu pins light. Multiple rules in one block each receive the utility. For an at-rule-only variant you can skip the <code>&amp;</code>, as in <code>@custom-variant supports-grid { @supports (display: grid) { @slot; } }</code>.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="custom-variant-nested-variant">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@variant</code> inside <code class="whitespace-nowrap">@custom-variant</code></h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p>Build a custom variant from other variants by nesting <code>@variant</code> in its block. The result inherits their behaviour, for example <code>hover</code> staying wrapped in <code>@media (hover: hover)</code>. Handling landed in v4.1.14; use v4.2 or later to avoid an infinite-loop bug.</p>
+      <ul class="sc-parts">
+        <li><code>@variant hover { @slot; }</code></li>
+        <li><code>@variant max-md { … }</code></li>
+        <li><code>hocus-nested:</code></li>
+        <li><code>nav-open:</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://github.com/tailwindlabs/tailwindcss/blob/main/CHANGELOG.md#4114---2025-10-01" target="_blank" rel="noopener">Changelog: 4.1.14</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Selector-only <code>hocus</code> next to <code>hocus-nested</code>, built from real <code>hover</code> + <code>focus-visible</code></figcaption>
+        <div class="sc-demo" id="custom-variant-nested-variant-1">
+          <div class="flex flex-wrap gap-3 text-sm">
+            <button type="button" class="rounded-lg bg-white px-4 py-2 text-slate-800 hocus:bg-sky-200 dark:bg-slate-800 dark:text-slate-100 dark:hocus:bg-sky-900">hocus</button>
+            <button type="button" class="rounded-lg bg-white px-4 py-2 text-slate-800 hocus-nested:bg-sky-200 dark:bg-slate-800 dark:text-slate-100 dark:hocus-nested:bg-sky-900">hocus-nested</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-nested-variant-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant hocus (&amp;:is(:hover, :focus-visible));
+
+  @custom-variant hocus-nested {
+    @variant hover {
+      @slot;
+    }
+    @variant focus-visible {
+      @slot;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">On a mouse they look the same. On a touch screen <code>hocus</code> can leave a tapped button stuck in its hover colour, while <code>hocus-nested</code> only applies the hover half when the device can really hover. Tab to either button to see the <code>focus-visible</code> half.</p>
+
+      <figure class="sc-example">
+        <figcaption><code>nav-open:</code> only below the md breakpoint <span class="sc-spacer"></span><button class="sc-btn" type="button" data-flip="custom-variant-nested-variant-2" data-name="data-nav" data-on="open" data-off="closed" aria-pressed="true">Toggle nav</button></figcaption>
+        <div class="sc-demo" id="custom-variant-nested-variant-2">
+          <div data-nav="open" class="rounded-xl bg-white p-3 text-sm dark:bg-slate-800">
+            <p class="font-medium text-slate-900 dark:text-slate-100">Site menu</p>
+            <ul class="mt-2 hidden space-y-1 text-slate-700 nav-open:block dark:text-slate-200">
+              <li>Docs</li>
+              <li>Pricing</li>
+              <li>Blog</li>
+            </ul>
+            <p class="mt-2 hidden text-slate-500 md:block dark:text-slate-400">The menu list is hidden here. Make the window narrower than 768px to see it.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="custom-variant-nested-variant-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @custom-variant nav-open {
+    @variant max-md {
+      &amp;:where([data-nav="open"] *) {
+        @slot;
+      }
+    }
+  }</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // &lt;button data-flip="demo-id" data-name="data-sidebar" data-on="open" data-off="closed"&gt;
+  // flips an attribute on the first element inside #demo-id that has it
+  document.addEventListener('click', (e) =&gt; {
+    const btn = e.target.closest('[data-flip]')
+    if (!btn) return
+    const host = document.querySelector('#' + btn.dataset.flip + ' [' + btn.dataset.name + ']')
+    if (!host) return
+    const on = host.getAttribute(btn.dataset.name) !== btn.dataset.on
+    host.setAttribute(btn.dataset.name, on ? btn.dataset.on : btn.dataset.off)
+    btn.setAttribute('aria-pressed', String(on))
+  })</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What Tailwind 4.3.3 emits (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="Compiled CSS">
+  /* hocus-nested:bg-sky-200 */
+  @media (hover: hover) {
+    .hocus-nested\:bg-sky-200:hover {
+      background-color: var(--color-sky-200);
+    }
+  }
+  .hocus-nested\:bg-sky-200:focus-visible {
+    background-color: var(--color-sky-200);
+  }
+
+  /* nav-open:block */
+  @media (width &lt; 48rem) {
+    .nav-open\:block:where([data-nav="open"] *) {
+      display: block;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only because it is compiler output. The selector-only <code>hocus</code> from the shorthand card would compile to a single <code>:is(:hover, :focus-visible)</code> rule with no media query.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-theme-values">
+    <div class="sc-notes">
+      <h2>Functional utilities from theme keys</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>End a utility name with <code>-*</code> and read its value with <code>--value()</code>. <code>--value(--glow-*)</code> turns every <code>--glow-xxx</code> variable in <code>@theme</code> into a class, so <code>--glow-sm</code> becomes <code>glow-sm</code>. Unknown keys generate nothing, and unused variables are not emitted.</p>
+      <ul class="sc-parts">
+        <li><code>@utility glow-* { … }</code></li>
+        <li><code>--value(--glow-*)</code></li>
+        <li><code>hover:glow-lg</code></li>
+        <li><code>shape-blob</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#matching-theme-values" target="_blank" rel="noopener">Docs: matching theme values</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Neon button: <code>glow-sm</code> grows to <code>glow-lg</code> on hover or keyboard focus</figcaption>
+        <div class="sc-demo" id="utility-theme-values-1">
+          <div class="flex justify-center py-3">
+            <button type="button" class="glow-sm rounded-xl bg-slate-900 px-6 py-3 font-semibold text-sky-300 ring-1 ring-sky-400/40 transition-shadow duration-300 hover:glow-lg focus-visible:glow-lg motion-reduce:transition-none dark:bg-slate-950">Start building</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-theme-values-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @theme {
+    --glow-sm: 0 0 8px rgb(56 189 248 / 0.55);
+    --glow-md: 0 0 18px rgb(56 189 248 / 0.6);
+    --glow-lg: 0 0 36px rgb(56 189 248 / 0.65);
+  }
+  @utility glow-* {
+    box-shadow: --value(--glow-*);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A shape scale: pill, blob and leaf (hover the leaf)</figcaption>
+        <div class="sc-demo" id="utility-theme-values-2">
+          <div class="flex flex-wrap items-end gap-4">
+            <div class="shape-pill h-14 w-28 bg-linear-to-br from-amber-300 to-rose-400"></div>
+            <div class="shape-blob size-24 bg-linear-to-br from-sky-400 to-indigo-500"></div>
+            <div class="shape-leaf size-20 bg-linear-to-br from-emerald-300 to-teal-500 transition-[border-radius] duration-500 hover:shape-blob motion-reduce:transition-none"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-theme-values-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @theme {
+    --shape-pill: 9999px;
+    --shape-blob: 63% 37% 54% 46% / 55% 48% 52% 45%;
+    --shape-leaf: 0 70% 0 70%;
+  }
+  @utility shape-* {
+    border-radius: --value(--shape-*);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Elevation scale: each card lifts one step on hover</figcaption>
+        <div class="sc-demo" id="utility-theme-values-3">
+          <div class="grid grid-cols-3 gap-4 text-center text-sm font-medium text-slate-800 dark:text-slate-100">
+            <div class="elevate-1 rounded-xl border border-slate-200 bg-white p-5 transition-shadow hover:elevate-2 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">elevate-1</div>
+            <div class="elevate-2 rounded-xl border border-slate-200 bg-white p-5 transition-shadow hover:elevate-3 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">elevate-2</div>
+            <div class="elevate-3 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">elevate-3</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-theme-values-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @theme {
+    --elevation-1: 0 1px 2px rgb(0 0 0 / 0.12);
+    --elevation-2: 0 6px 16px rgb(0 0 0 / 0.16);
+    --elevation-3: 0 18px 40px rgb(0 0 0 / 0.22);
+  }
+
+  @utility elevate-* {
+    box-shadow: --value(--elevation-*);
+  }</pre>
+      </figure>
+      <p class="sc-note">Shadows are hard to see on a dark stage, so these cards also carry a border. Tailwind only writes the theme variables that something uses: <code>--glow-lg</code> is emitted because <code>hover:glow-lg</code> appears in the markup. Use <code>@theme static</code> to force them. Nested theme keys also resolve, for example <code>--value(--text-*--line-height)</code>.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-bare-values">
+    <div class="sc-notes">
+      <h2>Bare values: <code class="whitespace-nowrap">--value(integer)</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Put a data type in <code>--value()</code> to accept a bare value right after the dash: <code>stagger-3</code>, <code>hue-shift-90</code>, <code>progress-75%</code>. The bare types are <code>integer</code>, <code>number</code>, <code>percentage</code> and <code>ratio</code>; anything else needs the arbitrary <code>[…]</code> form.</p>
+      <ul class="sc-parts">
+        <li><code>--value(integer)</code></li>
+        <li><code>--value(number)</code></li>
+        <li><code>--value(percentage)</code></li>
+        <li><code>stagger-3</code></li>
+        <li><code>hue-shift-12.5</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#bare-values" target="_blank" rel="noopener">Docs: bare values</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Staggered notifications: <code>rise-in</code> plus <code>stagger-0</code> to <code>stagger-3</code> <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="utility-bare-values-1">Replay</button></figcaption>
+        <div class="sc-demo" id="utility-bare-values-1">
+          <ul class="max-w-sm space-y-2 text-sm text-slate-800 dark:text-slate-100">
+            <li class="motion-safe:rise-in stagger-0 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">New follower: Grace Hopper</li>
+            <li class="motion-safe:rise-in stagger-1 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">Comment on your post</li>
+            <li class="motion-safe:rise-in stagger-2 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">Invoice #1042 paid</li>
+            <li class="motion-safe:rise-in stagger-3 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">Deploy succeeded</li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-bare-values-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 12px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  /* longhands, not the animation shorthand, so stagger-* can set the delay */
+  @utility rise-in {
+    animation-name: rise;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+  }
+  @utility stagger-* {
+    animation-delay: calc(--value(integer) * 80ms);
+  }</pre>
+      </figure>
+      <p class="sc-note"><code>--value(integer)</code> returns the raw digits, so wrap it: <code>calc(--value(integer) * 80ms)</code>. Write <code>rise-in</code> with longhand animation properties: with the <code>animation</code> shorthand, <code>motion-safe:rise-in</code> is emitted after <code>stagger-3</code> and would silently reset the delay to 0s. The <code>motion-safe:</code> prefix leaves the list static for people who prefer reduced motion.</p>
+
+      <figure class="sc-example">
+        <figcaption>Hue-shifted swatches with <code>number</code> values (hover the last one for a decimal)</figcaption>
+        <div class="sc-demo" id="utility-bare-values-2">
+          <div class="flex gap-3">
+            <span class="hue-shift-0 size-14 rounded-xl bg-linear-to-br from-rose-400 to-amber-300"></span>
+            <span class="hue-shift-60 size-14 rounded-xl bg-linear-to-br from-rose-400 to-amber-300"></span>
+            <span class="hue-shift-120 size-14 rounded-xl bg-linear-to-br from-rose-400 to-amber-300"></span>
+            <span class="hue-shift-180 size-14 rounded-xl bg-linear-to-br from-rose-400 to-amber-300 hover:hue-shift-12.5"></span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-bare-values-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility hue-shift-* {
+    filter: hue-rotate(calc(--value(number) * 1deg));
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Skill bars from bare percentages (hover a row to fill it)</figcaption>
+        <div class="sc-demo" id="utility-bare-values-3">
+          <div class="max-w-sm space-y-4 text-sm text-slate-800 dark:text-slate-100">
+            <div class="group">
+              <div class="mb-1 flex justify-between"><span>TypeScript</span><span>90%</span></div>
+              <div class="h-2 rounded-full bg-slate-300 dark:bg-slate-700"><div class="progress-90% h-2 rounded-full bg-sky-500 transition-[width] duration-500 group-hover:progress-100% motion-reduce:transition-none"></div></div>
+            </div>
+            <div class="group">
+              <div class="mb-1 flex justify-between"><span>Design</span><span>65%</span></div>
+              <div class="h-2 rounded-full bg-slate-300 dark:bg-slate-700"><div class="progress-65% h-2 rounded-full bg-emerald-500 transition-[width] duration-500 group-hover:progress-100% motion-reduce:transition-none"></div></div>
+            </div>
+            <div class="group">
+              <div class="mb-1 flex justify-between"><span>Accessibility</span><span>30%</span></div>
+              <div class="h-2 rounded-full bg-slate-300 dark:bg-slate-700"><div class="progress-30% h-2 rounded-full bg-amber-500 transition-[width] duration-500 group-hover:progress-100% motion-reduce:transition-none"></div></div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-bare-values-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility progress-* {
+    --progress: --value(percentage);
+    width: var(--progress);
+  }</pre>
+      </figure>
+      <p class="sc-note"><code>number</code> accepts decimals such as <code>12.5</code>, <code>integer</code> rejects them. <code>progress-75%</code> works because <code>%</code> is a legal class character; <code>progress-[75%]</code> would need <code>--value([percentage])</code> as well.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-arbitrary-values">
+    <div class="sc-notes">
+      <h2>Arbitrary values: <code class="whitespace-nowrap">--value([length])</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Wrap a data type in square brackets, <code>--value([angle])</code>, to accept arbitrary values such as <code>sweep-[270deg]</code>. The types are <code>absolute-size</code>, <code>angle</code>, <code>bg-size</code>, <code>color</code>, <code>family-name</code>, <code>generic-name</code>, <code>image</code>, <code>integer</code>, <code>length</code>, <code>line-width</code>, <code>number</code>, <code>percentage</code>, <code>position</code>, <code>ratio</code>, <code>relative-size</code>, <code>url</code>, <code>vector</code> and <code>*</code> (anything).</p>
+      <ul class="sc-parts">
+        <li><code>--value([angle])</code></li>
+        <li><code>--value(--color-*, [color])</code></li>
+        <li><code>--value([*])</code></li>
+        <li><code>sweep-[270deg]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#arbitrary-values" target="_blank" rel="noopener">Docs: arbitrary values</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Gauge ring: <code>sweep-[270deg]</code> (hover for a full ring)</figcaption>
+        <div class="sc-demo" id="utility-arbitrary-values-1">
+          <div class="flex items-center gap-6">
+            <div class="sweep-[270deg] grid size-28 shrink-0 place-items-center hover:sweep-[360deg]">
+              <div class="grid size-20 place-items-center rounded-full bg-white text-lg font-semibold text-slate-900 dark:bg-slate-900 dark:text-white">75%</div>
+            </div>
+            <p class="text-sm text-slate-600 dark:text-slate-300">Disk used. The angle is the filled arc; the inner disc punches the hole.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-arbitrary-values-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility sweep-* {
+    background: conic-gradient(
+      var(--color-sky-500) --value([angle]),
+      --alpha(var(--color-slate-500) / 30%) 0
+    );
+    border-radius: 9999px;
+  }</pre>
+      </figure>
+      <p class="sc-note">Conic-gradient stops are not animatable, so the hover snaps instead of transitioning.</p>
+
+      <figure class="sc-example">
+        <figcaption>Construction-tape banner: <code>stripe-amber-400</code> from the theme, <code>stripe-[#f43f5e]</code> arbitrary</figcaption>
+        <div class="sc-demo" id="utility-arbitrary-values-2">
+          <div class="max-w-md overflow-hidden rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-800">
+            <div class="stripe-amber-400 h-3"></div>
+            <p class="p-4 text-sm text-slate-800 dark:text-slate-100">Scheduled maintenance tonight at 22:00 UTC. Deploys are paused.</p>
+            <div class="stripe-[#f43f5e] h-3"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-arbitrary-values-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility stripe-* {
+    background-image: repeating-linear-gradient(
+      45deg,
+      --value(--color-*, [color]) 0 8px,
+      transparent 8px 16px
+    );
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Variable-font axes with <code>[*]</code> (hover the heading)</figcaption>
+        <div class="sc-demo" id="utility-arbitrary-values-3">
+          <h3 class="font-[Bricolage_Grotesque] text-5xl font-axis-['wght'_800,'opsz'_96] text-slate-900 transition-[font-variation-settings] duration-500 hover:font-axis-['wght'_500,'opsz'_12] motion-reduce:transition-none dark:text-white">Variable</h3>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-arbitrary-values-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility font-axis-* {
+    font-variation-settings: --value([*]);
+  }</pre>
+      </figure>
+      <p class="sc-note">Underscores become spaces inside <code>[…]</code>. The font needs real <code>wght</code> and <code>opsz</code> axes: Bricolage Grotesque, loaded by this page from Google Fonts, has both. If the font cannot load, the heading falls back to a system font and the hover does nothing visible.</p>
+
+      <figure class="sc-example">
+        <figcaption>Type specimen: <code>--value([family-name], [generic-name])</code></figcaption>
+        <div class="sc-demo" id="utility-arbitrary-values-4">
+          <div class="space-y-2 text-xl text-slate-900 dark:text-slate-100">
+            <p class="typeface-[Georgia,serif]">Georgia, serif: the quick brown fox</p>
+            <p class="typeface-[monospace]">monospace: the quick brown fox</p>
+            <p class="typeface-[Bricolage_Grotesque,sans-serif]">Bricolage Grotesque: the quick brown fox</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-arbitrary-values-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility typeface-* {
+    font-family: --value([family-name], [generic-name]);
+  }</pre>
+      </figure>
+      <p class="sc-note">A value that does not match the declared type is dropped silently: <code>--value([length])</code> does <em>not</em> accept percentages, so list <code>[percentage]</code> too when you need both.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-fallbacks">
+    <div class="sc-notes">
+      <h2>Several <code class="whitespace-nowrap">--value()</code> fallbacks</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>One <code>--value()</code> can list several resolvers (theme key, bare value, arbitrary value) that are tried left to right. Or write several declarations of the same property, each with its own <code>--value()</code>: declarations that cannot resolve are dropped, so each input form can map to a different CSS expression.</p>
+      <ul class="sc-parts">
+        <li><code>--value(--container-*, [length])</code></li>
+        <li><code>calc(--value(integer) * 1ch)</code></li>
+        <li><code>measure-65</code></li>
+        <li><code>measure-md</code></li>
+        <li><code>measure-[24rem]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#supporting-theme-bare-and-arbitrary-values-together" target="_blank" rel="noopener">Docs: supporting theme, bare and arbitrary values together</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Reading measure: a bare integer, a theme key and an arbitrary length in one family</figcaption>
+        <div class="sc-demo" id="utility-fallbacks-1">
+          <div class="space-y-3 text-sm">
+            <p class="measure-65 rounded bg-sky-100 p-2 text-sky-900 dark:bg-sky-950 dark:text-sky-100">measure-65 is 65ch wide, a comfortable reading line length for body text. Past that, lines get hard to follow.</p>
+            <p class="measure-md rounded bg-emerald-100 p-2 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100">measure-md reads the --container-md token (28rem) from the theme, so it follows a redefined token.</p>
+            <p class="measure-[24rem] rounded bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-100">measure-[24rem] uses an arbitrary length for one-off layouts.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-fallbacks-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility measure-* {
+    max-width: calc(--value(integer) * 1ch);
+    max-width: --value(--container-*, [length]);
+  }</pre>
+      </figure>
+      <p class="sc-note">For <code>measure-65</code> the first <code>max-width</code> resolves and the second is dropped; for <code>measure-md</code> it is the other way round. At least one <code>--value()</code> in the utility must resolve, or the whole class is invalid.</p>
+
+      <figure class="sc-example">
+        <figcaption>Progress rings: <code>ring-fill-75</code> (integer) and <code>ring-fill-[60%]</code> (percentage) map to the same gradient</figcaption>
+        <div class="sc-demo" id="utility-fallbacks-2">
+          <div class="flex gap-4 text-sm font-semibold text-slate-900 dark:text-white">
+            <div class="ring-fill-75 grid size-20 place-items-center"><div class="grid size-14 place-items-center rounded-full bg-white dark:bg-slate-900">75</div></div>
+            <div class="ring-fill-[60%] grid size-20 place-items-center"><div class="grid size-14 place-items-center rounded-full bg-white dark:bg-slate-900">60</div></div>
+            <div class="ring-fill-40 grid size-20 place-items-center"><div class="grid size-14 place-items-center rounded-full bg-white dark:bg-slate-900">40</div></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-fallbacks-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility ring-fill-* {
+    background: conic-gradient(
+      var(--color-sky-500) calc(--value(integer) * 1%),
+      --alpha(var(--color-slate-500) / 30%) 0
+    );
+    background: conic-gradient(
+      var(--color-sky-500) --value([percentage]),
+      --alpha(var(--color-slate-500) / 30%) 0
+    );
+    border-radius: 9999px;
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Auto-fit grids with a minimum column width: a theme key, then an arbitrary length</figcaption>
+        <div class="sc-demo" id="utility-fallbacks-3">
+          <div class="space-y-4 text-sm font-medium text-slate-800 dark:text-slate-100">
+            <div class="autofit-xs grid gap-3">
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">autofit-xs: Starter</div>
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">autofit-xs: Team</div>
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">autofit-xs: Business</div>
+            </div>
+            <div class="autofit-[9rem] grid gap-3">
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">Starter</div>
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">Team</div>
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">Business</div>
+              <div class="rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800">Enterprise</div>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-fallbacks-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility autofit-* {
+    grid-template-columns: repeat(auto-fit, minmax(--value(--container-*, [length]), 1fr));
+  }</pre>
+      </figure>
+      <p class="sc-note"><code>autofit-xs</code> asks for columns of at least 20rem (<code>--container-xs</code>), <code>autofit-[9rem]</code> for 9rem. Resize the window to watch the column count change without a single breakpoint class.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-modifier">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">--modifier()</code> for the <code class="whitespace-nowrap">/modifier</code> part</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The text after the slash (<code>type-xl/tight</code>, <code>aura-sky-500/40</code>) is read with <code>--modifier()</code>, which takes the same arguments as <code>--value()</code>. If the class has no modifier, every declaration that depends on <code>--modifier()</code> is left out.</p>
+      <ul class="sc-parts">
+        <li><code>--modifier(integer)</code></li>
+        <li><code>--modifier(--leading-*, [length])</code></li>
+        <li><code>type-3xl/tight</code></li>
+        <li><code>aura-sky-500/40</code></li>
+        <li><code>pad-6/2</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#modifiers" target="_blank" rel="noopener">Docs: modifiers</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Size and leading in one class, from the built-in <code>--text-*</code> and <code>--leading-*</code> tokens</figcaption>
+        <div class="sc-demo" id="utility-modifier-1">
+          <div class="max-w-md space-y-2">
+            <h3 class="type-3xl/tight font-semibold text-slate-900 dark:text-white">Ship faster with custom utilities</h3>
+            <p class="type-lg/snug text-slate-700 dark:text-slate-200">One class sets both the font size and the line height, using the same tokens as the native text and leading classes.</p>
+            <p class="type-sm/relaxed text-slate-600 dark:text-slate-300">Body copy at 14px with relaxed leading. The part after the slash is read by the modifier function and mapped to line-height.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-modifier-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility type-* {
+    font-size: --value(--text-*, [length]);
+    line-height: --modifier(--leading-*, [length], [*]);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Coloured aura: the modifier is the glow's opacity (none means full strength)</figcaption>
+        <div class="sc-demo" id="utility-modifier-2">
+          <div class="flex flex-wrap gap-5 py-2">
+            <button type="button" class="aura-sky-500/20 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 dark:bg-slate-800 dark:text-white">aura-sky-500/20</button>
+            <button type="button" class="aura-sky-500/40 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 dark:bg-slate-800 dark:text-white">aura-sky-500/40</button>
+            <button type="button" class="aura-sky-500 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-900 dark:bg-slate-800 dark:text-white">aura-sky-500</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-modifier-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility aura-* {
+    --aura: --value(--color-*, [color]);
+    /* no modifier: the second line is dropped and this one stays */
+    box-shadow: 0 0 28px var(--aura);
+    box-shadow: 0 0 28px --alpha(var(--aura) / calc(--modifier(integer) * 1%));
+  }</pre>
+      </figure>
+      <p class="sc-note"><code>--alpha(color / --modifier(integer))</code> would emit an invalid <code>color-mix()</code> percentage, so convert the bare number first: <code>calc(--modifier(integer) * 1%)</code>. A modifier that no <code>--modifier()</code> understands (<code>type-xl/foo</code>) makes the class invalid.</p>
+
+      <figure class="sc-example">
+        <figcaption>Padding shorthand: <code>pad-6/2</code> is inline 6, block 2 on the spacing scale</figcaption>
+        <div class="sc-demo" id="utility-modifier-3">
+          <div class="flex items-center gap-3 text-sm">
+            <span class="pad-3/1 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-3/1</span>
+            <span class="pad-6/2 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-6/2</span>
+            <span class="pad-8/3 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-8/3</span>
+            <span class="pad-6 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-6</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-modifier-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility pad-* {
+    padding-inline: --spacing(--value(integer));
+    padding-block: --spacing(--modifier(integer));
+  }</pre>
+      </figure>
+      <p class="sc-note">The last chip has no modifier, so only the inline padding is set. A utility that uses <code>--value(ratio)</code> cannot also read a modifier, because the slash is consumed as part of the ratio.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-negative">
+    <div class="sc-notes">
+      <h2>Negative utilities: <code class="whitespace-nowrap">@utility -name-*</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>A leading dash in the <code>@utility</code> name registers the negative form. Tailwind does not derive it from the positive one, so declare both, using <code>--spacing(--value(integer) * -1)</code> or <code>calc(--value([length]) * -1)</code>. Variants still go before the dash: <code>hover:-shift-x-2</code>.</p>
+      <ul class="sc-parts">
+        <li><code>@utility shift-x-* { … }</code></li>
+        <li><code>@utility -shift-x-* { … }</code></li>
+        <li><code>-shift-x-[85%]</code></li>
+        <li><code>group-hover:-shift-x-2</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#negative-values" target="_blank" rel="noopener">Docs: negative values</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Arrow links that nudge on hover: <code>group-hover:shift-x-2</code> and <code>group-hover:-shift-x-2</code></figcaption>
+        <div class="sc-demo" id="utility-negative-1">
+          <div class="flex gap-8 text-sm font-medium text-sky-700 dark:text-sky-300">
+            <a class="group inline-flex items-center gap-1" href="#"><span class="transition-[translate] group-hover:-shift-x-2 motion-reduce:transition-none" aria-hidden="true">&larr;</span>Back to docs</a>
+            <a class="group inline-flex items-center gap-1" href="#">Read more<span class="transition-[translate] group-hover:shift-x-2 motion-reduce:transition-none" aria-hidden="true">&rarr;</span></a>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-negative-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility shift-x-* {
+    translate: --spacing(--value(integer)) 0;
+    translate: --value([percentage], [length]) 0;
+  }
+  @utility -shift-x-* {
+    translate: --spacing(--value(integer) * -1) 0;
+    translate: calc(--value([percentage], [length]) * -1) 0;
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Peeking drawer: parked with <code>-shift-x-[85%]</code>, opened by <code>hover:shift-x-0</code> or focus</figcaption>
+        <div class="sc-demo" id="utility-negative-2">
+          <div class="relative h-28 overflow-hidden rounded-xl bg-white dark:bg-slate-800">
+            <p class="p-4 pl-16 text-sm text-slate-600 dark:text-slate-300">Hover the dark tab on the left edge, or Tab into it, to slide the filters out.</p>
+            <aside class="absolute inset-y-3 left-0 w-48 -shift-x-[85%] rounded-r-xl bg-slate-900 p-3 text-sm text-white transition-[translate] duration-300 hover:shift-x-0 focus-within:shift-x-0 motion-reduce:transition-none dark:bg-sky-900">
+              <p class="font-medium">Filters</p>
+              <button type="button" class="mt-1 rounded bg-white/15 px-2 py-0.5 text-xs hover:bg-white/25">Reset all</button>
+            </aside>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-negative-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility shift-x-* {
+    translate: --spacing(--value(integer)) 0;
+    translate: --value([percentage], [length]) 0;
+  }
+  @utility -shift-x-* {
+    translate: --spacing(--value(integer) * -1) 0;
+    translate: calc(--value([percentage], [length]) * -1) 0;
+  }</pre>
+      </figure>
+      <p class="sc-note">The percentage resolves against the drawer's own width, so 85% of 12rem hides all but a sliver. Tab into the button to open it from the keyboard (<code>focus-within:shift-x-0</code>). The spacing form (<code>shift-x-3</code>) and the arbitrary form (<code>-shift-x-[85%]</code>) come from the same two declarations.</p>
+
+      <figure class="sc-example">
+        <figcaption>Zig-zag list: <code>odd:shift-x-3</code> and <code>even:-shift-x-3</code></figcaption>
+        <div class="sc-demo" id="utility-negative-3">
+          <ol class="space-y-2 overflow-hidden px-4 text-sm text-slate-800 dark:text-slate-100">
+            <li class="odd:shift-x-3 even:-shift-x-3 rounded-lg bg-white p-2.5 shadow-sm dark:bg-slate-800">1. Create the project</li>
+            <li class="odd:shift-x-3 even:-shift-x-3 rounded-lg bg-white p-2.5 shadow-sm dark:bg-slate-800">2. Invite the team</li>
+            <li class="odd:shift-x-3 even:-shift-x-3 rounded-lg bg-white p-2.5 shadow-sm dark:bg-slate-800">3. Ship the first release</li>
+          </ol>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-negative-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility shift-x-* {
+    translate: --spacing(--value(integer)) 0;
+    translate: --value([percentage], [length]) 0;
+  }
+  @utility -shift-x-* {
+    translate: --spacing(--value(integer) * -1) 0;
+    translate: calc(--value([percentage], [length]) * -1) 0;
+  }</pre>
+      </figure>
+      <p class="sc-note">Negative utilities stack with structural variants too. The shift utilities use the individual <code>translate</code> property, so they combine with <code>rotate-*</code> and <code>scale-*</code> without clashing.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-ratio">
+    <div class="sc-notes">
+      <h2>Fractions and ratios: <code class="whitespace-nowrap">--value(ratio)</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Putting <code>ratio</code> in <code>--value()</code> tells Tailwind to treat the value and the modifier as one fraction, so <code>frame-4/5</code> and <code>frame-[7/9]</code> work, and theme keys can add named ratios such as <code>frame-video</code>. Both sides must be integers.</p>
+      <ul class="sc-parts">
+        <li><code>--value(--frame-*, ratio, [ratio])</code></li>
+        <li><code>frame-4/5</code></li>
+        <li><code>frame-video</code></li>
+        <li><code>frame-[7/9]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#fractions" target="_blank" rel="noopener">Docs: fractions</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Product tiles at 4/5, whatever the width</figcaption>
+        <div class="sc-demo" id="utility-ratio-1">
+          <div class="grid max-w-sm grid-cols-3 gap-3 text-xs font-medium text-slate-900">
+            <div class="frame-4/5 flex items-end rounded-xl bg-linear-to-br from-amber-200 to-orange-400 p-2">Lamp</div>
+            <div class="frame-4/5 flex items-end rounded-xl bg-linear-to-br from-sky-200 to-indigo-400 p-2">Chair</div>
+            <div class="frame-4/5 flex items-end rounded-xl bg-linear-to-br from-emerald-200 to-teal-400 p-2">Planter</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-ratio-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @theme {
+    --frame-video: 16/9;
+    --frame-square: 1;
+    --frame-poster: 2/3;
+  }
+  @utility frame-* {
+    aspect-ratio: --value(--frame-*, ratio, [ratio]);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Video thumbnail from a theme token: <code>frame-video</code> (<code>--frame-video: 16/9</code>)</figcaption>
+        <div class="sc-demo" id="utility-ratio-2">
+          <div class="relative frame-video w-56 max-w-full overflow-hidden rounded-xl bg-linear-to-br from-slate-700 to-slate-900">
+            <span class="absolute inset-0 grid place-items-center text-3xl text-white" aria-hidden="true">&#9654;</span>
+            <span class="absolute right-2 bottom-2 rounded bg-black/70 px-1.5 text-xs text-white">3:42</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-ratio-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @theme {
+    --frame-video: 16/9;
+    --frame-square: 1;
+    --frame-poster: 2/3;
+  }
+  @utility frame-* {
+    aspect-ratio: --value(--frame-*, ratio, [ratio]);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Named, arbitrary and unit ratios side by side</figcaption>
+        <div class="sc-demo" id="utility-ratio-3">
+          <div class="flex items-end gap-3 text-center text-xs font-medium text-white">
+            <div class="frame-poster flex w-20 items-end justify-center rounded-lg bg-rose-600 pb-1">poster 2/3</div>
+            <div class="frame-[7/9] flex w-20 items-end justify-center rounded-lg bg-sky-700 pb-1">[7/9]</div>
+            <div class="frame-square flex w-20 items-end justify-center rounded-lg bg-amber-700 pb-1">square</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-ratio-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @theme {
+    --frame-video: 16/9;
+    --frame-square: 1;
+    --frame-poster: 2/3;
+  }
+  @utility frame-* {
+    aspect-ratio: --value(--frame-*, ratio, [ratio]);
+  }</pre>
+      </figure>
+      <p class="sc-note">Pick a different root than <code>aspect-*</code>: the built-in <code>aspect-*</code> is its own utility and already accepts fractions. Fractions like <code>1.5/1</code> are rejected in custom utilities, and <code>--value(ratio)</code> cannot be combined with <code>--modifier()</code> in the same class.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-literal-values">
+    <div class="sc-notes">
+      <h2>Literal values: <code class="whitespace-nowrap">--value('auto')</code></h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Quote words inside <code>--value()</code> to accept exact keywords. Each quoted literal becomes a class suffix and is emitted as written, which suits keyword properties and mapping a suffix to a <code>@keyframes</code> name. Literals arrived in v4.0.16, after the first v4.0 release.</p>
+      <ul class="sc-parts">
+        <li><code>--value('fade-in', 'slide-up')</code></li>
+        <li><code>reveal-slide-up</code></li>
+        <li><code>writing-vertical-rl</code></li>
+        <li><code>last-line-center</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#literal-values" target="_blank" rel="noopener">Docs: literal values</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Toast entrance picker: the suffix chooses the keyframes <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="utility-literal-values-1">Replay</button></figcaption>
+        <div class="sc-demo" id="utility-literal-values-1">
+          <div class="flex flex-wrap gap-3 text-sm">
+            <div class="motion-safe:reveal-fade-in rounded-lg bg-slate-900 px-4 py-2 text-white dark:bg-slate-100 dark:text-slate-900">fade-in</div>
+            <div class="motion-safe:reveal-slide-up rounded-lg bg-slate-900 px-4 py-2 text-white dark:bg-slate-100 dark:text-slate-900">slide-up</div>
+            <div class="motion-safe:reveal-zoom-in rounded-lg bg-slate-900 px-4 py-2 text-white dark:bg-slate-100 dark:text-slate-900">zoom-in</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-literal-values-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; translate: 0 16px; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  @keyframes zoom-in {
+    from { opacity: 0; scale: 0.9; }
+    to { opacity: 1; scale: 1; }
+  }
+  @utility reveal-* {
+    animation: --value('fade-in', 'slide-up', 'zoom-in') 0.6s ease-out both;
+  }</pre>
+      </figure>
+      <p class="sc-note">A word that is not in the list (<code>reveal-spin</code>) generates nothing. Define the <code>@keyframes</code> at the top level of the stylesheet: keyframes inside <code>@theme</code> are only emitted when a theme animation variable uses them. <code>motion-safe:</code> keeps the toasts static for people who prefer reduced motion.</p>
+
+      <figure class="sc-example">
+        <figcaption>Vertical section label: <code>writing-vertical-rl</code> flipped to read bottom to top</figcaption>
+        <div class="sc-demo" id="utility-literal-values-2">
+          <div class="flex gap-4 text-slate-800 dark:text-slate-100">
+            <span class="writing-vertical-rl rotate-180 text-xs font-semibold tracking-widest text-slate-500 uppercase dark:text-slate-400">Roadmap</span>
+            <ul class="space-y-2 text-sm">
+              <li class="rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-slate-800">Q1 Alpha</li>
+              <li class="rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-slate-800">Q2 Beta</li>
+              <li class="rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-slate-800">Q3 General availability</li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-literal-values-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility writing-* {
+    writing-mode: --value('vertical-rl', 'vertical-lr', 'horizontal-tb');
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Justified text with a centred last line: <code>last-line-center</code></figcaption>
+        <div class="sc-demo" id="utility-literal-values-3">
+          <div class="grid gap-4 text-sm leading-relaxed text-slate-800 sm:grid-cols-2 dark:text-slate-100">
+            <p class="rounded-lg bg-white p-3 text-justify dark:bg-slate-800">Tailwind v4 moves configuration into CSS, so custom utilities, variants and theme tokens all live in one stylesheet next to your design decisions.</p>
+            <p class="last-line-center rounded-lg bg-white p-3 text-justify dark:bg-slate-800">Tailwind v4 moves configuration into CSS, so custom utilities, variants and theme tokens all live in one stylesheet next to your design decisions.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-literal-values-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility last-line-* {
+    text-align-last: --value('start', 'center', 'end', 'justify');
+  }</pre>
+      </figure>
+      <p class="sc-note">Both paragraphs are justified; only the second centres its final line. Single and double quotes both work around the literals.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-default">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">--default()</code> in <code class="whitespace-nowrap">--value()</code> and <code class="whitespace-nowrap">--modifier()</code></h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>New in v4.3: pass <code>--default(x)</code> to <code>--value()</code> or <code>--modifier()</code> so the bare utility name works with no value (<code>lift</code>) and no modifier (<code>enter-4</code> versus <code>enter-4/3</code>). The default can be any single CSS token such as <code>4</code>, <code>auto</code> or <code>9999px</code>.</p>
+      <ul class="sc-parts">
+        <li><code>--value(integer, --default(1))</code></li>
+        <li><code>--modifier(integer, --default(0))</code></li>
+        <li><code>hover:lift</code></li>
+        <li><code>enter/6</code></li>
+        <li><code>avatar-12/lg</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#default-values" target="_blank" rel="noopener">Docs: default values</a> · <a href="https://tailwindcss.com/blog/tailwindcss-v4-3#default-values-for-functional-utilities" target="_blank" rel="noopener">v4.3 release post</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Lift on hover: <code>hover:lift</code> uses the default step, <code>hover:lift-2</code> an explicit one</figcaption>
+        <div class="sc-demo" id="utility-default-1">
+          <div class="grid grid-cols-2 gap-4 text-center text-sm font-medium text-slate-800 dark:text-slate-100">
+            <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-[translate] hover:lift motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">hover:lift</div>
+            <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-[translate] hover:lift-2 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">hover:lift-2</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-default-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility lift-* {
+    translate: 0 calc(--spacing(--value(integer, --default(1))) * -1);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Duration as the value, delay as the modifier <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="utility-default-2">Replay</button></figcaption>
+        <div class="sc-demo" id="utility-default-2">
+          <ul class="max-w-sm space-y-2 text-sm text-slate-800 dark:text-slate-100">
+            <li class="motion-safe:enter rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">enter (400ms, no delay)</li>
+            <li class="motion-safe:enter-8 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">enter-8 (800ms, no delay)</li>
+            <li class="motion-safe:enter-4/6 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">enter-4/6 (400ms, 600ms delay)</li>
+            <li class="motion-safe:enter/10 rounded-lg bg-white p-3 shadow-sm dark:bg-slate-800">enter/10 (default 400ms, 1000ms delay)</li>
+          </ul>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-default-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 12px;
+    }
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @utility enter-* {
+    animation: rise calc(--value(integer, --default(4)) * 100ms) ease-out both;
+    animation-delay: calc(--modifier(integer, --default(0)) * 100ms);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Avatars: <code>avatar</code> is a 40px circle, the modifier picks a radius</figcaption>
+        <div class="sc-demo" id="utility-default-3">
+          <div class="flex items-end gap-3 text-xs font-semibold text-white">
+            <span class="avatar grid place-items-center bg-sky-600">AL</span>
+            <span class="avatar-12 grid place-items-center bg-emerald-600">GH</span>
+            <span class="avatar-12/lg grid place-items-center bg-amber-600">KJ</span>
+            <span class="avatar-16/xl grid place-items-center bg-rose-600">MH</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-default-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility avatar-* {
+    width: --spacing(--value(integer, --default(10)));
+    height: --spacing(--value(integer, --default(10)));
+    border-radius: --modifier(--radius-*, [length], --default(9999px));
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Dividers: <code>rule</code> is 1px, <code>rule-4</code> is 4px</figcaption>
+        <div class="sc-demo" id="utility-default-4">
+          <div class="max-w-sm space-y-3 text-xs text-slate-600 dark:text-slate-300">
+            <p>rule</p>
+            <div class="rule"></div>
+            <p>rule-2</p>
+            <div class="rule-2"></div>
+            <p>rule-4</p>
+            <div class="rule-4"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-default-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  /* one-token default; the spaces stay outside --default() */
+  @utility rule-* {
+    border-top: calc(--value(integer, --default(1)) * 1px) solid var(--color-slate-400);
+  }</pre>
+      </figure>
+      <p class="sc-note">Gotcha in v4.3.3: a default with more than one token loses its spaces. <code>--default(1px solid)</code> compiles to <code>1pxsolid</code>, so keep the spaces outside, as in <code>rule-*</code> above. The fix, "Preserve whitespace in <code>--default(…)</code>", is only in the changelog's Unreleased section, so treat it as upcoming. The built-in <code>tab-*</code> and <code>zoom-*</code> utilities already use these names since v4.3, so the docs' <code>tab</code> example name is taken. A functional <code>@utility</code> needs at least one <code>--value()</code> or it generates nothing.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="utility-same-name">
+    <div class="sc-notes">
+      <h2>Same utility defined more than once</h2>
+      <span class="sc-since" data-v="4.3">v4.3</span>
+      <p>Since v4.3 you can write several <code>@utility</code> rules with the same functional name but different value types, for example one for theme keys and one for arbitrary values, and they merge instead of clashing. Duplicate static names merge their declarations into one rule.</p>
+      <ul class="sc-parts">
+        <li><code>@utility elev-* { … }</code> twice</li>
+        <li><code>elev-2</code></li>
+        <li><code>elev-[0_4px_12px_red]</code></li>
+        <li><code>@utility chip-base</code> twice</li>
+      </ul>
+      <p class="sc-meta"><a href="https://github.com/tailwindlabs/tailwindcss/blob/main/CHANGELOG.md#430---2026-05-08" target="_blank" rel="noopener">Changelog: 4.3.0</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A shared file defines the theme-key branch, your app adds the arbitrary one</figcaption>
+        <div class="sc-demo" id="utility-same-name-1">
+          <div class="flex flex-wrap gap-4 text-sm font-medium text-slate-800 dark:text-slate-100">
+            <div class="elev-2 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">elev-2 (theme key)</div>
+            <div class="elev-[0_4px_12px_rgb(244_63_94/.4)] rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">elev-[…] (arbitrary)</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-same-name-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="design-system.css">
+  @theme {
+    --elevation-1: 0 1px 2px rgb(0 0 0 / 0.12);
+    --elevation-2: 0 6px 16px rgb(0 0 0 / 0.16);
+    --elevation-3: 0 18px 40px rgb(0 0 0 / 0.22);
+  }
+
+  @utility elev-* {
+    box-shadow: --value(--elevation-*);
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @utility elev-* {
+    box-shadow: --value([*]);
+  }</pre>
+      </figure>
+      <p class="sc-note">Each definition resolves the values it understands, so a design-system package and an app can each add a branch to the same utility name. A static name such as <code>chip-base</code> simply merges the declarations.</p>
+
+      <figure class="sc-example">
+        <figcaption>A static utility split across two blocks</figcaption>
+        <div class="sc-demo" id="utility-same-name-2">
+          <div class="flex gap-3 text-sm text-sky-900 dark:text-sky-100">
+            <span class="chip-base bg-sky-100 dark:bg-sky-950">Design</span>
+            <span class="chip-base bg-sky-100 dark:bg-sky-950">Engineering</span>
+            <span class="chip-base bg-sky-100 dark:bg-sky-950">Product</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="utility-same-name-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  @utility chip-base {
+    border-radius: 9999px;
+  }
+  @utility chip-base {
+    padding: 2px 10px;
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="Compiled by Tailwind 4.3.3">
+  .chip-base {
+    border-radius: 9999px;
+    padding: 2px 10px;
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>The merged family as compiler output (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="Compiled CSS">
+  .elev-2 {
+    box-shadow: var(--elevation-2);
+  }
+  .elev-\[0_4px_12px_rgb\(244_63_94\/\.4\)\] {
+    box-shadow: 0 4px 12px rgb(244 63 94/.4);
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only because it is compiler output. The theme-key definition matches <code>elev-2</code> and the <code>[*]</code> definition matches the bracketed value.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="alpha-function">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">--alpha()</code>: adjust colour opacity</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>--alpha(color / 50%)</code> mixes any colour (a theme variable, a literal, <code>currentColor</code>) with transparent and compiles to <code>color-mix()</code>. It works in custom CSS, inside <code>@utility</code> and in arbitrary values. The syntax is a slash; the old comma form was replaced during the v4 betas.</p>
+      <ul class="sc-parts">
+        <li><code>--alpha(var(--color-lime-300) / 50%)</code></li>
+        <li><code>--alpha(currentColor / 25%)</code></li>
+        <li><code>bg-[--alpha(var(--color-sky-500)/15%)]</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#alpha-function" target="_blank" rel="noopener">Docs: --alpha()</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Tinted status pills from one theme colour each, no new tokens</figcaption>
+        <div class="sc-demo" id="alpha-function-1">
+          <div class="flex flex-wrap gap-2 text-xs font-medium">
+            <span class="rounded-full border border-sky-500/30 bg-[--alpha(var(--color-sky-500)/15%)] px-3 py-1 text-sky-700 dark:text-sky-300">Running</span>
+            <span class="rounded-full border border-emerald-500/30 bg-[--alpha(var(--color-emerald-500)/15%)] px-3 py-1 text-emerald-700 dark:text-emerald-300">Passed</span>
+            <span class="rounded-full border border-rose-500/30 bg-[--alpha(var(--color-rose-500)/15%)] px-3 py-1 text-rose-700 dark:text-rose-300">Failed</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="alpha-function-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Brand-coloured shadow whose alpha rises on hover (35% to 55%)</figcaption>
+        <div class="sc-demo" id="alpha-function-2">
+          <div class="flex justify-center py-3">
+            <button type="button" class="rounded-xl bg-sky-500 px-5 py-2.5 font-medium text-white shadow-[0_8px_24px_--alpha(var(--color-sky-500)/35%)] transition-shadow hover:shadow-[0_8px_24px_--alpha(var(--color-sky-500)/55%)] motion-reduce:transition-none">Deploy</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="alpha-function-2"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A border that follows the text colour: <code>--alpha(currentColor / 25%)</code></figcaption>
+        <div class="sc-demo" id="alpha-function-3">
+          <div class="flex flex-wrap gap-3 text-sm font-medium">
+            <span class="chip-outline rounded-full px-3 py-1 text-emerald-700 dark:text-emerald-300">Paid</span>
+            <span class="chip-outline rounded-full px-3 py-1 text-amber-700 dark:text-amber-300">Pending</span>
+            <span class="chip-outline rounded-full px-3 py-1 text-rose-700 dark:text-rose-300">Failed</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="alpha-function-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .chip-outline {
+    border: 1px solid --alpha(currentColor / 25%);
+    background: --alpha(currentColor / 8%);
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Compiler output for the docs example (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="Input CSS">
+  .my-element {
+    color: --alpha(var(--color-lime-300) / 50%);
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="Compiled by Tailwind 4.3.3">
+  .my-element {
+    color: color-mix(in srgb, oklch(89.7% 0.196 126.665) 50%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      color: color-mix(in oklab, var(--color-lime-300) 50%, transparent);
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only because it is compiler output. The docs show only the <code>color-mix(in oklab, …)</code> line; 4.3.3 also emits an sRGB fallback ahead of an <code>@supports</code> guard so engines without <code>color-mix()</code> degrade gracefully. <code>color-mix()</code> itself is baseline since 2023 (Chrome 111, Safari 16.2, Firefox 113).</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="spacing-function">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">--spacing()</code>: theme-based spacing</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>--spacing(4)</code> compiles to <code>calc(var(--spacing) * 4)</code>, so custom CSS and arbitrary values stay on the spacing scale and follow a redefined <code>--spacing</code>. It takes exactly one argument. <code>--spacing(1)</code> simplifies to <code>var(--spacing)</code> and <code>--spacing(0)</code> to <code>0px</code>.</p>
+      <ul class="sc-parts">
+        <li><code>--spacing(4)</code></li>
+        <li><code>py-[calc(--spacing(4)-1px)]</code></li>
+        <li><code>top-[--spacing(14)]</code></li>
+        <li><code>--spacing(--value(integer))</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#spacing-function" target="_blank" rel="noopener">Docs: --spacing()</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Component spacing that follows <code>--spacing</code> <span class="sc-spacer"></span><button class="sc-btn" type="button" data-spacing="0.15rem" data-target="spacing-function-1" aria-pressed="false">Tight</button><button class="sc-btn" type="button" data-spacing="0.25rem" data-target="spacing-function-1" aria-pressed="true">Default</button><button class="sc-btn" type="button" data-spacing="0.4rem" data-target="spacing-function-1" aria-pressed="false">Roomy</button></figcaption>
+        <div class="sc-demo" id="spacing-function-1">
+          <div class="rhythm max-w-sm text-sm font-medium">
+            <div>Backlog</div>
+            <div>In review</div>
+            <div>Done</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="spacing-function-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .rhythm {
+    display: grid;
+    gap: --spacing(3);
+    padding: --spacing(5);
+    border-radius: var(--radius-xl);
+    background: var(--color-white);
+    color: var(--color-slate-900);
+    @variant dark {
+      background: var(--color-slate-800);
+      color: var(--color-slate-100);
+    }
+  }
+  .rhythm &gt; div {
+    padding: --spacing(3);
+    border-radius: var(--radius-lg);
+    background: var(--color-sky-100);
+    color: var(--color-sky-900);
+    @variant dark {
+      background: var(--color-sky-950);
+      color: var(--color-sky-200);
+    }
+  }</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // &lt;button data-spacing="0.4rem" data-target="demo-id"&gt; redefines --spacing on that element
+  document.addEventListener('click', (e) =&gt; {
+    const btn = e.target.closest('[data-spacing]')
+    if (!btn) return
+    document.getElementById(btn.dataset.target).style.setProperty('--spacing', btn.dataset.spacing)
+    btn.parentElement.querySelectorAll('[data-spacing]').forEach((b) =&gt; b.setAttribute('aria-pressed', String(b === btn)))
+  })</pre>
+      </figure>
+      <p class="sc-note">The buttons redefine <code>--spacing</code> on the demo box only. Every gap and padding in <code>.rhythm</code> was written as <code>--spacing(n)</code>, so the whole card rescales without touching its CSS. The default is <code>0.25rem</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>Optical alignment: an outlined button one pixel shorter on each side</figcaption>
+        <div class="sc-demo" id="spacing-function-2">
+          <div class="flex items-center gap-3 text-sm font-medium">
+            <button type="button" class="rounded-lg bg-sky-600 px-4 py-4 leading-none text-white">Solid</button>
+            <button type="button" class="rounded-lg border border-sky-600 px-4 py-[calc(--spacing(4)-1px)] leading-none text-sky-700 dark:border-sky-400 dark:text-sky-300">Outline</button>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="spacing-function-2"></pre>
+      </figure>
+      <p class="sc-note">The 1px border adds to the outline button's height, so shaving 1px from the vertical padding makes both buttons the same size. The arbitrary value compiles to <code>calc(calc(var(--spacing) * 4) - 1px)</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>A sticky toolbar offset from the scroll edge: <code>top-[--spacing(2)]</code></figcaption>
+        <div class="sc-demo" id="spacing-function-3">
+          <div class="h-44 overflow-y-auto rounded-xl bg-white dark:bg-slate-800">
+            <div class="sticky top-[--spacing(2)] mx-3 mt-2 flex items-center justify-between rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white shadow-md">
+              <span>Sticky toolbar</span>
+              <span class="text-sky-100">8 files</span>
+            </div>
+            <ul class="space-y-2 p-3 text-sm text-slate-800 dark:text-slate-100">
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">README.md</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">package.json</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">tsconfig.json</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">vite.config.ts</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">src/main.tsx</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">src/app.css</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">src/components/button.tsx</li>
+              <li class="rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-700">src/components/dialog.tsx</li>
+            </ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="spacing-function-3"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Compiler output (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="Input CSS">
+  .my-element {
+    margin: --spacing(4);
+    gap: --spacing(1);
+    top: --spacing(0);
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="Compiled by Tailwind 4.3.3">
+  .my-element {
+    margin: calc(var(--spacing) * 4);
+    gap: var(--spacing);
+    top: 0px;
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only because it is compiler output. Zero stays a length (<code>0px</code>) so it still works inside <code>calc()</code>.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="theme-function">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">--theme()</code>: read theme variables</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>--theme(--color-red-500)</code> returns the theme value as <code>var(--color-red-500)</code>. Inside at-rule parameters such as <code>@media</code>, <code>@container</code> and <code>@supports</code>, where CSS variables are invalid, it inlines the real value: <code>@media (width &gt;= --theme(--breakpoint-md))</code> becomes <code>48rem</code>. Add <code>inline</code> to force the literal anywhere.</p>
+      <ul class="sc-parts">
+        <li><code>--theme(--color-red-500)</code></li>
+        <li><code>--theme(--breakpoint-md)</code></li>
+        <li><code>--theme(--font-brand, Georgia, serif)</code></li>
+        <li><code>--theme(--color-red-500 inline)</code></li>
+        <li><code>min-[--theme(--breakpoint-md)]:flex</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#using-the-theme-function" target="_blank" rel="noopener">Docs: upgrade guide, theme() function</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Breakpoint token in a media query (resize the window across 48rem)</figcaption>
+        <div class="sc-demo" id="theme-function-1">
+          <div class="space-y-2 text-sm font-medium">
+            <p class="bp-narrow rounded-lg bg-amber-100 p-3 text-amber-900 dark:bg-amber-950 dark:text-amber-100">Below md (48rem): the compact layout</p>
+            <p class="bp-wide rounded-lg bg-emerald-100 p-3 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-100">md and wider: the full layout</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="theme-function-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .bp-narrow {
+    display: block;
+  }
+  .bp-wide {
+    display: none;
+  }
+  @media (width &gt;= --theme(--breakpoint-md)) {
+    .bp-narrow {
+      display: none;
+    }
+    .bp-wide {
+      display: block;
+    }
+  }</pre>
+      </figure>
+      <p class="sc-note">A media query cannot contain <code>var(--breakpoint-md)</code>, which is why <code>--theme()</code> inlines the value here. If you redefine <code>--breakpoint-md</code> in <code>@theme</code>, this rule moves with it. Media queries react to the window, not to the demo box.</p>
+
+      <figure class="sc-example">
+        <figcaption>In arbitrary variants: a header that swaps its nav for a menu button</figcaption>
+        <div class="sc-demo" id="theme-function-2">
+          <header class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm text-slate-800 dark:bg-slate-800 dark:text-slate-100">
+            <span class="font-semibold">Acme</span>
+            <nav class="hidden gap-4 min-[--theme(--breakpoint-md)]:flex">
+              <a href="#">Docs</a>
+              <a href="#">Pricing</a>
+              <a href="#">Blog</a>
+            </nav>
+            <button type="button" class="hidden rounded-lg border border-slate-300 px-3 py-1 max-[calc(--theme(--breakpoint-md)-1px)]:block dark:border-slate-600">Menu</button>
+          </header>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="theme-function-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="Generated by Tailwind 4.3.3">
+  @media (width &gt;= 48rem) {
+    .min-\[--theme\(--breakpoint-md\)\]\:flex { display: flex; }
+  }
+  @media (width &lt; calc(48rem - 1px)) {
+    .max-\[calc\(--theme\(--breakpoint-md\)-1px\)\]\:block { display: block; }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>In a container query: <code>--container-md</code> is 28rem (drag the corner)</figcaption>
+        <div class="sc-demo" id="theme-function-3">
+          <div class="token-box w-full max-w-xl min-w-48 resize-x overflow-auto rounded-xl border border-dashed border-slate-400 p-3 dark:border-slate-500">
+            <div class="token-card rounded-lg bg-white p-3 text-sm text-slate-800 dark:bg-slate-800 dark:text-slate-100">
+              <span class="size-12 rounded-lg bg-sky-500"></span>
+              <p>This card switches to two columns when its container reaches the md container width (28rem).</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="theme-function-3"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .token-box {
+    container-type: inline-size;
+  }
+  .token-card {
+    display: grid;
+    gap: --spacing(3);
+  }
+  @container (width &gt;= --theme(--container-md)) {
+    .token-card {
+      grid-template-columns: auto 1fr;
+      align-items: center;
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Fallbacks: a missing token uses the fallback list, a real one resolves</figcaption>
+        <div class="sc-demo" id="theme-function-4">
+          <div class="grid gap-3 text-sm sm:grid-cols-2">
+            <p class="panel-fallback rounded-lg bg-white p-3 text-slate-900 dark:bg-slate-800 dark:text-slate-100">--theme(--font-brand, Georgia, serif): the token is not defined, so Georgia is used.</p>
+            <p class="panel-token rounded-lg bg-white p-3 text-slate-900 dark:bg-slate-800 dark:text-slate-100">--theme(--font-mono): resolves to the default theme's monospace stack.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="theme-function-4"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  /* --font-brand is not defined, so the fallback list is used */
+  .panel-fallback {
+    font-family: --theme(--font-brand, Georgia, serif);
+  }
+  /* --font-mono exists in the default theme */
+  .panel-token {
+    font-family: --theme(--font-mono);
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="Compiled by Tailwind 4.3.3">
+  .panel-fallback { font-family: Georgia, serif; }
+  .panel-token { font-family: var(--font-mono); }</pre>
+        <pre class="sc-code" data-code="css" data-label="The inline option (code-only), with compiled values as comments">
+  .q {
+    color: --theme(--color-red-500);                /* var(--color-red-500) */
+    border-color: --theme(--color-red-500 inline);  /* oklch(63.7% 0.237 25.331) */
+    width: calc(--theme(--spacing inline) * 12);    /* calc(0.25rem * 12) */
+  }</pre>
+      </figure>
+      <p class="sc-note">Without a fallback, a missing variable throws a compile error. <code>--theme()</code> only accepts names that start with <code>--</code>; the dot-notation <code>theme()</code> is covered in the next card. The in-browser build resolves these at compile time, in the page, so no browser-support concerns apply.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="legacy-theme-function">
+    <div class="sc-notes">
+      <h2>Legacy <code class="whitespace-nowrap">theme()</code> (deprecated)</h2>
+      <span class="sc-since" data-v="core">core</span>
+      <p>The v3 dot-notation function, <code>theme(spacing.12)</code>, still works for compatibility, but the docs call it deprecated and recommend CSS variables instead. In media queries use the variable name: <code>theme(--breakpoint-xl)</code>, or better, <code>--theme(--breakpoint-xl)</code>.</p>
+      <ul class="sc-parts">
+        <li><code>theme(spacing.12)</code></li>
+        <li><code>theme(colors.red.500)</code></li>
+        <li><code>theme(--breakpoint-xl)</code></li>
+        <li><code>theme(screens.lg)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#theme-function" target="_blank" rel="noopener">Docs: theme() function</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Still compiling: a legacy box next to its modern equivalent</figcaption>
+        <div class="sc-demo" id="legacy-theme-function-1">
+          <div class="grid gap-3 text-sm sm:grid-cols-2">
+            <div class="legacy-box">
+              <p class="font-semibold">legacy theme()</p>
+              <p>padding: theme(spacing.4), colours from theme(colors.red.*)</p>
+            </div>
+            <div class="modern-box">
+              <p class="font-semibold">--spacing() and var()</p>
+              <p>padding: --spacing(4), colours from var(--color-sky-*)</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="legacy-theme-function-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .legacy-box {
+    padding: theme(spacing.4);
+    border-left: 4px solid theme(colors.red.500);
+    background: theme(colors.red.50);
+    color: theme(colors.red.800);
+    @variant dark {
+      background: theme(colors.red.950);
+      color: theme(colors.red.200);
+    }
+  }
+  .modern-box {
+    padding: --spacing(4);
+    border-left: 4px solid var(--color-sky-500);
+    background: var(--color-sky-50);
+    color: var(--color-sky-800);
+    @variant dark {
+      background: var(--color-sky-950);
+      color: var(--color-sky-200);
+    }
+  }</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Three spellings of the same breakpoint: all chips turn green at lg (64rem) and wider</figcaption>
+        <div class="sc-demo" id="legacy-theme-function-2">
+          <div class="flex flex-wrap gap-3 font-mono">
+            <span class="mq-chip mq-v3">theme(screens.lg)</span>
+            <span class="mq-chip mq-compat">theme(--breakpoint-lg)</span>
+            <span class="mq-chip mq-v4">--theme(--breakpoint-lg)</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="legacy-theme-function-2"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">
+  .mq-chip {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 13px;
+    background: var(--color-slate-200);
+    color: var(--color-slate-800);
+    @variant dark {
+      background: var(--color-slate-700);
+      color: var(--color-slate-100);
+    }
+  }
+  @media (width &gt;= theme(screens.lg)) {
+    .mq-v3 { background: var(--color-emerald-600); color: white; }
+  }
+  @media (width &gt;= theme(--breakpoint-lg)) {
+    .mq-compat { background: var(--color-emerald-600); color: white; }
+  }
+  @media (width &gt;= --theme(--breakpoint-lg)) {
+    .mq-v4 { background: var(--color-emerald-600); color: white; }
+  }</pre>
+      </figure>
+      <p class="sc-note">All three compile to <code>@media (width &gt;= 64rem)</code>. The first is the v3 spelling and still resolves; the second is what the upgrade guide recommends if you keep <code>theme()</code>; the third is the v4 function. Resize the window across 64rem to watch the chips change together. <code>theme(--spacing inline)</code> is not supported by the legacy function in 4.3.3; use <code>--theme(--spacing inline)</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>Migration table: legacy call to v4 replacement</figcaption>
+        <div class="sc-demo" id="legacy-theme-function-3">
+          <div class="sc-table-wrap">
+            <table class="sc-table">
+              <thead>
+                <tr><th>v3 (deprecated)</th><th>v4</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>theme(spacing.12)</code></td><td><code>--spacing(12)</code></td></tr>
+                <tr><td><code>theme(colors.red.500)</code></td><td><code>var(--color-red-500)</code> or <code>--theme(--color-red-500)</code></td></tr>
+                <tr><td><code>theme(colors.red.500 / 50%)</code></td><td><code>--alpha(var(--color-red-500) / 50%)</code></td></tr>
+                <tr><td><code>@media (width &gt;= theme(screens.xl))</code></td><td><code>@media (width &gt;= --theme(--breakpoint-xl))</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="legacy-theme-function-3"></pre>
+      </figure>
+      <p class="sc-note">The upgrade tool rewrites many of these for you. Prefer <code>var(--color-*)</code> in plain declarations: it is a runtime variable, so it also follows theme overrides on a wrapper element.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="reference-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@reference</code> for Vue, Svelte and CSS modules</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>@reference</code> imports your main stylesheet for lookups only (theme variables, <code>@utility</code>, <code>@custom-variant</code>) without re-emitting any of its CSS. That makes <code>@apply</code> and <code>@variant</code> work inside component <code>&lt;style&gt;</code> blocks and <code>*.module.css</code> files, where the main file is not visible.</p>
+      <ul class="sc-parts">
+        <li><code>@reference "../../app.css";</code></li>
+        <li><code>@reference "tailwindcss";</code></li>
+        <li><code>@reference "#app.css";</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#reference-directive" target="_blank" rel="noopener">Docs: @reference</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Vue single-file component (code-only), with the rendered result</figcaption>
+        <div class="sc-demo" id="reference-directive-1">
+          <h1 class="text-2xl font-bold text-red-500">Hello world!</h1>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="reference-directive-1"></pre>
+        <pre class="sc-code" data-code="html" data-label="Heading.vue">
+  &lt;template&gt;
+    &lt;h1&gt;Hello world!&lt;/h1&gt;
+  &lt;/template&gt;
+
+  &lt;style&gt;
+    @reference "../../app.css";
+
+    h1 {
+      @apply text-2xl font-bold text-red-500;
+    }
+  &lt;/style&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only: this page has one stylesheet, so there is nothing to reference, and the build step that resolves <code>@reference</code> paths does not exist in the browser. The preview applies the same three utilities directly; the HTML listing above is that markup, not the Vue file. Without the directive, <code>@apply</code> fails with <code>Cannot apply unknown utility class</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>A CSS module using a custom utility and a custom variant (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="Button.module.css">
+  @reference "../app.css";
+
+  .primary {
+    /* btn is an @utility and hocus an @custom-variant from app.css */
+    @apply btn hocus:underline md:px-8;
+  }</pre>
+        <pre class="sc-code" data-code="jsx" data-label="Button.jsx">
+  import styles from './Button.module.css'
+
+  export function Button({ children }) {
+    return &lt;button className={styles.primary}&gt;{children}&lt;/button&gt;
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only: needs a bundler that processes CSS modules. The React app in this repo follows the same convention; every file in <code>react/src/demos/*.css</code> starts with <code>@reference "../index.css";</code>.</p>
+
+      <figure class="sc-example">
+        <figcaption>Default theme, and subpath imports (code-only)</figcaption>
+        <pre class="sc-code" data-code="html" data-label="Card.svelte">
+  &lt;div class="btn"&gt;Save&lt;/div&gt;
+
+  &lt;style&gt;
+    /* no @theme, @custom-variant or @plugin in your project: import the package */
+    @reference "tailwindcss";
+
+    .btn {
+      @apply rounded-md bg-blue-500 px-3 py-1.5 text-white;
+    }
+  &lt;/style&gt;</pre>
+        <pre class="sc-code" data-code="json" data-label="package.json">
+  {
+    "imports": {
+      "#app.css": "./src/css/app.css"
+    }
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="any component stylesheet">
+  @reference "#app.css";
+
+  /* faster alternative: skip @apply and read the theme variable directly,
+     then Tailwind has nothing to process in this file */
+  h1 {
+    color: var(--color-red-500);
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only. <code>@import</code>, <code>@reference</code>, <code>@plugin</code> and <code>@config</code> all accept subpath imports when you use the CLI, Vite or PostCSS. A compiled <code>@reference</code> file emits only its own rules, with theme values as fallbacks, and none of the main stylesheet's CSS. Since v4.1.6 <code>@reference</code> no longer scans files for classes.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="config-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@config</code>: load a legacy JavaScript config</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>tailwind.config.js</code> is no longer picked up automatically in v4. Load it explicitly with <code>@config "./tailwind.config.js"</code>. Its <code>theme.extend</code> values merge with your CSS, and CSS-first features such as <code>@theme</code> take precedence, so you can migrate step by step.</p>
+      <ul class="sc-parts">
+        <li><code>@config "./tailwind.config.js";</code></li>
+        <li><code>@config "#tw-config";</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#config-directive" target="_blank" rel="noopener">Docs: @config</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>A config colour becomes a theme variable (code-only, with a live twin)</figcaption>
+        <div class="sc-demo" id="config-directive-1">
+          <div class="flex items-center gap-3 text-sm font-medium">
+            <span class="size-14 rounded-xl bg-legacy"></span>
+            <p class="text-slate-800 dark:text-slate-100">bg-legacy, from <span class="font-mono">theme.extend.colors.legacy</span></p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="config-directive-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="tailwind.config.js">
+  module.exports = {
+    theme: {
+      extend: {
+        colors: { legacy: '#0e7490' },
+      },
+    },
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="app.css (needs a build step)">
+  @import "tailwindcss";
+  @config "./tailwind.config.js";</pre>
+        <pre class="sc-code" data-code="css" data-label="CSS: the live twin on this page">
+  @theme {
+    --color-legacy: #0e7490;
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only: the browser build cannot read files. <code>@config</code> and <code>@plugin</code> throw "The browser build does not support plugins or config files" and discard the whole stylesheet, which would blank every demo here. The swatch uses the equivalent <code>@theme</code> variable, which is what the config entry turns into: <code>colors.legacy</code> becomes <code>--color-legacy</code> and a <code>bg-legacy</code> utility.</p>
+
+      <figure class="sc-example">
+        <figcaption>Incremental migration (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @import "tailwindcss";
+  @config "./tailwind.config.js";   /* legacy colours stay in JavaScript for now */
+
+  @theme {
+    --font-display: "Satoshi", sans-serif;   /* already moved to CSS */
+    --breakpoint-3xl: 120rem;
+  }</pre>
+      </figure>
+      <p class="sc-note">Things defined in CSS are merged where possible and otherwise take precedence over the config, presets and plugins. Move one block at a time, and delete the config when it is empty.</p>
+
+      <figure class="sc-example">
+        <figcaption>Monorepo layouts (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="apps/web/src/app.css">
+  /* relative to this CSS file */
+  @config "../../../packages/ui/tailwind.config.js";
+
+  /* or through package.json "imports" (CLI, Vite and PostCSS) */
+  @config "#tw-config";</pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Options that are not supported (code-only)</figcaption>
+        <pre class="sc-code" data-code="js" data-label="v3 tailwind.config.js">
+  module.exports = {
+    corePlugins: { preflight: false },
+    separator: '_',
+    safelist: ['bg-red-500', { pattern: /bg-(red|blue)-500/ }],
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="v4 replacement">
+  @import "tailwindcss/theme.css" layer(theme);
+  @import "tailwindcss/utilities.css" layer(utilities);   /* no preflight */
+
+  @source inline("bg-{red,blue}-500");   /* the safelist */</pre>
+      </figure>
+      <p class="sc-note"><code>corePlugins</code>, <code>safelist</code> and <code>separator</code> do not work with <code>@config</code> in v4. Leave out <code>preflight.css</code> to drop the reset, use <code>@source inline()</code> for the safelist, and note that variants now always use <code>:</code>.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="plugin-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@plugin</code>: load JavaScript plugins from CSS</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>@plugin "@tailwindcss/typography"</code> registers a v3-style JavaScript plugin, from npm or a local path, straight from your CSS. It can be combined with <code>@theme</code>, <code>@utility</code> and the other CSS features. The React app in this repo runs typography and forms for real in <code>react/src/index.css</code>; the browser build cannot.</p>
+      <ul class="sc-parts">
+        <li><code>@plugin "@tailwindcss/typography";</code></li>
+        <li><code>@plugin "@tailwindcss/forms";</code></li>
+        <li><code>@plugin "./plugins/halo.js";</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#plugin-directive" target="_blank" rel="noopener">Docs: @plugin</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Typography: one line of CSS, then <code>prose</code> (code-only, with a hand-written approximation)</figcaption>
+        <div class="sc-demo" id="plugin-directive-1">
+          <article class="max-w-md space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300 [&_a]:font-medium [&_a]:text-sky-700 [&_a]:underline dark:[&_a]:text-sky-300 [&_code]:rounded [&_code]:bg-slate-200 [&_code]:px-1 [&_code]:font-mono [&_code]:text-slate-900 dark:[&_code]:bg-slate-700 dark:[&_code]:text-slate-100 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-slate-900 dark:[&_h3]:text-white [&_ul]:list-disc [&_ul]:pl-5">
+            <h3>Release notes</h3>
+            <p>Typography styles <code>h3</code>, paragraphs, <a href="#">links</a> and lists without a single utility on any of them.</p>
+            <ul>
+              <li>Headings get a type scale</li>
+              <li>Lists keep their markers</li>
+            </ul>
+          </article>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="plugin-directive-1"></pre>
+        <pre class="sc-code" data-code="css" data-label="app.css (needs a build step)">
+  @import "tailwindcss";
+  @plugin "@tailwindcss/typography";</pre>
+        <pre class="sc-code" data-code="html" data-label="With the plugin, the markup is just this">
+  &lt;article class="prose prose-slate dark:prose-invert max-w-none"&gt;
+    &lt;h3&gt;Release notes&lt;/h3&gt;
+    &lt;p&gt;Typography styles &lt;code&gt;h3&lt;/code&gt;, paragraphs, &lt;a href="#"&gt;links&lt;/a&gt; and lists.&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Headings get a type scale&lt;/li&gt;
+      &lt;li&gt;Lists keep their markers&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/article&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only: the browser build throws "The browser build does not support plugins or config files" and drops the whole stylesheet. The preview above approximates what <code>prose</code> automates using arbitrary variants (<code>[&amp;_a]:underline</code>); the real plugin covers far more elements. Open the React app at <code>react/</code> to see it for real.</p>
+
+      <figure class="sc-example">
+        <figcaption>Forms: styled inputs from <code>form-*</code> classes (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @import "tailwindcss";
+  @plugin "@tailwindcss/forms";</pre>
+        <pre class="sc-code" data-code="html" data-label="HTML">
+  &lt;div class="flex max-w-xs flex-col gap-3"&gt;
+    &lt;input class="form-input rounded-lg border-slate-300" placeholder="Name"&gt;
+    &lt;select class="form-select rounded-lg border-slate-300"&gt;&lt;option&gt;Plan&lt;/option&gt;&lt;/select&gt;
+    &lt;label class="flex items-center gap-2 text-sm"&gt;
+      &lt;input type="checkbox" class="form-checkbox rounded text-sky-600"&gt;
+      Subscribe
+    &lt;/label&gt;
+  &lt;/div&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only. The plugin resets form controls so they take your border, ring and colour utilities. By default it restyles every form element; the next card shows the <code>strategy: "class"</code> option that limits it to <code>form-*</code> classes.</p>
+
+      <figure class="sc-example">
+        <figcaption>A local plugin file, and the same result with <code>@utility</code> (live)</figcaption>
+        <div class="sc-demo" id="plugin-directive-3">
+          <div class="flex items-center gap-4 py-2 text-sm font-medium">
+            <span class="halo rounded-xl bg-white px-4 py-2 text-slate-900 dark:bg-slate-800 dark:text-white">halo</span>
+            <p class="text-slate-600 dark:text-slate-300">Same box-shadow as the plugin below, registered with <span class="font-mono">@utility</span>.</p>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="plugin-directive-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="plugins/halo.js (needs a build step)">
+  module.exports = ({ addUtilities }) =&gt; {
+    addUtilities({
+      '.halo': { boxShadow: '0 0 12px skyblue' },
+    })
+  }</pre>
+        <pre class="sc-code" data-code="css" data-label="app.css (needs a build step)">
+  @plugin "./plugins/halo.js";</pre>
+        <pre class="sc-code" data-code="css" data-label="CSS: the live twin on this page">
+  @utility halo {
+    box-shadow: 0 0 12px skyblue;
+  }</pre>
+      </figure>
+      <p class="sc-note">For a one-off utility like this, <code>@utility</code> is simpler and needs no JavaScript. Reach for <code>@plugin</code> when you adopt a third-party plugin or need its JavaScript API (<code>matchUtilities</code>, <code>addBase</code>, <code>theme()</code>). With <code>@tailwindcss/vite</code>, <code>@plugin</code> resolves the package's JavaScript entry (a v4.3.0 fix).</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="plugin-options">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@plugin</code> options block</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>Give <code>@plugin</code> a block of <code>key: value;</code> lines and they become the plugin's options object. <code>@tailwindcss/forms</code> takes <code>strategy</code> (<code>"base"</code> or <code>"class"</code>); <code>@tailwindcss/typography</code> takes <code>className</code> and <code>target</code>. The option names come from each plugin's own README.</p>
+      <ul class="sc-parts">
+        <li><code>@plugin "…" { strategy: "class"; }</code></li>
+        <li><code>className: wysiwyg;</code></li>
+        <li><code>target: legacy;</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#plugin-directive" target="_blank" rel="noopener">Docs: @plugin</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Forms with <code>strategy: "class"</code> (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @import "tailwindcss";
+  @plugin "@tailwindcss/forms" {
+    strategy: "class";
+  }</pre>
+        <pre class="sc-code" data-code="html" data-label="HTML">
+  &lt;input class="form-input rounded-lg border-slate-300" placeholder="Styled by the plugin"&gt;
+  &lt;input class="rounded-lg border border-slate-300 px-3 py-2" placeholder="Untouched native input"&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only: compiled with the CLI against tailwindcss 4.3.3 and forms 0.5.11, this setup emits only the <code>.form-*</code> classes and no global element styles, so plain inputs stay native. The React app in this repo uses exactly this block in <code>react/src/index.css</code>. The browser build cannot load plugins.</p>
+
+      <figure class="sc-example">
+        <figcaption>Rename <code>prose</code> to <code>wysiwyg</code> for CMS content (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @import "tailwindcss";
+  @plugin "@tailwindcss/typography" {
+    className: wysiwyg;
+  }</pre>
+        <pre class="sc-code" data-code="html" data-label="HTML">
+  &lt;article class="wysiwyg wysiwyg-lg"&gt;
+    &lt;h2&gt;Heading&lt;/h2&gt;
+    &lt;p&gt;Body copy.&lt;/p&gt;
+    &lt;div class="not-wysiwyg"&gt;Opted out of the styles&lt;/div&gt;
+  &lt;/article&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only: with typography 0.5.20 the option generates <code>.wysiwyg</code> and <code>.wysiwyg-lg</code> and no <code>.prose</code>. <code>target: legacy</code> switches to the older selector format (<code>"modern"</code> is the default).</p>
+
+      <figure class="sc-example">
+        <figcaption>Options for your own plugin (code-only)</figcaption>
+        <pre class="sc-code" data-code="js" data-label="acme-plugin.js">
+  const plugin = require('tailwindcss/plugin')
+
+  module.exports = plugin.withOptions((options = {}) =&gt; {
+    const prefix = options.prefix ?? 'acme'
+    return ({ addUtilities }) =&gt; {
+      addUtilities({ [`.${prefix}-card`]: { borderRadius: '0.75rem' } })
+    }
+  })</pre>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @plugin "./acme-plugin.js" {
+    prefix: acme;
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only: needs Node to load the plugin file. The values in the block reach <code>plugin.withOptions</code> as the <code>options</code> argument. For something this small, an <code>@utility</code> rule needs no plugin at all.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="source-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@source</code>: register extra files to scan</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p><code>@source</code> adds paths that Tailwind's automatic content detection misses, such as a UI kit in <code>node_modules</code> or a sibling package. Paths are relative to the stylesheet. <code>source("../src")</code> on the import sets the base path, and <code>source(none)</code> turns detection off.</p>
+      <ul class="sc-parts">
+        <li><code>@source "../node_modules/@acmecorp/ui-lib";</code></li>
+        <li><code>source("../src")</code></li>
+        <li><code>source(none)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#source-directive" target="_blank" rel="noopener">Docs: @source</a> · <a href="https://tailwindcss.com/docs/detecting-classes-in-source-files#explicitly-registering-sources" target="_blank" rel="noopener">Detecting classes</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>Scan a UI kit that lives in <code>node_modules</code> (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="src/app.css">
+  @import "tailwindcss";
+  @source "../node_modules/@acmecorp/ui-lib";</pre>
+        <pre class="sc-code" data-code="html" data-label="inside the library (never scanned without the line above)">
+  &lt;button class="rounded-lg bg-indigo-600 px-3 py-1.5 text-white hover:bg-indigo-700"&gt;Save&lt;/button&gt;</pre>
+      </figure>
+      <p class="sc-note">Code-only: the browser build has no files to scan. It compiles the classes it finds in the live page, and silently ignores <code>@source</code>, so there is no visible effect to show. In a real build, dependencies are skipped by default (they are usually in <code>.gitignore</code>, and since v4.1 <code>node_modules</code> is ignored outright), so a library built with Tailwind needs this line.</p>
+
+      <figure class="sc-example">
+        <figcaption>A monorepo with explicit sources (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="packages/styles/app.css">
+  @import "tailwindcss" source(none);
+
+  @source "../../apps/web";
+  @source "../../apps/admin";
+  @source "../ui";</pre>
+      </figure>
+      <p class="sc-note">Code-only. <code>source(none)</code> disables automatic detection so each stylesheet only includes the classes of the folders you list. Handy when several Tailwind stylesheets live in one repo.</p>
+
+      <figure class="sc-example">
+        <figcaption>Set the base path, and keep prose out of the scan (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="build/app.css (run from the monorepo root)">
+  @import "tailwindcss" source("../src");</pre>
+        <pre class="sc-code" data-code="css" data-label="react/src/index.css (this repository)">
+  @import "tailwindcss";
+  @source not "../README.md";</pre>
+      </figure>
+      <p class="sc-note">Code-only. Tailwind scans from the current working directory by default, so <code>source("../src")</code> matters when builds run from the repo root. The React app in this repo uses <code>@source not</code> (next card) so the class names quoted in its README do not generate CSS.</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="source-inline">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@source not</code> and <code class="whitespace-nowrap">@source inline()</code></h2>
+      <span class="sc-since" data-v="4.1">v4.1</span>
+      <p><code>@source not "path"</code> excludes a path from scanning. <code>@source inline("…")</code> force-generates classes that never appear in your files, a safelist with brace expansion such as <code>{hover:,focus:,}underline</code> and ranges like <code>bg-red-{50,{100..900..100},950}</code>. <code>@source not inline()</code> blocks classes.</p>
+      <ul class="sc-parts">
+        <li><code>@source not "../legacy";</code></li>
+        <li><code>@source inline("underline");</code></li>
+        <li><code>@source inline("{hover:,}bg-red-{50,{100..900..100},950}");</code></li>
+        <li><code>@source not inline("…");</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/detecting-classes-in-source-files#safelisting-specific-utilities" target="_blank" rel="noopener">Docs: safelisting specific utilities</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>The problem a safelist solves: a class name built at runtime <span class="sc-spacer"></span><select class="sc-btn" data-dyn-color="source-inline-1" aria-label="Badge colour"><option value="sky">sky</option><option value="emerald">emerald</option><option value="violet">violet</option><option value="amber">amber</option><option value="rose">rose</option></select></figcaption>
+        <div class="sc-demo" id="source-inline-1">
+          <div class="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-200">
+            <span data-badge class="shrink-0 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap text-white bg-sky-600">Status badge</span>
+            <span>colour picked from a CMS field</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="source-inline-1"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // a class name assembled at runtime: a build-time scanner never sees "bg-violet-600" as one string
+  document.addEventListener('change', (e) =&gt; {
+    const select = e.target.closest('[data-dyn-color]')
+    if (!select) return
+    const badge = document.querySelector('#' + select.dataset.dynColor + ' [data-badge]')
+    if (badge) badge.className = 'shrink-0 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap text-white bg-' + select.value + '-600'
+  })</pre>
+        <pre class="sc-code" data-code="css" data-label="app.css (needs a build step)">
+  @import "tailwindcss";
+  @source inline("bg-{sky,emerald,violet,amber,rose}-600");</pre>
+      </figure>
+      <p class="sc-note">This works here only because the in-browser build compiles whichever classes appear in the live page, so it needs no safelist. A real build scans your files for whole class names; <code>'bg-' + color + '-600'</code> never appears as one, so those utilities would not be generated without the <code>@source inline()</code> line. Pick a colour to see Tailwind compile the new class on the fly.</p>
+
+      <figure class="sc-example">
+        <figcaption>Brace expansion playground: edit the pattern, see the classes it generates</figcaption>
+        <div class="sc-demo" id="source-inline-2">
+          <div class="space-y-3">
+            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300" for="source-inline-pattern">@source inline("…") pattern</label>
+            <input id="source-inline-pattern" data-braces="source-inline-2" value="{hover:,focus:,}bg-red-{50,{100..900..100},950}" spellcheck="false" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+            <p data-sc-omit data-braces-count class="text-xs text-slate-600 dark:text-slate-300"></p>
+            <ul data-sc-omit data-braces-out class="flex max-h-40 flex-wrap gap-1.5 overflow-auto"></ul>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="source-inline-2"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // The same brace expansion @source inline("...") performs: {a,b} lists and {1..9..2} ranges, nested
+  function expand(pattern) {
+    const open = pattern.indexOf('{')
+    if (open === -1) return [pattern]
+    let depth = 0
+    let close = -1
+    for (let i = open; i &lt; pattern.length; i++) {
+      if (pattern[i] === '{') depth++
+      if (pattern[i] === '}' &amp;&amp; --depth === 0) {
+        close = i
+        break
+      }
+    }
+    if (close === -1) throw new Error('Unbalanced braces')
+    const pre = pattern.slice(0, open)
+    const inside = pattern.slice(open + 1, close)
+    const post = pattern.slice(close + 1)
+    const range = inside.match(/^(-?\d+)\.\.(-?\d+)(?:\.\.(-?\d+))?$/)
+    const parts = (range ? sequence(+range[1], +range[2], range[3] &amp;&amp; +range[3]) : split(inside)).flatMap(expand)
+    return expand(post).flatMap((tail) =&gt; parts.map((part) =&gt; pre + part + tail))
+  }
+  function sequence(from, to, step) {
+    step = Math.abs(step || 1) * (from &lt;= to ? 1 : -1)
+    const out = []
+    for (let n = from; step &gt; 0 ? n &lt;= to : n &gt;= to; n += step) {
+      if (out.push(String(n)) &gt; 500) throw new Error('Range is too long for this demo')
+    }
+    return out
+  }
+  function split(text) {
+    const out = []
+    let depth = 0
+    let from = 0
+    for (let i = 0; i &lt; text.length; i++) {
+      if (text[i] === '{') depth++
+      else if (text[i] === '}') depth--
+      else if (text[i] === ',' &amp;&amp; depth === 0) {
+        out.push(text.slice(from, i))
+        from = i + 1
+      }
+    }
+    return [...out, text.slice(from)]
+  }
+  function renderBraces(input) {
+    const out = document.querySelector('#' + input.dataset.braces + ' [data-braces-out]')
+    const count = document.querySelector('#' + input.dataset.braces + ' [data-braces-count]')
+    try {
+      const classes = expand(input.value.trim())
+      out.replaceChildren(
+        ...classes.map((name) =&gt; {
+          const li = document.createElement('li')
+          li.className = 'rounded-md bg-white px-2 py-0.5 font-mono text-xs text-slate-800 shadow-sm dark:bg-slate-800 dark:text-slate-100'
+          li.textContent = name
+          return li
+        }),
+      )
+      count.textContent = classes.length + ' classes'
+    } catch (err) {
+      out.replaceChildren()
+      count.textContent = err.message
+    }
+  }
+  document.addEventListener('input', (e) =&gt; {
+    const input = e.target.closest('[data-braces]')
+    if (input) renderBraces(input)
+  })
+  document.querySelectorAll('[data-braces]').forEach(renderBraces)</pre>
+      </figure>
+      <p class="sc-note">Try <code>{hover:,}underline</code>, <code>p-{1..4}</code> or <code>m-{2,4,6}</code>. A list is <code>{a,b,c}</code>; a numeric range is <code>{start..end..step}</code>; empty items are allowed, which is how <code>{hover:,focus:,}</code> includes the plain class. The demo ports Tailwind's own expansion algorithm, but only the real engine decides which of the expanded names are valid classes.</p>
+
+      <figure class="sc-example">
+        <figcaption>Exclude folders and classes (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @import "tailwindcss";
+
+  /* never scan this folder */
+  @source not "../src/components/legacy";
+
+  /* never generate these, even if a file mentions them */
+  @source not inline("{hover:,focus:,}bg-red-{50,{100..900..100},950}");</pre>
+      </figure>
+      <p class="sc-note">Code-only: the browser build ignores <code>@source</code> directives. <code>@source inline()</code> replaces the v3 <code>safelist</code> option, which <code>@config</code> no longer supports. Since v4.2 whitespace around the <code>inline()</code> argument is allowed, and later <code>@source</code> rules can re-include files excluded by an earlier <code>@source not</code> (v4.3.1).</p>
+    </div>
+  </article>
+
+  <article class="sc-feature" id="import-directive">
+    <div class="sc-notes">
+      <h2><code class="whitespace-nowrap">@import "tailwindcss"</code> and its options</h2>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>One <code>@import "tailwindcss"</code> replaces the three v3 <code>@tailwind</code> directives. It accepts <code>source()</code>, <code>prefix()</code>, <code>theme()</code> and <code>layer()</code> options, so you can set the scanning base, add a <code>tw:</code> prefix, or import theme, preflight and utilities separately.</p>
+      <ul class="sc-parts">
+        <li><code>@import "tailwindcss";</code></li>
+        <li><code>prefix(tw)</code></li>
+        <li><code>source("../src")</code></li>
+        <li><code>theme(static)</code></li>
+        <li><code>layer(base)</code></li>
+      </ul>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/functions-and-directives#import-directive" target="_blank" rel="noopener">Docs: @import</a></p>
+    </div>
+    <div class="sc-examples">
+      <figure class="sc-example">
+        <figcaption>One line instead of three (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="v3">
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;</pre>
+        <pre class="sc-code" data-code="css" data-label="v4">
+  @import "tailwindcss";</pre>
+      </figure>
+      <p class="sc-note">Code-only, and this one has a trap. <code>@tailwindcss/browser</code> injects <code>@import "tailwindcss"</code> for you, but only if none of the page's <code>text/tailwindcss</code> CSS contains the text <code>@import</code>. Even a comment containing it switches the injection off and no utilities are generated, so this page never writes it inside a live style block.</p>
+
+      <figure class="sc-example">
+        <figcaption>Prefix for incremental adoption (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @import "tailwindcss" prefix(tw);
+
+  @theme {
+    /* configure theme variables as if there were no prefix */
+    --color-avocado-500: oklch(0.84 0.18 117.33);
+  }</pre>
+        <pre class="sc-code" data-code="html" data-label="HTML">
+  &lt;div class="tw:flex tw:bg-red-500 tw:hover:bg-red-600"&gt;
+    &lt;!-- the prefix always comes first, like a variant --&gt;
+  &lt;/div&gt;</pre>
+        <pre class="sc-code" data-code="css" data-label="Generated variables">
+  :root {
+    --tw-color-avocado-500: oklch(0.84 0.18 117.33);
+  }</pre>
+      </figure>
+      <p class="sc-note">Code-only: <code>prefix()</code> is an import option, and the browser build cannot change how it imports Tailwind. The prefix stops Tailwind classes clashing with an older stylesheet; the generated theme variables get the prefix too (<code>--tw-color-avocado-500</code>).</p>
+
+      <figure class="sc-example">
+        <figcaption>Import the layers separately (code-only)</figcaption>
+        <pre class="sc-code" data-code="css" data-label="app.css">
+  @layer theme, base, components, utilities;
+
+  @import "tailwindcss/theme.css" layer(theme) theme(static);
+  @import "tailwindcss/preflight.css" layer(base);
+  @import "tailwindcss/utilities.css" layer(utilities) prefix(tw);</pre>
+      </figure>
+      <p class="sc-note">Code-only. This is what <code>@import "tailwindcss"</code> expands to, and the way to put Preflight in a different layer or leave it out. <code>source()</code>, <code>theme()</code> and <code>prefix()</code> go on the import they apply to. <code>theme(static)</code> emits every theme variable whether or not a class uses it.</p>
+    </div>
+  </article>
+</main>
+
+<footer data-sc-foot></footer>
+<script>
+// demo plumbing: placeholder links must not scroll the page
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.sc-demo a[href="#"]')) e.preventDefault()
+})
+
+// <button data-flip="demo-id" data-name="data-sidebar" data-on="open" data-off="closed">
+// flips an attribute on the first element inside #demo-id that has it
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-flip]')
+  if (!btn) return
+  const host = document.querySelector('#' + btn.dataset.flip + ' [' + btn.dataset.name + ']')
+  if (!host) return
+  const on = host.getAttribute(btn.dataset.name) !== btn.dataset.on
+  host.setAttribute(btn.dataset.name, on ? btn.dataset.on : btn.dataset.off)
+  btn.setAttribute('aria-pressed', String(on))
+})
+
+// <select data-theme-switch="demo-id"> sets data-theme on the [data-themed] box inside #demo-id
+document.addEventListener('change', (e) => {
+  const select = e.target.closest('[data-theme-switch]')
+  if (!select) return
+  const box = document.querySelector('#' + select.dataset.themeSwitch + ' [data-themed]')
+  if (box) box.setAttribute('data-theme', select.value)
+})
+
+// <button data-spacing="0.4rem" data-target="demo-id"> redefines --spacing on that element
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-spacing]')
+  if (!btn) return
+  document.getElementById(btn.dataset.target).style.setProperty('--spacing', btn.dataset.spacing)
+  btn.parentElement.querySelectorAll('[data-spacing]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+})
+
+// a class name assembled at runtime: a build-time scanner never sees "bg-violet-600" as one string
+document.addEventListener('change', (e) => {
+  const select = e.target.closest('[data-dyn-color]')
+  if (!select) return
+  const badge = document.querySelector('#' + select.dataset.dynColor + ' [data-badge]')
+  if (badge) badge.className = 'shrink-0 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap text-white bg-' + select.value + '-600'
+})
+
+// The same brace expansion @source inline("...") performs: {a,b} lists and {1..9..2} ranges, nested
+function expand(pattern) {
+  const open = pattern.indexOf('{')
+  if (open === -1) return [pattern]
+  let depth = 0
+  let close = -1
+  for (let i = open; i < pattern.length; i++) {
+    if (pattern[i] === '{') depth++
+    if (pattern[i] === '}' && --depth === 0) {
+      close = i
+      break
+    }
+  }
+  if (close === -1) throw new Error('Unbalanced braces')
+  const pre = pattern.slice(0, open)
+  const inside = pattern.slice(open + 1, close)
+  const post = pattern.slice(close + 1)
+  const range = inside.match(/^(-?\d+)\.\.(-?\d+)(?:\.\.(-?\d+))?$/)
+  const parts = (range ? sequence(+range[1], +range[2], range[3] && +range[3]) : split(inside)).flatMap(expand)
+  return expand(post).flatMap((tail) => parts.map((part) => pre + part + tail))
+}
+function sequence(from, to, step) {
+  step = Math.abs(step || 1) * (from <= to ? 1 : -1)
+  const out = []
+  for (let n = from; step > 0 ? n <= to : n >= to; n += step) {
+    if (out.push(String(n)) > 500) throw new Error('Range is too long for this demo')
+  }
+  return out
+}
+function split(text) {
+  const out = []
+  let depth = 0
+  let from = 0
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '{') depth++
+    else if (text[i] === '}') depth--
+    else if (text[i] === ',' && depth === 0) {
+      out.push(text.slice(from, i))
+      from = i + 1
+    }
+  }
+  return [...out, text.slice(from)]
+}
+function renderBraces(input) {
+  const out = document.querySelector('#' + input.dataset.braces + ' [data-braces-out]')
+  const count = document.querySelector('#' + input.dataset.braces + ' [data-braces-count]')
+  try {
+    const classes = expand(input.value.trim())
+    out.replaceChildren(
+      ...classes.map((name) => {
+        const li = document.createElement('li')
+        li.className = 'rounded-md bg-white px-2 py-0.5 font-mono text-xs text-slate-800 shadow-sm dark:bg-slate-800 dark:text-slate-100'
+        li.textContent = name
+        return li
+      }),
+    )
+    count.textContent = classes.length + ' classes'
+  } catch (err) {
+    out.replaceChildren()
+    count.textContent = err.message
+  }
+}
+document.addEventListener('input', (e) => {
+  const input = e.target.closest('[data-braces]')
+  if (input) renderBraces(input)
+})
+document.querySelectorAll('[data-braces]').forEach(renderBraces)
+</script>
+</body>
+</html>

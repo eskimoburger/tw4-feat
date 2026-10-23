@@ -1,0 +1,85 @@
+/*
+ * Functional utilities: @utility name-* with --value() and --modifier().
+ *
+ * `@utility auto-grid-*` registers a utility whose last segment is an input.
+ * Tailwind parses the class you write (auto-grid-56/6), validates it against
+ * the --value() / --modifier() rules below, and emits one CSS rule for it.
+ * Any declaration whose --value() fails to resolve is simply left out.
+ *
+ *   --value(integer)            bare integer             auto-grid-56
+ *   --value([length])           arbitrary length         auto-grid-[14rem]
+ *   --value(--stroke-*, ...)    theme keys, in order     text-stroke-bold
+ *   --modifier(integer, ...)    the part after the /     auto-grid-56/6
+ *   --modifier(--color-*, ...)  theme colours            text-stroke-2/accent
+ *   --default(4)                used when the input is absent
+ *   --spacing(n)                n steps of the spacing scale
+ *
+ * Because they are real utilities, every variant works on them for free:
+ * hover:glow-32/accent, md:auto-grid-72, dark:text-stroke-2/accent.
+ *
+ * THE SECOND ENTRY POINT. A utility only exists in the stylesheet that
+ * defines it, and src/index.css belongs to the app shell. So this file
+ * borrows the theme with @reference and adds a utilities generator without
+ * automatic scanning (source(none)). In your own app these @utility blocks
+ * would simply sit in app.css and the scanner would find the usage itself.
+ *
+ * Here the classes in use are listed with @source inline() instead. Scanning
+ * this demo's markup would also re-emit every ordinary class in it (flex,
+ * px-4, text-sm ...) a second time, AFTER the main stylesheet, and a later
+ * copy of a rule beats an earlier one of equal specificity. Every class below
+ * is named after one of the utilities defined in this file, so nothing in the
+ * main stylesheet can clash.
+ */
+@reference "../index.css";
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+/* the values used by 36-functional-utility.jsx (a bare name, then /modifier) */
+@source inline("auto-grid-{40,56/6,[14rem]/[1.25rem]}");
+@source inline("text-stroke-{2/accent,hairline/ink,bold/accent,[3px]/[#e11d48]}");
+@source inline("glow-{6,8/v43,10/v42,12/red-500}");
+@source inline("{hover:,focus-visible:}glow-24/accent");
+@source inline("dark:glow-20/accent");
+
+/* a tiny theme namespace for --value(--stroke-*): `inline` pastes the length in */
+@theme inline {
+  --stroke-hairline: 0.5px;
+  --stroke-bold: 4px;
+  --stroke-heavy: 6px;
+}
+
+/*
+ * auto-grid-<n>[/<gap>]: columns at least n spacing steps wide, as many as fit.
+ *   auto-grid-56       224px minimum, gap 4 (the default)
+ *   auto-grid-56/6     the same with gap 6
+ *   auto-grid-[14rem]  any length, and auto-grid-[14rem]/[1.25rem] for the gap
+ */
+@utility auto-grid-* {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(--spacing(--value(integer)), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(--value([length]), 1fr));
+  gap: --spacing(--modifier(integer, --default(4)));
+  gap: --modifier([length]);
+}
+
+/*
+ * text-stroke-<width>[/<colour>]: outlined type.
+ *   text-stroke-2/accent        2px, theme colour (accent is one of our tokens)
+ *   text-stroke-bold/ink        a named width from @theme above
+ *   text-stroke-[3px]/[#e11d48] arbitrary width and colour
+ * paint-order puts the stroke behind the fill, so thick outlines stay outside.
+ */
+@utility text-stroke-* {
+  -webkit-text-stroke-width: --value(--stroke-*, [length]);
+  -webkit-text-stroke-width: calc(--value(integer) * 1px);
+  -webkit-text-stroke-color: --modifier(--color-*, [color]);
+  paint-order: stroke fill;
+}
+
+/*
+ * glow-<blur>[/<colour>]: a soft box-shadow in the current text colour,
+ * or in the colour after the slash.
+ */
+@utility glow-* {
+  box-shadow: 0 0 calc(--value(integer) * 1px) currentColor;
+  box-shadow: 0 0 calc(--value(integer) * 1px) --modifier(--color-*, [color]);
+}
