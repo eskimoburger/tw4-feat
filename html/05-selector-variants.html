@@ -220,9 +220,9 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Strike through a finished task</figcaption>
         <div class="sc-demo" id="peer-4">
           <ul class="mx-auto grid max-w-xs gap-3 rounded-xl bg-white p-5 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
-            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600" checked><span class="transition-colors peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Write the release notes</span></label></li>
-            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Update the changelog</span></label></li>
-            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Tag v4.3.3</span></label></li>
+            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600" checked><span class="transition-colors motion-reduce:transition-none peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Write the release notes</span></label></li>
+            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors motion-reduce:transition-none peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Update the changelog</span></label></li>
+            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors motion-reduce:transition-none peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Tag v4.3.3</span></label></li>
           </ul>
         </div>
         <pre class="sc-code" data-code="html" data-from="peer-4"></pre>
@@ -281,7 +281,7 @@ document.addEventListener('click', (e) =&gt; {
           <div class="mx-auto grid max-w-xl gap-4 sm:grid-cols-2">
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">Unnamed</p>
-              <article class="group rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+              <article class="group rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition hover:shadow-lg motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                 <h3 class="font-semibold group-hover:text-indigo-600 dark:group-hover:text-indigo-300">Pro plan</h3>
                 <button type="button" class="group mt-3 inline-flex items-center gap-1 rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">
                   Choose
@@ -292,7 +292,7 @@ document.addEventListener('click', (e) =&gt; {
             </div>
             <div>
               <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">Named</p>
-              <article class="group/card rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+              <article class="group/card rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition hover:shadow-lg motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                 <h3 class="font-semibold group-hover/card:text-indigo-600 dark:group-hover/card:text-indigo-300">Pro plan</h3>
                 <button type="button" class="group/cta mt-3 inline-flex items-center gap-1 rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">
                   Choose
@@ -1219,7 +1219,7 @@ document.addEventListener('click', (e) =&gt; {
             </div>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Each demo negates a different kind of condition: an ancestor's attribute (<code>not-in-aria-expanded:</code> swaps the button label), a sibling state (<code>not-peer-checked:</code>), an arbitrary selector (<code>not-[.js-open]:hidden</code>) and a group state (<code>not-group-hover:</code>, which is also gated by <code>@media (hover: hover)</code>, see <a href="#not-media-supports">below</a>). Always write <code>not-group-hover:</code>, never <code>group-not-hover:</code>.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Each demo negates a different kind of condition: an ancestor's attribute (<code>not-in-aria-expanded:</code> swaps the button label), a sibling state (<code>not-peer-checked:</code>), an arbitrary selector (<code>not-[.js-open]:hidden</code>) and a group state (<code>not-group-hover:</code>, which also emits an <code>@media not (hover: hover)</code> rule, see <a href="#not-media-supports">below</a>). Always write <code>not-group-hover:</code>, never <code>group-not-hover:</code>.</p></div>
         <pre class="sc-code" data-code="html" data-from="not-7"></pre>
         <pre class="sc-code" data-code="js" data-label="JS (disclosure button and class toggle)">// Disclosure buttons: flip aria-expanded and show or hide the panel they control
 document.addEventListener('click', (e) =&gt; {
@@ -2938,7 +2938,7 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Hint that fades when you focus the field</figcaption>
         <div class="sc-demo" id="placeholder-2">
           <div class="mx-auto max-w-xs">
-            <input type="email" placeholder="name@company.com" autocomplete="off" aria-label="Email" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 placeholder:transition-colors focus:border-indigo-500 focus:outline-none focus:placeholder:text-transparent dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-400">
+            <input type="email" placeholder="name@company.com" autocomplete="off" aria-label="Email" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 placeholder:transition-colors motion-reduce:placeholder:transition-none focus:border-indigo-500 focus:outline-none focus:placeholder:text-transparent dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-indigo-400">
           </div>
         </div>
         <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Click into the field: the placeholder fades out before you type. Fine for a decorative hint. If the placeholder carries information people need, keep it visible and add a real label.</p></div>
