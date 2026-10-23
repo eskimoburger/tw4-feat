@@ -1,0 +1,64 @@
+# Builds the field guide and publishes it to GitHub Pages:
+#   /         the HTML pages from html/ (overview at index.html)
+#   /react/   the production build of the React + Motion app
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [tailwind-v4-field-guide]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; let an in-progress one finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: react/package-lock.json
+
+      - name: Build the React app
+        working-directory: react
+        run: |
+          npm ci
+          npm run build
+
+      - name: Assemble the site
+        run: |
+          mkdir -p _site/react
+          cp -R html/. _site/
+          rm -f _site/_template.html
+          cp -R react/dist/. _site/react/
+          # The overview links to the React README for local use; on Pages it
+          # should open the built app instead.
+          sed -i 's#href="\.\./react/README\.md"#href="react/"#' _site/index.html
+          grep -q 'href="react/"' _site/index.html
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

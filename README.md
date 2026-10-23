@@ -14,6 +14,20 @@ There are two ways to look at it:
 The HTML pages load Tailwind and Google Fonts from a CDN, so they need an
 internet connection the first time you open them.
 
+## GitHub Pages
+
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) builds the React
+app and publishes both parts on every push to `tailwind-v4-field-guide`:
+
+- `https://eskimoburger.github.io/tw4--feat/` for the overview and HTML pages
+- `https://eskimoburger.github.io/tw4--feat/react/` for the React + Motion app
+
+To turn it on once, go to **Settings → Pages → Build and deployment** and set
+**Source** to **GitHub Actions**. Then re-run the workflow from the Actions
+tab, or push a commit. GitHub Pages on a private repository needs a paid plan
+(GitHub Pro, Team or Enterprise), and the published site is public. On a free
+plan, make the repository public first.
+
 ## Pages
 
 | # | Page | Covers |
