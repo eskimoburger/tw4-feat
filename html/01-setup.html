@@ -33,7 +33,7 @@
 
   /* Safelist and blocklist demos: these lines emit or block classes that the markup never writes */
   @source inline("{hover:,focus:,}bg-fuchsia-{100..300..100}");
-  @source inline("bg-amber-{50,{100..900..100},950}");
+  @source inline("bg-purple-{50,{100..900..100},950}");
   @source not inline("overline");
   @source not inline("bg-orange-500");
 
@@ -159,32 +159,32 @@
 
             <div class="mt-3 hidden space-y-2 rounded-xl border border-slate-200 bg-white p-4 text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 group-has-[#path-vite:checked]:block">
               <p class="text-sm font-semibold">Vite, SvelteKit, React Router, Laravel, Nuxt, Astro</p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 break-words">npm install tailwindcss @tailwindcss/vite</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">config</span><span class="min-w-0 break-words">plugins: [tailwindcss()]</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 break-words">@import "tailwindcss";</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 wrap-break-word">npm install tailwindcss @tailwindcss/vite</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">config</span><span class="min-w-0 wrap-break-word">plugins: [tailwindcss()]</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 wrap-break-word">@import "tailwindcss";</span></p>
             </div>
             <div class="mt-3 hidden space-y-2 rounded-xl border border-slate-200 bg-white p-4 text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 group-has-[#path-postcss:checked]:block">
               <p class="text-sm font-semibold">Next.js, Angular, Parcel, Gatsby, Meteor</p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 break-words">npm install tailwindcss @tailwindcss/postcss postcss</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">config</span><span class="min-w-0 break-words">"@tailwindcss/postcss": {}</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 break-words">@import "tailwindcss";</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 wrap-break-word">npm install tailwindcss @tailwindcss/postcss postcss</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">config</span><span class="min-w-0 wrap-break-word">"@tailwindcss/postcss": {}</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 wrap-break-word">@import "tailwindcss";</span></p>
             </div>
             <div class="mt-3 hidden space-y-2 rounded-xl border border-slate-200 bg-white p-4 text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 group-has-[#path-cli:checked]:block">
               <p class="text-sm font-semibold">No bundler, plain HTML, or a standalone binary</p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 break-words">npm install tailwindcss @tailwindcss/cli</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">run</span><span class="min-w-0 break-words">npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 break-words">@import "tailwindcss";</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 wrap-break-word">npm install tailwindcss @tailwindcss/cli</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">run</span><span class="min-w-0 wrap-break-word">npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 wrap-break-word">@import "tailwindcss";</span></p>
             </div>
             <div class="mt-3 hidden space-y-2 rounded-xl border border-slate-200 bg-white p-4 text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 group-has-[#path-webpack:checked]:block">
               <p class="text-sm font-semibold">webpack and Rspack projects (v4.2+)</p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 break-words">npm install tailwindcss @tailwindcss/webpack</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">config</span><span class="min-w-0 break-words">use: [MiniCssExtractPlugin.loader, "css-loader", "@tailwindcss/webpack"]</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 break-words">@import "tailwindcss";</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">install</span><span class="min-w-0 wrap-break-word">npm install tailwindcss @tailwindcss/webpack</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">config</span><span class="min-w-0 wrap-break-word">use: [MiniCssExtractPlugin.loader, "css-loader", "@tailwindcss/webpack"]</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 text-slate-600 dark:text-slate-400">css</span><span class="min-w-0 wrap-break-word">@import "tailwindcss";</span></p>
             </div>
             <div class="mt-3 hidden space-y-2 rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-950 dark:border-amber-500/40 dark:bg-amber-950/50 dark:text-amber-100 group-has-[#path-cdn:checked]:block">
               <p class="text-sm font-semibold">Prototypes and demos only, not production</p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 opacity-70">html</span><span class="min-w-0 break-words">&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt;</span></p>
-              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 opacity-70">css</span><span class="min-w-0 break-words">&lt;style type="text/tailwindcss"&gt; … &lt;/style&gt;</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 opacity-70">html</span><span class="min-w-0 wrap-break-word">&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt;</span></p>
+              <p class="flex gap-3 font-mono text-xs"><span class="w-14 shrink-0 opacity-70">css</span><span class="min-w-0 wrap-break-word">&lt;style type="text/tailwindcss"&gt; … &lt;/style&gt;</span></p>
             </div>
           </div>
         </div>
@@ -231,7 +231,7 @@
                 <li class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200">webpack 5</li>
                 <li class="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200">Prototype page</li>
               </ul>
-              <p class="mt-3 text-xs text-slate-600 dark:text-slate-300">Rails (<code class="font-mono">tailwindcss-rails</code> gem) and Phoenix (<code class="font-mono">tailwind</code> package) run the standalone CLI for you.</p>
+              <p class="mt-3 text-xs text-slate-600 dark:text-slate-300">Rails (<code class="font-mono">tailwindcss-rails</code> gem) and Phoenix (<code class="font-mono">tailwind</code> package) run the standalone CLI for you. Rspack's official guide uses PostCSS, but the webpack loader installs there too.</p>
             </section>
           </div>
         </div>
@@ -244,7 +244,7 @@
     <div class="sc-notes">
       <h2>Vite plugin</h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>The first-party Vite plugin is the most direct setup for Vite-based frameworks. Install two packages, register the plugin, and import Tailwind in your CSS. There is no <code>tailwind.config.js</code> and no PostCSS config.</p>
+      <p>The first-party Vite plugin is the most direct setup for Vite-based frameworks. Install two packages, register the plugin, and import Tailwind in your CSS. It needs no <code>tailwind.config.js</code> and no PostCSS config.</p>
       <ul class="sc-parts">
         <li><code>@tailwindcss/vite</code></li>
         <li><code>tailwindcss()</code></li>
@@ -373,7 +373,7 @@ export default config</pre>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
-        <figcaption>A real run <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="install-cli-1">Replay</button></figcaption>
+        <figcaption>What a build prints <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="install-cli-1">Replay</button></figcaption>
         <div class="sc-demo" id="install-cli-1">
           <div class="mx-auto max-w-xl overflow-hidden rounded-xl bg-slate-950 font-mono text-xs text-slate-100 shadow-lg ring-1 ring-black/10">
             <div class="flex items-center gap-1.5 bg-slate-900 px-4 py-2.5">
@@ -381,7 +381,7 @@ export default config</pre>
               <span class="ms-3 text-slate-400">my-project</span>
             </div>
             <div class="space-y-1 p-4 leading-relaxed">
-              <p class="break-words"><span class="text-emerald-400">$</span> npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --minify</p>
+              <p class="wrap-break-word"><span class="text-emerald-400">$</span> npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --minify</p>
               <p class="text-slate-400 transition-opacity delay-300 duration-500 starting:opacity-0 motion-reduce:transition-none">≈ tailwindcss v4.3.3</p>
               <p class="text-emerald-400 transition-opacity delay-700 duration-500 starting:opacity-0 motion-reduce:transition-none">Done in 34ms<span class="ms-1 inline-block h-3.5 w-1.5 animate-pulse bg-slate-100 align-middle motion-reduce:animate-none"></span></p>
             </div>
@@ -391,13 +391,14 @@ export default config</pre>
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Flags, with the release that added them</figcaption>
+        <figcaption>Flags, and the releases that added the newest two</figcaption>
         <div class="sc-demo" id="install-cli-2">
           <dl class="mx-auto max-w-xl divide-y divide-slate-200 rounded-xl bg-white px-4 text-sm text-slate-900 shadow-xs ring-1 ring-black/5 dark:divide-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">-i, --input</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Input stylesheet</dd></div>
             <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">-o, --output</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Output file (default is stdout)</dd></div>
-            <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">-w, --watch</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Rebuild when files change</dd></div>
+            <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">-w, --watch</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Rebuild when files change (<code class="font-mono text-xs">--watch=always</code> keeps going after stdin closes)</dd></div>
             <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">-m, --minify</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Optimize and minify (<code class="font-mono text-xs">--optimize</code> skips the minify)</dd></div>
+            <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">--cwd</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Folder to run from and scan (default <code class="font-mono text-xs">.</code>)</dd></div>
             <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">--map</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Write a source map</dd></div>
             <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">--silent</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Suppress non-error output</dd><span class="sc-since self-start" data-v="4.3">4.3.1</span></div>
             <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-3"><dt class="font-mono text-xs sm:w-36 sm:shrink-0">--watch --poll[=ms]</dt><dd class="min-w-0 text-slate-600 sm:flex-1 dark:text-slate-300">Poll instead of using file events (Docker, WSL, network drives)</dd><span class="sc-since self-start" data-v="4.3">4.3.3</span></div>
@@ -439,7 +440,7 @@ npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch</pre>
         <pre class="sc-code" data-code="html" data-from="install-cli-4"></pre>
         <pre class="sc-code" data-code="bash" data-label="Terminal">npx @tailwindcss/cli canonicalize 'w-4 h-4'
 # size-4</pre>
-        <div class="p-3"><p class="sc-note">Output taken from the v4.3.3 CLI. The CHANGELOG has no entry for when the <code>canonicalize</code> subcommand was added, so it carries no version badge here.</p></div>
+        <div class="p-3"><p class="sc-note">Code-only for the command itself: it reads your design system from disk. The results above come from running it on the v4.3.3 CLI. It is a quick way to clean up class lists by hand.</p></div>
       </figure>
     </div>
   </article>
@@ -633,7 +634,7 @@ module.exports = {
     optimize: true,        // or { minify: true }; on by default in production mode
   },
 }</pre>
-        <div class="p-3"><p class="sc-note">Code-only: loaders run inside webpack or Rspack. Peer dependencies are webpack 5 or <code>@rspack/core</code> 1 and up. Since v4.3.1 Rspack projects no longer need webpack installed.</p></div>
+        <div class="p-3"><p class="sc-note">Code-only: loaders run inside webpack or Rspack. It works with webpack 5 or with <code>@rspack/core</code>. Since v4.3.1 Rspack projects no longer need webpack installed.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -689,10 +690,10 @@ module.exports = {
               @import "tailwindcss"
             </summary>
             <ul class="mt-3 space-y-2 font-mono text-xs">
-              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-slate-200 px-1.5 py-0.5 text-center text-slate-800 dark:bg-slate-700 dark:text-slate-100">order</span><span class="min-w-0 break-words">@layer theme, base, components, utilities;</span></li>
-              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-violet-200 px-1.5 py-0.5 text-center text-violet-950 dark:bg-violet-900 dark:text-violet-100">theme</span><span class="min-w-0 break-words">@import "tailwindcss/theme.css" layer(theme);</span></li>
-              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-emerald-200 px-1.5 py-0.5 text-center text-emerald-950 dark:bg-emerald-900 dark:text-emerald-100">base</span><span class="min-w-0 break-words">@import "tailwindcss/preflight.css" layer(base);</span></li>
-              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-sky-200 px-1.5 py-0.5 text-center text-sky-950 dark:bg-sky-900 dark:text-sky-100">utilities</span><span class="min-w-0 break-words">@import "tailwindcss/utilities.css" layer(utilities);</span></li>
+              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-slate-200 px-1.5 py-0.5 text-center text-slate-800 dark:bg-slate-700 dark:text-slate-100">order</span><span class="min-w-0 wrap-break-word">@layer theme, base, components, utilities;</span></li>
+              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-violet-200 px-1.5 py-0.5 text-center text-violet-950 dark:bg-violet-900 dark:text-violet-100">theme</span><span class="min-w-0 wrap-break-word">@import "tailwindcss/theme.css" layer(theme);</span></li>
+              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-emerald-200 px-1.5 py-0.5 text-center text-emerald-950 dark:bg-emerald-900 dark:text-emerald-100">base</span><span class="min-w-0 wrap-break-word">@import "tailwindcss/preflight.css" layer(base);</span></li>
+              <li class="flex flex-wrap items-center gap-2"><span class="w-20 rounded bg-sky-200 px-1.5 py-0.5 text-center text-sky-950 dark:bg-sky-900 dark:text-sky-100">utilities</span><span class="min-w-0 wrap-break-word">@import "tailwindcss/utilities.css" layer(utilities);</span></li>
             </ul>
           </details>
         </div>
@@ -760,11 +761,11 @@ module.exports = {
 .typography img {
   border-radius: var(--radius-lg);
 }</pre>
-        <div class="p-3"><p class="sc-note">Code-only: Lightning CSS flattens the nesting and adds the prefix when the build optimizes (<code>--optimize</code>, <code>--minify</code> or a production build). Without it the CLI still bundles the import but leaves nesting and prefixes as written. The browser build does not run Lightning CSS, so it adds no prefixes, leaves nested CSS as it is, and throws on a local <code>@import</code>.</p></div>
+        <div class="p-3"><p class="sc-note">Code-only: Lightning CSS flattens the nesting and adds the prefix when the build optimizes (<code>--optimize</code>, <code>--minify</code> or a production build). Without it the CLI still bundles the import but leaves nesting and prefixes as written. The browser build does not run Lightning CSS, so it adds no vendor prefixes and throws on a local <code>@import</code>. Since v4.3.3 it still flattens nested CSS itself.</p></div>
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Nested CSS, running live</figcaption>
+        <figcaption>Nested CSS, compiled live in this page</figcaption>
         <div class="sc-demo" id="import-bundling-2">
           <div class="mx-auto grid max-w-xl gap-3 sm:grid-cols-2">
             <article class="rounded-xl bg-white p-4 text-slate-700 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-200 dark:ring-white/10">
@@ -825,13 +826,13 @@ module.exports = {
         <figcaption>What a build scans (checked with the v4.3.3 CLI)</figcaption>
         <div class="sc-demo" id="auto-content-detection-1">
           <ul class="mx-auto max-w-md space-y-1.5 font-mono text-xs text-slate-900 dark:text-slate-100">
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><span class="text-emerald-700 dark:text-emerald-400" aria-hidden="true">✓</span><span class="min-w-0 flex-1 break-words">src/index.html</span><span class="shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[11px] text-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-300">scanned</span></li>
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><span class="text-emerald-700 dark:text-emerald-400" aria-hidden="true">✓</span><span class="min-w-0 flex-1 break-words">lib/button.html</span><span class="shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[11px] text-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-300">scanned</span></li>
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 break-words">ignored/page.html</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">in .gitignore</span></li>
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 break-words">node_modules/pkg/card.html</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">node_modules</span></li>
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 break-words">public/logo.png</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">binary</span></li>
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 break-words">src/app.css</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">CSS file</span></li>
-            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 break-words">package-lock.json</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">lockfile</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><span class="text-emerald-700 dark:text-emerald-400" aria-hidden="true">✓</span><span class="min-w-0 flex-1 wrap-break-word">src/index.html</span><span class="shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[11px] text-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-300">scanned</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><span class="text-emerald-700 dark:text-emerald-400" aria-hidden="true">✓</span><span class="min-w-0 flex-1 wrap-break-word">lib/button.html</span><span class="shrink-0 rounded bg-emerald-100 px-1.5 py-0.5 text-[11px] text-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-300">scanned</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 wrap-break-word">ignored/page.html</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">in .gitignore</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 wrap-break-word">node_modules/pkg/card.html</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">node_modules</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 wrap-break-word">public/logo.png</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">binary</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 wrap-break-word">src/app.css</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">CSS file</span></li>
+            <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span><span class="min-w-0 flex-1 wrap-break-word">package-lock.json</span><span class="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-700 dark:bg-slate-700 dark:text-slate-200">lockfile</span></li>
           </ul>
         </div>
         <pre class="sc-code" data-code="html" data-from="auto-content-detection-1"></pre>
@@ -901,24 +902,24 @@ module.exports = {
         <div class="sc-demo" id="source-directive-2">
           <div class="overflow-hidden rounded-xl bg-white text-slate-900 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <div class="overflow-x-auto">
-              <table class="w-full min-w-[34rem] text-left text-xs">
+              <table class="w-full min-w-136 text-left text-xs">
                 <thead class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                   <tr>
                     <th class="px-3 py-2 font-medium">Stylesheet</th>
-                    <th class="px-2 py-2 text-center font-mono font-medium">flex<br><span class="font-sans font-normal">src/</span></th>
-                    <th class="px-2 py-2 text-center font-mono font-medium">grid<br><span class="font-sans font-normal">lib/</span></th>
-                    <th class="px-2 py-2 text-center font-mono font-medium">block<br><span class="font-sans font-normal">admin/</span></th>
-                    <th class="px-2 py-2 text-center font-mono font-medium">uppercase<br><span class="font-sans font-normal">legacy/</span></th>
-                    <th class="px-2 py-2 text-center font-mono font-medium">underline<br><span class="font-sans font-normal">ignored/</span></th>
-                    <th class="px-2 py-2 text-center font-mono font-medium">italic<br><span class="font-sans font-normal">node_modules/</span></th>
+                    <th class="p-2 text-center font-mono font-medium">flex<br><span class="font-sans font-normal">src/</span></th>
+                    <th class="p-2 text-center font-mono font-medium">grid<br><span class="font-sans font-normal">lib/</span></th>
+                    <th class="p-2 text-center font-mono font-medium">block<br><span class="font-sans font-normal">admin/</span></th>
+                    <th class="p-2 text-center font-mono font-medium">uppercase<br><span class="font-sans font-normal">legacy/</span></th>
+                    <th class="p-2 text-center font-mono font-medium">underline<br><span class="font-sans font-normal">ignored/</span></th>
+                    <th class="p-2 text-center font-mono font-medium">italic<br><span class="font-sans font-normal">node_modules/</span></th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-                  <tr><td class="px-3 py-2 font-mono">default</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
-                  <tr><td class="px-3 py-2 font-mono">source("../src")</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
-                  <tr><td class="px-3 py-2 font-mono">source(none) + @source "../admin"</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
-                  <tr><td class="px-3 py-2 font-mono">source(none) + @source "../src" + "../lib"</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="px-2 py-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
-                  <tr><td class="px-3 py-2 font-mono">@source "../ignored" + "../node_modules/pkg"</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="px-2 py-2 text-center text-emerald-700 dark:text-emerald-400">✓</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">default</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">source("../src")</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">source(none) + @source "../admin"</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">source(none) + @source "../src" + "../lib"</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td><td class="p-2 text-center text-slate-600 dark:text-slate-400">·</td></tr>
+                  <tr><td class="px-3 py-2 font-mono">@source "../ignored" + "../node_modules/pkg"</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td><td class="p-2 text-center text-emerald-700 dark:text-emerald-400">✓</td></tr>
                 </tbody>
               </table>
             </div>
@@ -934,12 +935,12 @@ module.exports = {
           <div class="mx-auto grid max-w-lg items-center gap-3 font-mono text-xs sm:grid-cols-[1fr_auto_1fr]">
             <div class="rounded-xl border border-sky-300 bg-sky-50 p-3 text-sky-950 dark:border-sky-500/40 dark:bg-sky-950/50 dark:text-sky-100">
               <p class="font-semibold">apps/web/app.css</p>
-              <p class="mt-1 break-words">@source "../../packages/ui/src";</p>
+              <p class="mt-1 wrap-break-word">@source "../../packages/ui/src";</p>
             </div>
             <span class="text-center text-lg text-slate-600 dark:text-slate-400" aria-hidden="true">→</span>
             <div class="rounded-xl border border-slate-300 bg-white p-3 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
               <p class="font-semibold">packages/ui/src</p>
-              <p class="mt-1 break-words">Button.tsx, Card.tsx</p>
+              <p class="mt-1 wrap-break-word">Button.tsx, Card.tsx</p>
             </div>
           </div>
         </div>
@@ -963,7 +964,7 @@ module.exports = {
     <div class="sc-notes">
       <h2><code>@source inline()</code> safelist</h2>
       <span class="sc-since" data-v="4.1">v4.1</span>
-      <p>Force classes into the CSS even when they appear nowhere in your files. The string is brace-expanded, so one line can produce a whole ramp of shades and variants. This is the v4 replacement for the v3 safelist.</p>
+      <p>Force classes into the CSS even when they appear nowhere in your files. The string is brace-expanded, so one line can produce a whole ramp of shades and variants. This is the CSS-first replacement for the v3 <code>safelist</code> option.</p>
       <ul class="sc-parts">
         <li><code>@source inline("underline")</code></li>
         <li><code>{hover:,focus:,}</code></li>
@@ -992,12 +993,12 @@ module.exports = {
         <figcaption>A colour ramp from one line</figcaption>
         <div class="sc-demo" id="source-inline-2">
           <div class="mx-auto max-w-xl">
-            <ul id="amber-ramp" class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-11"></ul>
-            <p class="mt-3 text-xs text-slate-600 dark:text-slate-300">Each swatch is drawn from a <code class="font-mono">.bg-amber-*</code> rule read out of the stylesheet. No element on the page carries those classes.</p>
+            <ul id="purple-ramp" class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-11"></ul>
+            <p class="mt-3 text-xs text-slate-600 dark:text-slate-300">Each swatch is drawn from a <code class="font-mono">.bg-purple-*</code> rule read out of the stylesheet. No element on the page carries those classes.</p>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="source-inline-2"></pre>
-        <pre class="sc-code" data-code="css" data-label="CSS">@source inline("bg-amber-{50,{100..900..100},950}");</pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">@source inline("bg-purple-{50,{100..900..100},950}");</pre>
         <pre class="sc-code" data-code="js" data-label="JS" data-fns="tailwindSheet,ruleSelectors,rampDraw">// Draws one swatch per .bg-amber-* selector</pre>
       </figure>
 
@@ -1035,8 +1036,8 @@ module.exports = {
               <li class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-slate-600 line-through shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10"><span class="text-rose-600 dark:text-rose-400" aria-hidden="true">✗</span>src/components/legacy</li>
             </ul>
             <div class="rounded-xl bg-slate-950 p-3 font-mono text-xs text-slate-100">
-              <span class="block whitespace-pre-wrap break-words">@import "tailwindcss";</span>
-              <span class="block whitespace-pre-wrap break-words">@source not "../src/components/legacy";</span>
+              <span class="block whitespace-pre-wrap wrap-break-word">@import "tailwindcss";</span>
+              <span class="block whitespace-pre-wrap wrap-break-word">@source not "../src/components/legacy";</span>
             </div>
           </div>
         </div>
@@ -1375,9 +1376,9 @@ module.exports = {
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Image, size and position variables</figcaption>
+        <figcaption>An image variable needs a hint; size and position do not</figcaption>
         <div class="sc-demo" id="type-hints-3">
-          <div style="--hero:linear-gradient(135deg,#0369a1,#4f46e5,#be185d);--sz:300%;--pos:0% 50%" class="mx-auto grid h-28 max-w-sm place-items-end rounded-xl bg-(image:--hero) bg-(size:--sz) bg-(position:--pos) p-3 text-sm font-semibold text-white transition-[background-position] duration-700 hover:bg-[position:100%_50%] motion-reduce:transition-none">Hover to slide the gradient</div>
+          <div style="--hero:linear-gradient(135deg,#0369a1,#4f46e5,#be185d);--sz:300%;--pos:0% 50%" class="mx-auto grid h-28 max-w-sm place-items-end rounded-xl bg-(image:--hero) bg-size-(--sz) bg-position-(--pos) p-3 text-sm font-semibold text-white transition-[background-position] duration-700 hover:bg-position-[100%_50%] motion-reduce:transition-none">Hover to slide the gradient</div>
         </div>
         <pre class="sc-code" data-code="html" data-from="type-hints-3"></pre>
       </figure>
@@ -1395,7 +1396,7 @@ module.exports = {
                   <tr><td class="px-3 py-2">text-(length:--v)</td><td class="px-3 py-2">font-size</td></tr>
                   <tr><td class="px-3 py-2">text-(color:--v), text-(--v)</td><td class="px-3 py-2">color</td></tr>
                   <tr><td class="px-3 py-2">bg-(image:--v)</td><td class="px-3 py-2">background-image</td></tr>
-                  <tr><td class="px-3 py-2">bg-(position:--v), bg-(size:--v)</td><td class="px-3 py-2">background-position, background-size</td></tr>
+                  <tr><td class="px-3 py-2">bg-position-(--v), bg-size-(--v)</td><td class="px-3 py-2">background-position, background-size (own utilities since v4.1, so no hint)</td></tr>
                   <tr><td class="px-3 py-2">border-(length:--v), border-(color:--v)</td><td class="px-3 py-2">border-width, border-color</td></tr>
                   <tr><td class="px-3 py-2">shadow-(color:--v)</td><td class="px-3 py-2">shadow colour</td></tr>
                   <tr><td class="px-3 py-2">font-(family-name:--v), font-(weight:--v)</td><td class="px-3 py-2">font-family, font-weight</td></tr>
@@ -1550,17 +1551,30 @@ module.exports = {
       </figure>
 
       <figure class="sc-example">
-        <figcaption>SVG mask type, switched on hover</figcaption>
+        <figcaption>SVG mask type: luminance against alpha</figcaption>
         <div class="sc-demo" id="arbitrary-properties-2">
-          <div class="mx-auto flex max-w-sm flex-wrap items-center justify-center gap-6">
-            <svg viewBox="0 0 100 100" class="size-28 [--mt:luminance] hover:[--mt:alpha]" role="img" aria-label="A grey circle used as a mask over an indigo square">
-              <mask id="mask-demo" class="[mask-type:var(--mt)]"><circle cx="50" cy="50" r="40" fill="#808080"/></mask>
-              <rect width="100" height="100" fill="#6366f1" mask="url(#mask-demo)"/>
-            </svg>
-            <p class="min-w-0 flex-1 text-xs text-slate-700 dark:text-slate-300">Hover the shape. <code class="font-mono">luminance</code> shows a grey circle at half strength, <code class="font-mono">alpha</code> shows it fully.</p>
+          <div class="mx-auto flex max-w-sm flex-wrap items-start justify-center gap-8 text-center font-mono text-[11px] text-slate-700 dark:text-slate-300">
+            <div>
+              <svg viewBox="0 0 100 100" class="size-28" role="img" aria-label="An indigo square that fades out from left to right">
+                <defs><linearGradient id="mask-fade"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient></defs>
+                <mask id="mask-lum" class="[mask-type:luminance]"><rect width="100" height="100" fill="url(#mask-fade)"/></mask>
+                <rect width="100" height="100" fill="#6366f1" mask="url(#mask-lum)"/>
+              </svg>
+              <p class="mt-2">[mask-type:luminance]</p>
+            </div>
+            <div>
+              <svg viewBox="0 0 100 100" class="size-28" role="img" aria-label="A solid indigo square">
+                <defs><linearGradient id="mask-fade-2"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient></defs>
+                <mask id="mask-alpha" class="[mask-type:alpha]"><rect width="100" height="100" fill="url(#mask-fade-2)"/></mask>
+                <rect width="100" height="100" fill="#6366f1" mask="url(#mask-alpha)"/>
+              </svg>
+              <p class="mt-2">[mask-type:alpha]</p>
+            </div>
           </div>
+          <p class="mx-auto mt-4 max-w-sm text-center text-xs text-slate-700 dark:text-slate-300">Both masks use the same white-to-black gradient. Luminance reads the brightness, so the square fades. Alpha reads only transparency, and the gradient is fully opaque, so nothing fades.</p>
         </div>
         <pre class="sc-code" data-code="html" data-from="arbitrary-properties-2"></pre>
+        <div class="p-3"><p class="sc-note">Since v4.1 Tailwind also ships <code>mask-type-luminance</code> and <code>mask-type-alpha</code>, which compile to the same CSS, so prefer those in real code. The bracket form is the docs' standing example of the syntax, and it is what you reach for when a property has no utility, like <code>clip-path</code> in the next example.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -1581,37 +1595,49 @@ module.exports = {
     <div class="sc-notes">
       <h2>Arbitrary variants: <code>[&amp;>*]:p-2</code></h2>
       <span class="sc-since" data-v="core">core</span>
-      <p>Write a selector or at-rule in brackets and Tailwind turns it into a variant, with <code>&amp;</code> standing for the element. Use it when no built-in variant fits. In v4, stacked variants apply left to right, so <code>first:*:pt-0</code> became <code>*:first:pt-0</code>.</p>
+      <p>Write a selector or at-rule in brackets and Tailwind turns it into a variant, with <code>&amp;</code> standing for the element. Use it when no built-in variant fits. A few common selectors already have one (<code>*:</code>, <code>has-*</code>, <code>nth-*</code>). In v4, stacked variants apply left to right, so <code>first:*:pt-0</code> became <code>*:first:pt-0</code>.</p>
       <ul class="sc-parts">
         <li><code>[&amp;>*]:p-2</code></li>
         <li><code>[&amp;_p]:text-sm</code></li>
+        <li><code>[&amp;.is-dragging]:</code></li>
         <li><code>[&amp;:has(:checked)]:</code></li>
         <li><code>[@supports(display:grid)]:</code></li>
       </ul>
-      <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#arbitrary-variants" target="_blank" rel="noopener">Docs: arbitrary variants</a></p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants" target="_blank" rel="noopener">Docs: using arbitrary variants</a></p>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
         <figcaption>Style content you do not control, from the parent</figcaption>
         <div class="sc-demo" id="arbitrary-variants-1">
-          <article class="max-w-md rounded-xl bg-white p-5 text-slate-700 shadow-xs ring-1 ring-black/5 [&_a]:font-medium [&_a]:text-sky-700 [&_a]:underline [&_h2]:mb-2 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-slate-900 [&_p]:mb-3 [&_p]:text-sm dark:bg-slate-800 dark:text-slate-200 dark:ring-white/10 dark:[&_a]:text-sky-300 dark:[&_h2]:text-white">
+          <article class="mx-auto max-w-md rounded-xl bg-white p-5 text-slate-700 shadow-xs ring-1 ring-black/5 [&_a]:font-medium [&_a]:text-sky-700 [&_a]:underline [&_h2]:mb-2 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-slate-900 [&_p]:mb-3 [&_p]:text-sm dark:bg-slate-800 dark:text-slate-200 dark:ring-white/10 dark:[&_a]:text-sky-300 dark:[&_h2]:text-white">
             <h2>Spring release notes</h2>
             <p>Content from a CMS or Markdown rarely carries classes on each element. Style it from the parent instead.</p>
             <p>Read the <a href="#arbitrary-variants">full changelog</a> for details.</p>
           </article>
         </div>
-        <pre class="sc-code" data-code="html" data-for="arbitrary-variants-1">&lt;article class="max-w-md rounded-xl bg-white p-5 text-slate-700 shadow-xs ring-1 ring-black/5 [&amp;_a]:font-medium [&amp;_a]:text-sky-700 [&amp;_a]:underline [&amp;_h2]:mb-2 [&amp;_h2]:text-xl [&amp;_h2]:font-semibold [&amp;_h2]:text-slate-900 [&amp;_p]:mb-3 [&amp;_p]:text-sm dark:bg-slate-800 dark:text-slate-200 dark:ring-white/10 dark:[&amp;_a]:text-sky-300 dark:[&amp;_h2]:text-white"&gt;
-  &lt;h2&gt;Spring release notes&lt;/h2&gt;
-  &lt;p&gt;Content from a CMS or Markdown rarely carries classes on each element. Style it from the parent instead.&lt;/p&gt;
-  &lt;p&gt;Read the &lt;a href="#arbitrary-variants"&gt;full changelog&lt;/a&gt; for details.&lt;/p&gt;
-&lt;/article&gt;</pre>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-variants-1" data-unescape></pre>
       </figure>
+
+      <figure class="sc-example">
+        <figcaption>Every direct child, with <code>[&amp;>*]</code></figcaption>
+        <div class="sc-demo" id="arbitrary-variants-2">
+          <div class="mx-auto flex max-w-sm flex-wrap justify-center gap-2 text-sm font-medium text-slate-900 dark:text-slate-100 [&>*]:rounded-lg [&>*]:bg-white [&>*]:p-2 [&>*]:shadow-xs [&>*]:ring-1 [&>*]:ring-black/5 dark:[&>*]:bg-slate-800 dark:[&>*]:ring-white/10">
+            <span>Inbox</span>
+            <span>Drafts</span>
+            <span>Sent</span>
+            <span>Archive</span>
+          </div>
+          <p class="mx-auto mt-3 max-w-sm text-center text-xs text-slate-700 dark:text-slate-300">The four <code class="font-mono">span</code> elements carry no classes of their own. The built-in <code class="font-mono">*:</code> variant covers this one case.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-variants-2" data-unescape></pre>
+      </figure>
+
       <figure class="sc-example">
         <figcaption>Zebra table without touching the rows</figcaption>
-        <div class="sc-demo" id="arbitrary-variants-2">
+        <div class="sc-demo" id="arbitrary-variants-3">
           <div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10">
             <table class="w-full text-left text-sm text-slate-900 dark:text-slate-100">
-              <thead class="bg-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+              <thead class="bg-slate-100 text-xs tracking-wide text-slate-600 uppercase dark:bg-slate-700 dark:text-slate-300">
                 <tr><th class="px-4 py-2 font-medium">Invoice</th><th class="px-4 py-2 font-medium">Status</th><th class="px-4 py-2 text-right font-medium">Amount</th></tr>
               </thead>
               <tbody class="[&_td]:px-4 [&_td]:py-2 [&_tr:nth-child(even)]:bg-slate-100 dark:[&_tr:nth-child(even)]:bg-slate-700/40">
@@ -1623,98 +1649,85 @@ module.exports = {
             </table>
           </div>
         </div>
-        <pre class="sc-code" data-code="html" data-for="arbitrary-variants-2">&lt;div class="overflow-hidden rounded-xl bg-white shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"&gt;
-  &lt;table class="w-full text-left text-sm text-slate-900 dark:text-slate-100"&gt;
-    &lt;thead class="bg-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:bg-slate-700 dark:text-slate-300"&gt;
-      &lt;tr&gt;&lt;th class="px-4 py-2 font-medium"&gt;Invoice&lt;/th&gt;&lt;th class="px-4 py-2 font-medium"&gt;Status&lt;/th&gt;&lt;th class="px-4 py-2 text-right font-medium"&gt;Amount&lt;/th&gt;&lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody class="[&amp;_td]:px-4 [&amp;_td]:py-2 [&amp;_tr:nth-child(even)]:bg-slate-100 dark:[&amp;_tr:nth-child(even)]:bg-slate-700/40"&gt;
-      &lt;tr&gt;&lt;td&gt;#2038&lt;/td&gt;&lt;td&gt;Paid&lt;/td&gt;&lt;td class="text-right"&gt;$420.00&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;#2039&lt;/td&gt;&lt;td&gt;Paid&lt;/td&gt;&lt;td class="text-right"&gt;$89.50&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;#2040&lt;/td&gt;&lt;td&gt;Pending&lt;/td&gt;&lt;td class="text-right"&gt;$1,240.00&lt;/td&gt;&lt;/tr&gt;
-      &lt;tr&gt;&lt;td&gt;#2041&lt;/td&gt;&lt;td&gt;Overdue&lt;/td&gt;&lt;td class="text-right"&gt;$310.25&lt;/td&gt;&lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;</pre>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-variants-3" data-unescape></pre>
       </figure>
+
       <figure class="sc-example">
-        <figcaption>Stacked variants and the built-in <code>has-checked</code> cousin</figcaption>
-        <div class="sc-demo" id="arbitrary-variants-3">
-          <div class="grid gap-4 sm:grid-cols-2">
-            <ul class="space-y-1 text-sm text-slate-900 dark:text-slate-100">
-              <li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10">Dashboard</li>
-              <li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10">Projects</li>
-              <li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10">Invoices</li>
-              <li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10">Settings (never underlined)</li>
-            </ul>
-            <div class="space-y-2 text-sm text-slate-900 dark:text-slate-100">
-              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-3 py-2 transition-colors [&:has(:checked)]:border-sky-500 [&:has(:checked)]:bg-sky-50 dark:border-slate-600 dark:bg-slate-800 dark:[&:has(:checked)]:bg-sky-950">
-                <input type="checkbox" class="accent-sky-600" checked> Arbitrary: [&amp;:has(:checked)]
-              </label>
-              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-3 py-2 transition-colors has-checked:border-sky-500 has-checked:bg-sky-50 dark:border-slate-600 dark:bg-slate-800 dark:has-checked:bg-sky-950">
-                <input type="checkbox" class="accent-sky-600"> Built-in: has-checked
-              </label>
-            </div>
-          </div>
-        </div>
-        <pre class="sc-code" data-code="html" data-for="arbitrary-variants-3">&lt;div class="grid gap-4 sm:grid-cols-2"&gt;
-  &lt;ul class="space-y-1 text-sm text-slate-900 dark:text-slate-100"&gt;
-    &lt;li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&amp;:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10"&gt;Dashboard&lt;/li&gt;
-    &lt;li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&amp;:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10"&gt;Projects&lt;/li&gt;
-    &lt;li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&amp;:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10"&gt;Invoices&lt;/li&gt;
-    &lt;li class="rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 lg:[&amp;:nth-child(-n+3)]:hover:underline dark:bg-slate-800 dark:ring-white/10"&gt;Settings (never underlined)&lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;div class="space-y-2 text-sm text-slate-900 dark:text-slate-100"&gt;
-    &lt;label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-3 py-2 transition-colors [&amp;:has(:checked)]:border-sky-500 [&amp;:has(:checked)]:bg-sky-50 dark:border-slate-600 dark:bg-slate-800 dark:[&amp;:has(:checked)]:bg-sky-950"&gt;
-      &lt;input type="checkbox" class="accent-sky-600" checked&gt; Arbitrary: [&amp;amp;:has(:checked)]
-    &lt;/label&gt;
-    &lt;label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-3 py-2 transition-colors has-checked:border-sky-500 has-checked:bg-sky-50 dark:border-slate-600 dark:bg-slate-800 dark:has-checked:bg-sky-950"&gt;
-      &lt;input type="checkbox" class="accent-sky-600"&gt; Built-in: has-checked
-    &lt;/label&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-      </figure>
-      <figure class="sc-example">
-        <figcaption>At-rule variants as a fallback</figcaption>
+        <figcaption>A state class that a script adds, stacked with <code>motion-safe:</code></figcaption>
         <div class="sc-demo" id="arbitrary-variants-4">
-          <div class="mx-auto max-w-sm text-center text-sm font-medium text-sky-950">
-            <div class="flex flex-wrap gap-2 [@supports(display:grid)]:grid [@supports(display:grid)]:grid-cols-3">
-              <i class="block flex-1 rounded-lg bg-sky-200 p-3 not-italic">1</i>
-              <i class="block flex-1 rounded-lg bg-sky-300 p-3 not-italic">2</i>
-              <i class="block flex-1 rounded-lg bg-sky-400 p-3 not-italic">3</i>
-            </div>
-            <p class="mt-3 text-xs text-slate-700 dark:text-slate-300">Flex row by default, three grid columns where <code class="font-mono">display: grid</code> is supported.</p>
+          <div class="mx-auto max-w-xs text-sm text-slate-900 dark:text-slate-100">
+            <p class="mb-3 text-xs text-slate-700 dark:text-slate-300">Press and hold a card. A script adds <code class="font-mono">is-dragging</code> to it, and the classes below react to that class.</p>
+            <ul class="space-y-2">
+              <li data-drag class="cursor-grab rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 transition select-none motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10 [&.is-dragging]:cursor-grabbing [&.is-dragging]:ring-2 [&.is-dragging]:ring-sky-500 motion-safe:[&.is-dragging]:scale-105 motion-safe:[&.is-dragging]:shadow-lg">Review the pull request</li>
+              <li data-drag class="cursor-grab rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 transition select-none motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10 [&.is-dragging]:cursor-grabbing [&.is-dragging]:ring-2 [&.is-dragging]:ring-sky-500 motion-safe:[&.is-dragging]:scale-105 motion-safe:[&.is-dragging]:shadow-lg">Write the changelog</li>
+              <li data-drag class="cursor-grab rounded-lg bg-white px-3 py-2 shadow-xs ring-1 ring-black/5 transition select-none motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10 [&.is-dragging]:cursor-grabbing [&.is-dragging]:ring-2 [&.is-dragging]:ring-sky-500 motion-safe:[&.is-dragging]:scale-105 motion-safe:[&.is-dragging]:shadow-lg">Ship the release</li>
+            </ul>
           </div>
         </div>
-        <pre class="sc-code" data-code="html" data-for="arbitrary-variants-4">&lt;div class="mx-auto max-w-sm text-center text-sm font-medium text-sky-950"&gt;
-  &lt;div class="flex flex-wrap gap-2 [@supports(display:grid)]:grid [@supports(display:grid)]:grid-cols-3"&gt;
-    &lt;i class="block flex-1 rounded-lg bg-sky-200 p-3 not-italic"&gt;1&lt;/i&gt;
-    &lt;i class="block flex-1 rounded-lg bg-sky-300 p-3 not-italic"&gt;2&lt;/i&gt;
-    &lt;i class="block flex-1 rounded-lg bg-sky-400 p-3 not-italic"&gt;3&lt;/i&gt;
-  &lt;/div&gt;
-  &lt;p class="mt-3 text-xs text-slate-700 dark:text-slate-300"&gt;Flex row by default, three grid columns where &lt;code class="font-mono"&gt;display: grid&lt;/code&gt; is supported.&lt;/p&gt;
-&lt;/div&gt;</pre>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-variants-4" data-unescape></pre>
+        <pre class="sc-code" data-code="js" data-label="JS" data-fns="dragStart,dragEnd">// A script adds the state class; the arbitrary variants style it</pre>
       </figure>
+
       <figure class="sc-example">
-        <figcaption>What they compile to (real v4.3.3 output)</figcaption>
+        <figcaption>The built-in <code>has-checked</code> does the same as the arbitrary form</figcaption>
+        <div class="sc-demo" id="arbitrary-variants-5">
+          <div class="mx-auto max-w-sm space-y-2 text-sm text-slate-900 dark:text-slate-100">
+            <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-3 py-2 transition-colors dark:border-slate-600 dark:bg-slate-800 [&:has(:checked)]:border-sky-500 [&:has(:checked)]:bg-sky-50 dark:[&:has(:checked)]:bg-sky-950">
+              <input type="checkbox" class="accent-sky-600" checked> Arbitrary variant, has(:checked)
+            </label>
+            <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-300 bg-white px-3 py-2 transition-colors has-checked:border-sky-500 has-checked:bg-sky-50 dark:border-slate-600 dark:bg-slate-800 dark:has-checked:bg-sky-950">
+              <input type="checkbox" class="accent-sky-600"> Built-in variant, has-checked
+            </label>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-variants-5" data-unescape></pre>
+        <div class="p-3"><p class="sc-note">Tailwind v4.3's class canonicalizer rewrites <code>[&amp;:has(…)]</code> to the built-in <code>has-[…]</code> form, so use the built-in variant when one exists.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>At-rule variants: the check really runs</figcaption>
+        <div class="sc-demo" id="arbitrary-variants-6">
+          <div class="mx-auto grid max-w-md gap-3 text-sm text-slate-900 sm:grid-cols-2 dark:text-slate-100">
+            <div class="rounded-lg bg-white p-3 ring-1 ring-black/10 dark:bg-slate-800 dark:ring-white/15 [@supports(display:grid)]:ring-2 [@supports(display:grid)]:ring-emerald-500">
+              <p class="font-mono text-xs wrap-anywhere">[@supports(display:grid)]:ring-emerald-500</p>
+              <p class="mt-1 text-xs text-slate-700 dark:text-slate-300">Browsers support <code class="font-mono">display: grid</code>, so the green ring applies.</p>
+            </div>
+            <div class="rounded-lg bg-white p-3 ring-1 ring-black/10 dark:bg-slate-800 dark:ring-white/15 [@supports(display:made-up)]:ring-2 [@supports(display:made-up)]:ring-emerald-500">
+              <p class="font-mono text-xs wrap-anywhere">[@supports(display:made-up)]:ring-emerald-500</p>
+              <p class="mt-1 text-xs text-slate-700 dark:text-slate-300">No browser knows <code class="font-mono">display: made-up</code>, so this box keeps its grey ring.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="arbitrary-variants-6" data-unescape></pre>
+        <div class="p-3"><p class="sc-note">Use <code>@supports</code> and <code>@media</code> in brackets for progressive enhancement. A fallback is just the same utility without the variant.</p></div>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>What they compile to (real v4.3.3 output, trimmed)</figcaption>
         <pre class="sc-code" data-code="css" data-label="Generated CSS">.\[\&\>\*\]\:p-2 > * {
   padding: calc(var(--spacing) * 2);
 }
 
-@media (width >= 64rem) {
-  @media (hover: hover) {
-    .lg\:\[\&\:nth-child\(-n\+3\)\]\:hover\:underline:nth-child(-n+3):hover {
-      text-decoration-line: underline;
-    }
+.\[\&\.is-dragging\]\:cursor-grabbing.is-dragging {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion-safe\:\[\&\.is-dragging\]\:scale-105.is-dragging {
+    scale: var(--tw-scale-x) var(--tw-scale-y);
   }
 }
 
+.\[\&\:has\(\:checked\)\]\:border-sky-500:has(:checked) {
+  border-color: var(--color-sky-500);
+}
+
 @supports (display:grid) {
-  .\[\@supports\(display\:grid\)\]\:grid {
-    display: grid;
+  .\[\@supports\(display\:grid\)\]\:ring-2 {
+    /* ring declarations */
   }
 }</pre>
-        <div class="p-3"><p class="sc-note">Code-only: shows the compiler output. Every <code>hover:</code> rule sits inside <code>@media (hover: hover)</code> in v4.</p></div>
+        <div class="p-3"><p class="sc-note">Code-only: shows the compiler output. The class name is the selector, and each bracket variant becomes a selector or an at-rule around the declarations.</p></div>
       </figure>
     </div>
   </article>
@@ -1782,11 +1795,11 @@ module.exports = {
         <figcaption>Priority stack: hover or focus to fan it out</figcaption>
         <div class="sc-demo" id="cascade-layers-3">
           <div class="group relative mx-auto h-56 w-full max-w-xs rounded-xl outline-offset-4 focus-visible:outline-2 focus-visible:outline-sky-500" tabindex="0">
-            <div style="--i:0" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-10 h-10 rounded-xl bg-violet-200 px-4 text-xs font-semibold leading-4 text-violet-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">theme: variables only</div>
-            <div style="--i:1" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-20 h-10 rounded-xl bg-emerald-200 px-4 text-xs font-semibold leading-4 text-emerald-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">base: Preflight, your @layer base</div>
-            <div style="--i:2" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-30 h-10 rounded-xl bg-amber-200 px-4 text-xs font-semibold leading-4 text-amber-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">components: your @layer components</div>
-            <div style="--i:3" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-40 h-10 rounded-xl bg-sky-200 px-4 text-xs font-semibold leading-4 text-sky-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">utilities: every Tailwind class</div>
-            <div style="--i:4" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-50 h-10 rounded-xl bg-rose-200 px-4 text-xs font-semibold leading-4 text-rose-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">unlayered CSS: wins over all of it</div>
+            <div style="--i:0" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-10 h-10 rounded-xl bg-violet-200 px-4 text-xs/4 font-semibold text-violet-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">theme: variables only</div>
+            <div style="--i:1" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-20 h-10 rounded-xl bg-emerald-200 px-4 text-xs/4 font-semibold text-emerald-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">base: Preflight, your @layer base</div>
+            <div style="--i:2" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-30 h-10 rounded-xl bg-amber-200 px-4 text-xs/4 font-semibold text-amber-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">components: your @layer components</div>
+            <div style="--i:3" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-40 h-10 rounded-xl bg-sky-200 px-4 text-xs/4 font-semibold text-sky-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">utilities: every Tailwind class</div>
+            <div style="--i:4" class="absolute inset-x-0 top-[calc(var(--i)*1rem)] z-50 h-10 rounded-xl bg-rose-200 px-4 text-xs/4 font-semibold text-rose-950 shadow-md ring-1 ring-black/10 transition-[top] duration-300 group-hover:top-[calc(var(--i)*2.75rem)] group-focus-visible:top-[calc(var(--i)*2.75rem)] motion-reduce:transition-none">unlayered CSS: wins over all of it</div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="cascade-layers-3"></pre>
@@ -1927,15 +1940,31 @@ module.exports = {
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Placeholder colour and the default cursor</figcaption>
+        <figcaption>Placeholder colour and the default cursor, read from the browser</figcaption>
         <div class="sc-demo" id="preflight-3">
-          <div class="mx-auto max-w-xs">
-            <label for="pf-email" class="text-xs font-medium text-slate-700 dark:text-slate-300">Email</label>
-            <input id="pf-email" type="email" placeholder="you@example.com" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
-            <button type="button" class="mt-3 rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Subscribe (default cursor)</button>
+          <div class="mx-auto grid max-w-md gap-x-4 gap-y-5 text-slate-900 sm:grid-cols-2 dark:text-slate-100">
+            <div>
+              <label for="pf-email" class="text-xs font-medium text-slate-700 dark:text-slate-300">v4 default</label>
+              <input id="pf-email" type="email" placeholder="you@example.com" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
+              <p class="mt-1 font-mono text-[11px] text-slate-700 dark:text-slate-300">placeholder opacity: <output id="pf-ph-out">…</output></p>
+            </div>
+            <div>
+              <label for="pf-email-v3" class="text-xs font-medium text-slate-700 dark:text-slate-300">v3 look, one utility</label>
+              <input id="pf-email-v3" type="email" placeholder="you@example.com" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-gray-400 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
+              <p class="mt-1 font-mono text-[11px] text-slate-700 dark:text-slate-300">placeholder opacity: <output id="pf-ph3-out">…</output></p>
+            </div>
+            <div>
+              <button id="pf-btn" type="button" class="rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Subscribe</button>
+              <p class="mt-1 font-mono text-[11px] text-slate-700 dark:text-slate-300">cursor: <output id="pf-btn-out">…</output></p>
+            </div>
+            <div>
+              <button id="pf-btn-v3" type="button" class="cursor-pointer rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Subscribe</button>
+              <p class="mt-1 font-mono text-[11px] text-slate-700 dark:text-slate-300">cursor: <output id="pf-btn3-out">…</output></p>
+            </div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="preflight-3"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS" data-fns="placeholderProbe">// Reads the computed placeholder colour and cursor</pre>
         <pre class="sc-code" data-code="css" data-label="Restore the v3 defaults if you want them">@layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {
@@ -2178,7 +2207,7 @@ module.exports = {
     }
   }
 }</pre>
-        <div class="p-3"><p class="sc-note">Code-only: a prefix renames every class on the page, so using it here would break all the other demos. The generated CSS is real compiler output (trimmed). A prefix does not remove Preflight, so drop that import too when you coexist with a reset.</p></div>
+        <div class="p-3"><p class="sc-note">Code-only: a prefix renames every class on the page, so using it here would break all the other demos. The generated CSS is real compiler output (trimmed). A prefix does not turn Preflight off. If you coexist with another reset, import <code>theme.css</code> and <code>utilities.css</code> separately and skip <code>preflight.css</code>.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -2193,7 +2222,7 @@ module.exports = {
               <label for="prefix-src" class="text-xs font-medium text-slate-700 dark:text-slate-300">Your classes</label>
               <input id="prefix-src" type="text" value="flex items-center hover:bg-sky-50 md:flex-row bg-red-500!" autocomplete="off" spellcheck="false" data-input="prefix-convert" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-xs text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
             </div>
-            <p class="rounded-lg bg-slate-950 px-3 py-2 font-mono text-xs break-words text-emerald-300" aria-live="polite"><output id="prefix-out">…</output></p>
+            <p class="rounded-lg bg-slate-950 px-3 py-2 font-mono text-xs wrap-break-word text-emerald-300" aria-live="polite"><output id="prefix-out">…</output></p>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="prefix-2"></pre>
@@ -2469,7 +2498,7 @@ module.exports = {
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="browser-requirements-3"></pre>
-        <div class="p-3"><p class="sc-note">These are not part of the baseline. If your target browsers lack them, skip the utilities. Check Can I use before relying on them.</p></div>
+        <div class="p-3"><p class="sc-note">These are not part of the baseline. <code>@starting-style</code> needs Chrome 117, Safari 17.5 or Firefox 129, and <code>text-wrap: balance</code> needs Chrome 114, Safari 17.5 or Firefox 121. <code>field-sizing</code> is the newest of the three. If your target browsers lack a feature, skip the utility and check Can I use before relying on it.</p></div>
       </figure>
     </div>
   </article>
@@ -2517,10 +2546,10 @@ module.exports = {
         <figcaption>The headline numbers</figcaption>
         <div class="sc-demo" id="engine-performance-2">
           <dl class="mx-auto grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
-            <div class="rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dd class="text-3xl font-bold text-sky-700 tabular-nums dark:text-sky-300">3.78x</dd><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">full build</dt></div>
-            <div class="rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dd class="text-3xl font-bold text-sky-700 tabular-nums dark:text-sky-300">8.8x</dd><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">incremental, new CSS</dt></div>
-            <div class="rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dd class="text-3xl font-bold text-sky-700 tabular-nums dark:text-sky-300">182x</dd><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">incremental, no new CSS</dt></div>
-            <div class="rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dd class="text-3xl font-bold text-violet-700 tabular-nums dark:text-violet-300">2.17x</dd><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">webpack loader against PostCSS</dt></div>
+            <div class="flex flex-col-reverse justify-end rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">full build</dt><dd class="text-3xl font-bold text-sky-700 tabular-nums dark:text-sky-300">3.78x</dd></div>
+            <div class="flex flex-col-reverse justify-end rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">incremental, new CSS</dt><dd class="text-3xl font-bold text-sky-700 tabular-nums dark:text-sky-300">8.8x</dd></div>
+            <div class="flex flex-col-reverse justify-end rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">incremental, no new CSS</dt><dd class="text-3xl font-bold text-sky-700 tabular-nums dark:text-sky-300">182x</dd></div>
+            <div class="flex flex-col-reverse justify-end rounded-xl bg-white p-4 shadow-xs ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10"><dt class="mt-1 text-xs text-slate-600 dark:text-slate-300">webpack loader against PostCSS</dt><dd class="text-3xl font-bold text-violet-700 tabular-nums dark:text-violet-300">2.17x</dd></div>
           </dl>
         </div>
         <pre class="sc-code" data-code="html" data-from="engine-performance-2"></pre>
@@ -2563,7 +2592,7 @@ module.exports = {
         <div class="sc-demo" id="editor-intellisense-1">
           <div class="group mx-auto max-w-lg overflow-hidden rounded-xl bg-slate-950 font-mono text-xs text-slate-100 shadow-lg ring-1 ring-black/10">
             <div class="flex items-center gap-1.5 bg-slate-900 px-4 py-2.5"><i class="size-2.5 rounded-full bg-rose-500"></i><i class="size-2.5 rounded-full bg-amber-400"></i><i class="size-2.5 rounded-full bg-emerald-500"></i><span class="ms-3 text-slate-400">Button.html</span></div>
-            <p class="px-4 py-4 leading-7 break-words"><span class="text-sky-300">&lt;button</span> <span class="text-violet-300">class</span>=<span class="text-lime-300">"</span><button type="button" id="tok-mix" class="rounded bg-slate-800 px-1 text-lime-300 outline-offset-2 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400">bg-(--brand)/50</button> <button type="button" id="tok-px" class="rounded bg-slate-800 px-1 text-lime-300 outline-offset-2 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400">px-4</button> <button type="button" id="tok-hover" class="rounded bg-slate-800 px-1 text-lime-300 outline-offset-2 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400">hover:bg-sky-800</button><span class="text-lime-300">"</span><span class="text-sky-300">&gt;</span></p>
+            <p class="p-4 leading-7 wrap-break-word"><span class="text-sky-300">&lt;button</span> <span class="text-violet-300">class</span>=<span class="text-lime-300">"</span><button type="button" id="tok-mix" class="rounded bg-slate-800 px-1 text-lime-300 outline-offset-2 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400">bg-(--brand)/50</button> <button type="button" id="tok-px" class="rounded bg-slate-800 px-1 text-lime-300 outline-offset-2 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400">px-4</button> <button type="button" id="tok-hover" class="rounded bg-slate-800 px-1 text-lime-300 outline-offset-2 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-sky-400">hover:bg-sky-800</button><span class="text-lime-300">"</span><span class="text-sky-300">&gt;</span></p>
             <div class="border-t border-slate-800 bg-slate-900 px-4 py-3 text-slate-300">
               <p class="text-slate-400 group-has-[button:hover]:hidden group-has-[button:focus-visible]:hidden">Hover or focus a class name.</p>
               <div class="hidden group-has-[#tok-mix:hover]:block group-has-[#tok-mix:focus-visible]:block">
@@ -2600,14 +2629,14 @@ module.exports = {
             <div class="overflow-hidden rounded-xl bg-slate-950 text-slate-100 ring-1 ring-black/10">
               <p class="bg-slate-900 px-3 py-2 text-slate-400">Plain CSS mode</p>
               <p class="px-3 pt-3"><span class="underline decoration-amber-400 decoration-wavy">@theme</span> {</p>
-              <p class="px-3 break-words whitespace-pre-wrap">  --color-brand: oklch(0.5 0.2 262);</p>
+              <p class="px-3 wrap-break-word whitespace-pre-wrap">  --color-brand: oklch(0.5 0.2 262);</p>
               <p class="px-3 pb-2">}</p>
               <p class="border-t border-slate-800 px-3 py-2 text-amber-300">Unknown at rule @theme</p>
             </div>
             <div class="overflow-hidden rounded-xl bg-slate-950 text-slate-100 ring-1 ring-black/10">
               <p class="bg-slate-900 px-3 py-2 text-slate-400">Tailwind CSS mode</p>
               <p class="px-3 pt-3"><span class="text-violet-300">@theme</span> {</p>
-              <p class="px-3 break-words whitespace-pre-wrap">  <span class="text-sky-300">--color-brand</span>: <span class="text-lime-300">oklch(0.5 0.2 262)</span>;</p>
+              <p class="px-3 wrap-break-word whitespace-pre-wrap">  <span class="text-sky-300">--color-brand</span>: <span class="text-lime-300">oklch(0.5 0.2 262)</span>;</p>
               <p class="px-3 pb-2">}</p>
               <p class="border-t border-slate-800 px-3 py-2 text-emerald-300">No warnings, with colour previews</p>
             </div>
@@ -2865,11 +2894,11 @@ module.exports = {
     document.getElementById('proof-dom').textContent = document.querySelectorAll('[class*="fuchsia"]').length
   }
 
-  // Draws one swatch per .bg-amber-* selector found in the stylesheet
+  // Draws one swatch per .bg-purple-* selector found in the stylesheet
   function rampDraw() {
-    const list = document.getElementById('amber-ramp')
+    const list = document.getElementById('purple-ramp')
     const steps = [...ruleSelectors()]
-      .map((selector) => selector.match(/^\.bg-amber-(\d+)$/))
+      .map((selector) => selector.match(/^\.bg-purple-(\d+)$/))
       .filter(Boolean)
       .map((match) => match[1])
       .sort((a, b) => a - b)
@@ -2879,7 +2908,7 @@ module.exports = {
         li.className = 'flex flex-col items-center gap-1 font-mono text-[10px] text-slate-700 dark:text-slate-300'
         const swatch = document.createElement('span')
         swatch.className = 'block h-10 w-full rounded-md ring-1 ring-black/10'
-        swatch.style.backgroundColor = 'var(--color-amber-' + step + ')'
+        swatch.style.backgroundColor = 'var(--color-purple-' + step + ')'
         li.append(swatch, step)
         return li
       }),
@@ -3022,6 +3051,31 @@ module.exports = {
     }
   }
 
+  // Reads the computed placeholder colour and cursor
+  function placeholderProbe() {
+    const alpha = (id) => {
+      const colour = getComputedStyle(document.getElementById(id), '::placeholder').color
+      const match = colour.match(/\/\s*([\d.]+)\)$/)
+      return Math.round((match ? Number(match[1]) : 1) * 100) + '%'
+    }
+    const cursor = (id) => getComputedStyle(document.getElementById(id)).cursor
+    document.getElementById('pf-ph-out').textContent = alpha('pf-email')
+    document.getElementById('pf-ph3-out').textContent = alpha('pf-email-v3')
+    document.getElementById('pf-btn-out').textContent = cursor('pf-btn')
+    document.getElementById('pf-btn3-out').textContent = cursor('pf-btn-v3')
+  }
+
+  /* ---------- arbitrary variants ---------- */
+
+  // A script adds the state class; the arbitrary variants style it
+  function dragStart(item) {
+    item.classList.add('is-dragging')
+  }
+
+  function dragEnd() {
+    document.querySelectorAll('.is-dragging').forEach((item) => item.classList.remove('is-dragging'))
+  }
+
   /* ---------- prefix ---------- */
 
   function prefixConvert() {
@@ -3140,10 +3194,16 @@ module.exports = {
     const el = e.target.closest('[data-input]')
     if (el && INPUTS[el.dataset.input]) INPUTS[el.dataset.input](el, e)
   })
+  document.addEventListener('pointerdown', (e) => {
+    const el = e.target.closest('[data-drag]')
+    if (el) dragStart(el)
+  })
+  document.addEventListener('pointerup', dragEnd)
+  document.addEventListener('pointercancel', dragEnd)
 
   /* ---------- fill the JS listings with the real source of the functions above ---------- */
 
-  const FUNCTIONS = { tailwindSheet, ruleSelectors, timeCompile, logRow, meterAdd, meterReset, prettyCss, themeLive, themePreset, feedAdd, feedCount, feedReset, proofRun, rampDraw, tryClass, resetClasses, brandPick, sidebarResize, readComputed, fluidWatch, currentTab, gutterWatch, hoverPadWatch, padReadout, layerInspect, toggleHidden, preflightProbe, prefixConvert, xrayCount, xrayAdd, perfNew, perfKnown, browserProbe }
+  const FUNCTIONS = { tailwindSheet, ruleSelectors, timeCompile, logRow, meterAdd, meterReset, prettyCss, themeLive, themePreset, feedAdd, feedCount, feedReset, proofRun, rampDraw, tryClass, resetClasses, brandPick, sidebarResize, readComputed, fluidWatch, currentTab, gutterWatch, hoverPadWatch, padReadout, layerInspect, toggleHidden, preflightProbe, placeholderProbe, dragStart, dragEnd, prefixConvert, xrayCount, xrayAdd, perfNew, perfKnown, browserProbe }
   const VARS = { METER, FEED, XRAY }
 
   function sourceOf(fn) {
@@ -3175,7 +3235,19 @@ module.exports = {
     else if (tries > 0) setTimeout(() => whenCompiled(fn, tries - 1), 50)
   }
 
+  // innerHTML writes & as &amp; inside attribute values, so a generated listing would show [&amp;>*].
+  // Undo that in class attributes of the listings marked data-unescape, and in the text the Copy button uses.
+  function unescapeListing(pre) {
+    const undo = (text) => text.replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&amp;/g, '&')
+    pre.dataset.raw = pre.dataset.raw.replace(/class="([^"]*)"/g, (all, value) => 'class="' + undo(value) + '"')
+    const walker = document.createTreeWalker(pre, NodeFilter.SHOW_TEXT)
+    const nodes = []
+    while (walker.nextNode()) if (walker.currentNode.parentElement.closest('.t-str')) nodes.push(walker.currentNode)
+    nodes.forEach((node) => (node.nodeValue = undo(node.nodeValue)))
+  }
+
   window.addEventListener('load', () => {
+    document.querySelectorAll('pre[data-unescape]').forEach(unescapeListing)
     const textarea = document.getElementById('cdn-theme-src')
     textarea.value = prettyCss(textarea.value)
     browserProbe()
@@ -3189,6 +3261,7 @@ module.exports = {
       readComputed()
       padReadout()
       preflightProbe()
+      placeholderProbe()
       xrayCount()
       layerInspect()
       setTimeout(layerInspect, 400)

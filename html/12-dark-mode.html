@@ -80,7 +80,7 @@
       --pal-shadow: 0 10px 25px -8px rgb(2 132 199 / .35);
       @variant dark {
         --pal-bg: #082f49; --pal-card: #0c4a6e; --pal-ink: #e0f2fe; --pal-muted: #7dd3fc; --pal-line: #075985;
-        --pal-brand: #38bdf8; --pal-on-brand: #082f49;
+        --pal-brand: #7dd3fc; --pal-on-brand: #082f49;
         --pal-shadow: 0 0 0 1px rgb(125 211 252 / .15);
       }
     }
@@ -168,7 +168,7 @@
         <li><code>dark:bg-gray-800</code></li>
         <li><code>dark:text-white</code></li>
         <li><code>dark:odd:bg-gray-900/50</code></li>
-        <li><code>dark:md:hover:bg-fuchsia-600</code></li>
+        <li><code>dark:md:hover:bg-fuchsia-800</code></li>
       </ul>
       <p class="sc-note">On this page <code>dark</code> is redefined to also follow the Theme menu (see the data-attribute card), so the demos react to the menu and to your OS.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/dark-mode#overview" target="_blank" rel="noopener">Docs: dark mode</a></p>
@@ -198,7 +198,7 @@
         <div class="sc-demo" id="dark-default-2">
           <div class="mx-auto max-w-md overflow-hidden rounded-xl ring-1 ring-gray-900/10 dark:ring-white/10">
             <table class="w-full text-left text-sm">
-              <thead class="bg-gray-100 text-xs uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+              <thead class="bg-gray-100 text-xs uppercase tracking-wide text-gray-600 dark:bg-gray-800 dark:text-gray-400">
                 <tr>
                   <th class="px-4 py-2 font-medium">Member</th>
                   <th class="px-4 py-2 font-medium">Role</th>
@@ -248,8 +248,8 @@
         <figcaption>Stacked: <code>dark:md:hover:</code></figcaption>
         <div class="sc-demo" id="dark-default-4">
           <div class="flex flex-wrap items-center justify-center gap-3">
-            <button type="button" class="rounded-md bg-fuchsia-500 px-4 py-2 text-sm font-medium text-white hover:bg-fuchsia-400 dark:md:hover:bg-fuchsia-600">Save changes</button>
-            <span class="text-xs text-slate-600 dark:text-slate-300">Hover in dark mode at 768px or wider: the hover color darkens.</span>
+            <button type="button" class="rounded-md bg-fuchsia-700 px-4 py-2 text-sm font-medium text-white hover:bg-fuchsia-600 dark:md:hover:bg-fuchsia-800">Save changes</button>
+            <span class="text-xs text-slate-600 dark:text-slate-300">Hover it: in light mode the button lightens. In dark mode at 768px or wider it darkens instead.</span>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="dark-default-4"></pre>
@@ -298,8 +298,7 @@
                 <p class="text-sm text-slate-500 demo-dark:text-slate-400">Design lead, Berlin</p>
               </div>
             </div>
-            <p class="mt-4 text-sm text-slate-600 demo-dark:text-slate-300">Owns the design system and the quarterly brand review.</p>
-            <div data-sc-omit class="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 demo-dark:border-white/10">
+            <p class="mt-4 text-sm text-slate-600 demo-dark:text-slate-300">Owns the design system and the quarterly brand review.</p><div data-sc-omit class="mt-4 flex items-center justify-between border-t border-slate-200 pt-4 demo-dark:border-white/10">
               <span class="text-sm">Dark</span>
               <button type="button" role="switch" aria-checked="false" aria-label="Dark mode for this card" data-demo-dark data-target="class-card" class="group relative h-6 w-11 rounded-full bg-slate-300 transition-colors aria-checked:bg-indigo-500 motion-reduce:transition-none">
                 <span class="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform group-aria-checked:translate-x-5 motion-reduce:transition-none"></span>
@@ -384,8 +383,7 @@
             <div id="attr-panel" data-mode="light" class="rounded-xl border border-slate-200 bg-white p-4 text-slate-900 transition-colors motion-reduce:transition-none demo-attr-dark:border-white/10 demo-attr-dark:bg-slate-900 demo-attr-dark:text-white">
               <p class="text-sm font-semibold">Appearance</p>
               <p class="mt-1 text-sm text-slate-500 demo-attr-dark:text-slate-400">Only the data-mode attribute on this panel decides the theme.</p>
-            </div>
-            <div data-sc-omit class="mt-3 inline-flex rounded-lg bg-slate-200 p-0.5 dark:bg-white/10">
+            </div><div data-sc-omit class="mt-3 inline-flex rounded-lg bg-slate-200 p-0.5 dark:bg-white/10">
               <button type="button" data-set-mode="light" data-target="attr-panel" aria-pressed="true" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Light</button>
               <button type="button" data-set-mode="dark" data-target="attr-panel" aria-pressed="false" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Dark</button>
             </div>
@@ -454,8 +452,8 @@
   <article class="sc-feature" id="three-way-toggle">
     <div class="sc-notes">
       <h2>Light, dark and system toggle</h2>
-      <span class="sc-since" data-v="core">core</span>
-      <p>The docs recipe: a class-based <code>dark</code> variant plus a few lines of JS. Apply <code>dark</code> from <code>localStorage</code>, fall back to <code>matchMedia</code> when nothing is saved, and run it inline in <code>&lt;head&gt;</code> so the first paint is already correct. Choosing System removes the saved key.</p>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The docs recipe is a class-based <code>dark</code> variant (one <code>@custom-variant</code> line in v4, replacing v3's <code>darkMode: 'class'</code>) plus a few lines of JS. The script applies <code>dark</code> from <code>localStorage</code>, falls back to <code>matchMedia</code> when nothing is saved, and runs inline in <code>&lt;head&gt;</code> so the first paint is already correct. Choosing System removes the saved key.</p>
       <ul class="sc-parts">
         <li><code>localStorage.theme</code></li>
         <li><code>matchMedia('(prefers-color-scheme: dark)')</code></li>
@@ -477,8 +475,7 @@
                 <dt>OS prefers</dt><dd class="font-mono text-slate-900 demo-dark:text-white" data-os-pref>light</dd>
                 <dt>Resolved</dt><dd class="font-mono text-slate-900 demo-dark:text-white" data-resolved>light</dd>
               </dl>
-            </div>
-            <div data-sc-omit class="mt-3 inline-flex rounded-lg bg-slate-200 p-0.5 dark:bg-white/10">
+            </div><div data-sc-omit class="mt-3 inline-flex rounded-lg bg-slate-200 p-0.5 dark:bg-white/10">
               <button type="button" data-choice="system" aria-pressed="true" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">System</button>
               <button type="button" data-choice="light" aria-pressed="false" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Light</button>
               <button type="button" data-choice="dark" aria-pressed="false" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Dark</button>
@@ -591,8 +588,8 @@ localStorage.removeItem('theme')</pre>
   <article class="sc-feature" id="dark-hairlines">
     <div class="sc-notes">
       <h2>Hairlines: borders, dividers, outlines</h2>
-      <span class="sc-since" data-v="core">core</span>
-      <p>On a dark surface a light gray border looks heavy. Swap it for translucent white, such as <code>dark:border-white/10</code>, which adapts to any dark background. The default border color is <code>currentColor</code> in v4, so always name a color and its dark counterpart.</p>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>On a dark surface a light gray border looks heavy. Swap it for translucent white, such as <code>dark:border-white/10</code>, which adapts to any dark background. Two v4 defaults matter here: the default border color is <code>currentColor</code>, and a bare <code>outline</code> now sets a 1px width, so always name a color and its dark counterpart.</p>
       <ul class="sc-parts">
         <li><code>border-gray-200 dark:border-white/10</code></li>
         <li><code>divide-y divide-gray-200 dark:divide-white/10</code></li>
@@ -629,20 +626,28 @@ localStorage.removeItem('theme')</pre>
         <pre class="sc-code" data-code="html" data-from="hairlines-2"></pre>
       </figure>
       <figure class="sc-example">
-        <figcaption>Avatar outline so pale images do not bleed</figcaption>
+        <figcaption>Avatar outline so photos do not bleed into the page</figcaption>
         <div class="sc-demo" id="hairlines-3">
-          <div class="flex flex-wrap items-center justify-center gap-6">
-            <div class="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
-              <span class="block size-12 rounded-full bg-linear-to-br from-amber-50 to-orange-100"></span>
-              no outline
+          <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-xs text-slate-600 sm:mx-auto sm:max-w-md dark:text-slate-300">
+            <div class="flex items-center gap-3">
+              <span class="block size-12 shrink-0 rounded-full bg-linear-to-br from-amber-50 to-orange-100"></span>
+              <span>Pale photo,<br>no outline</span>
             </div>
-            <div class="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
-              <span class="block size-12 rounded-full bg-linear-to-br from-amber-50 to-orange-100 outline -outline-offset-1 outline-black/10 dark:outline-white/10"></span>
-              <code>-outline-offset-1</code>
+            <div class="flex items-center gap-3">
+              <span class="block size-12 shrink-0 rounded-full bg-linear-to-br from-amber-50 to-orange-100 outline -outline-offset-1 outline-black/10 dark:outline-white/10"></span>
+              <span>Pale photo,<br>with outline</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="block size-12 shrink-0 rounded-full bg-linear-to-br from-slate-800 to-slate-900"></span>
+              <span>Dark photo,<br>no outline</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="block size-12 shrink-0 rounded-full bg-linear-to-br from-slate-800 to-slate-900 outline -outline-offset-1 outline-black/10 dark:outline-white/10"></span>
+              <span>Dark photo,<br>with outline</span>
             </div>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The outline sits inside the box edge and adds no layout. Gradients stand in for photos here; the same classes work on an <code>&lt;img&gt;</code>.</div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">Pale photos bleed into a light page, dark photos into a dark page. The outline sits inside the box edge (<code>-outline-offset-1</code>) and adds no layout. Switch the Theme menu to see each pair. Gradients stand in for photos; the same classes work on an <code>&lt;img&gt;</code>.</div>
         <pre class="sc-code" data-code="html" data-from="hairlines-3"></pre>
       </figure>
       <figure class="sc-example">
@@ -907,7 +912,7 @@ localStorage.removeItem('theme')</pre>
         <li><code>bg-app-brand/15</code></li>
         <li><code>@theme static</code></li>
       </ul>
-      <p class="sc-note"><code>inline</code> is the important word. Without it, Tailwind emits the variable on <code>:root</code>, where your per-theme variable does not exist. The names here use a <code>--pal-*</code> prefix because the page chrome already owns <code>--surface</code>, <code>--ink</code> and friends.</p>
+      <p class="sc-note"><code>inline</code> is the important word. Without it, Tailwind emits the variable on <code>:root</code>, where your per-theme variable does not exist. <code>@theme static</code> is a different option: it emits every variable even when no utility uses it, and does not change how <code>var()</code> resolves. The names here use a <code>--pal-*</code> prefix because the page chrome already owns <code>--surface</code>, <code>--ink</code> and friends.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/theme#referencing-other-variables" target="_blank" rel="noopener">Docs: referencing other variables</a></p>
     </div>
     <div class="sc-examples">
@@ -920,7 +925,7 @@ localStorage.removeItem('theme')</pre>
               <p class="text-2xl font-semibold">$48.2k</p>
               <div class="mt-3 flex items-center gap-2">
                 <button type="button" class="rounded-md bg-app-brand px-3 py-1.5 text-sm font-medium text-app-on-brand">Export</button>
-                <span class="rounded-full bg-app-brand/15 px-2 py-0.5 text-xs font-medium text-app-brand ring-1 ring-app-brand/30">+12%</span>
+                <span class="rounded-full bg-app-brand/15 px-2 py-0.5 text-xs font-medium text-app-ink ring-1 ring-app-brand/30">+12%</span>
               </div>
             </div>
           </div>
@@ -940,7 +945,7 @@ localStorage.removeItem('theme')</pre>
     --pal-card: #0c4a6e;
     --pal-ink: #e0f2fe;
     --pal-muted: #7dd3fc;
-    --pal-brand: #38bdf8;
+    --pal-brand: #7dd3fc;
     --pal-on-brand: #082f49;
   }
 }
@@ -981,7 +986,7 @@ localStorage.removeItem('theme')</pre>
         <figcaption>Opacity modifiers on a token</figcaption>
         <div class="sc-demo" id="tokens-3">
           <div data-palette="sunset" class="mx-auto flex max-w-xs flex-wrap items-center justify-center gap-2 rounded-card bg-app-bg p-4 font-ui">
-            <span class="rounded-full bg-app-brand/15 px-2.5 py-1 text-xs font-medium text-app-brand ring-1 ring-app-brand/30">Beta</span>
+            <span class="rounded-full bg-app-brand/15 px-2.5 py-1 text-xs font-medium text-app-ink ring-1 ring-app-brand/30">Beta</span>
             <span class="rounded-full bg-app-brand px-2.5 py-1 text-xs font-medium text-app-on-brand">New</span>
             <span class="rounded-full bg-app-ink/10 px-2.5 py-1 text-xs font-medium text-app-ink">Draft</span>
           </div>
@@ -1050,8 +1055,7 @@ localStorage.removeItem('theme')</pre>
                 </div>
                 <button type="button" class="rounded-md bg-app-brand px-3 py-1.5 text-sm font-medium text-app-on-brand">New report</button>
               </div>
-            </div>
-            <div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
+            </div><div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
               <button type="button" data-palette-pick="ocean" data-target="pal-dash" aria-pressed="true" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-sky-600 forced-color-adjust-none"></span>Ocean</button>
               <button type="button" data-palette-pick="forest" data-target="pal-dash" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-green-700 forced-color-adjust-none"></span>Forest</button>
               <button type="button" data-palette-pick="sunset" data-target="pal-dash" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-orange-600 forced-color-adjust-none"></span>Sunset</button>
@@ -1113,8 +1117,7 @@ localStorage.removeItem('theme')</pre>
                 <span class="font-semibold">$18.00</span>
                 <button type="button" class="rounded-md bg-app-brand px-3 py-1.5 text-sm font-medium text-app-on-brand">Add to cart</button>
               </div>
-            </div>
-            <div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
+            </div><div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
               <button type="button" data-palette-pick="ocean" data-target="pal-shop" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-sky-600 forced-color-adjust-none"></span>Ocean</button>
               <button type="button" data-palette-pick="forest" data-target="pal-shop" aria-pressed="true" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-green-700 forced-color-adjust-none"></span>Forest</button>
               <button type="button" data-palette-pick="sunset" data-target="pal-shop" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-orange-600 forced-color-adjust-none"></span>Sunset</button>
@@ -1170,7 +1173,6 @@ localStorage.removeItem('theme')</pre>
         <li><code>theme-midnight:bg-black</code></li>
         <li><code>theme-midnight:hover:bg-lime-400/10</code></li>
         <li><code>palette-forest:inline-block</code></li>
-        <li><code>@variant theme-midnight</code></li>
       </ul>
       <p class="sc-note">Include the bare <code>[data-palette=midnight]</code> in the selector, not only <code>[data-palette=midnight] *</code>. Otherwise the element carrying the attribute never matches (third example).</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants" target="_blank" rel="noopener">Docs: adding custom variants</a></p>
@@ -1186,8 +1188,7 @@ localStorage.removeItem('theme')</pre>
                 <p class="text-lg font-semibold">All checks passed</p>
                 <span class="mt-2 hidden rounded-full bg-app-brand px-2.5 py-1 text-xs font-medium text-app-on-brand palette-forest:inline-block">Forest edition</span>
               </div>
-            </div>
-            <div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
+            </div><div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
               <button type="button" data-palette-pick="ocean" data-target="pal-build" aria-pressed="true" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-sky-600 forced-color-adjust-none"></span>Ocean</button>
               <button type="button" data-palette-pick="forest" data-target="pal-build" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-green-700 forced-color-adjust-none"></span>Forest</button>
               <button type="button" data-palette-pick="midnight" data-target="pal-build" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-indigo-400 forced-color-adjust-none"></span>Midnight</button>
@@ -1207,8 +1208,7 @@ localStorage.removeItem('theme')</pre>
               <li class="px-4 py-2.5 hover:bg-app-line/50 theme-midnight:hover:bg-lime-400/10 theme-midnight:hover:text-lime-300">Deployments</li>
               <li class="px-4 py-2.5 hover:bg-app-line/50 theme-midnight:hover:bg-lime-400/10 theme-midnight:hover:text-lime-300">Environments</li>
               <li class="px-4 py-2.5 hover:bg-app-line/50 theme-midnight:hover:bg-lime-400/10 theme-midnight:hover:text-lime-300">Settings</li>
-            </ul>
-            <div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
+            </ul><div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
               <button type="button" data-palette-pick="ocean" data-target="pal-list" aria-pressed="true" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-sky-600 forced-color-adjust-none"></span>Ocean</button>
               <button type="button" data-palette-pick="midnight" data-target="pal-list" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-indigo-400 forced-color-adjust-none"></span>Midnight</button>
             </div>
@@ -1296,7 +1296,7 @@ localStorage.removeItem('theme')</pre>
     --pal-bg: #082f49;
     --pal-card: #0c4a6e;
     --pal-ink: #e0f2fe;
-    --pal-brand: #38bdf8;
+    --pal-brand: #7dd3fc;
   }
 }</pre>
       </figure>
@@ -1324,8 +1324,7 @@ localStorage.removeItem('theme')</pre>
         <div class="sc-demo" id="variant-dir-4">
           <div id="panel-either" class="panel-token mx-auto max-w-xs rounded-xl p-4 text-sm ring-1 ring-slate-900/10 dark:ring-white/10 demo-dark:ring-white/10">
             <p class="font-semibold">Dark by either route</p>
-            <p class="mt-1 opacity-75">Goes dark with the Theme menu, or with its own class.</p>
-            <div data-sc-omit class="mt-3">
+            <p class="mt-1 opacity-75">Goes dark with the Theme menu, or with its own class.</p><div data-sc-omit class="mt-3">
               <button type="button" aria-pressed="false" data-demo-dark data-target="panel-either" class="rounded-md border border-current/25 px-2.5 py-1 text-xs font-medium aria-pressed:bg-current/10">Toggle demo-dark</button>
             </div>
           </div>
@@ -1369,8 +1368,7 @@ localStorage.removeItem('theme')</pre>
               <span class="rounded-full bg-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 in-data-[palette=forest]:bg-green-700 in-data-[palette=forest]:text-white in-data-[palette=ocean]:bg-sky-700 in-data-[palette=ocean]:text-white in-data-[palette=sunset]:bg-orange-700 in-data-[palette=sunset]:text-white">Pro plan</span>
               <p class="mt-3 text-2xl font-semibold">$19 <span class="text-sm font-normal text-slate-500 dark:text-slate-400">per month</span></p>
               <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Unlimited projects and priority support.</p>
-            </div>
-            <div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
+            </div><div data-sc-omit role="group" aria-label="Palette" class="mt-3 flex flex-wrap gap-2">
               <button type="button" data-palette-pick="ocean" data-target="pal-plan" aria-pressed="true" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-sky-600 forced-color-adjust-none"></span>Ocean</button>
               <button type="button" data-palette-pick="forest" data-target="pal-plan" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-green-700 forced-color-adjust-none"></span>Forest</button>
               <button type="button" data-palette-pick="sunset" data-target="pal-plan" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:border-slate-900 aria-pressed:ring-1 aria-pressed:ring-slate-900 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:aria-pressed:border-white dark:aria-pressed:ring-white"><span class="size-3 rounded-full bg-orange-600 forced-color-adjust-none"></span>Sunset</button>
@@ -1389,8 +1387,7 @@ localStorage.removeItem('theme')</pre>
               <span class="hidden rounded-full bg-amber-200 px-2 py-0.5 text-xs font-medium text-amber-900 not-demo-dark:inline">Day</span>
               <span class="hidden rounded-full bg-indigo-500 px-2 py-0.5 text-xs font-medium text-white in-[.demo-dark]:inline">Night</span>
             </p>
-            <p class="mt-2 text-sm text-slate-600 in-[.demo-dark]:text-slate-300">Text color here comes from an <code>in-[.demo-dark]:</code> utility, not a named variant.</p>
-            <div data-sc-omit class="mt-3">
+            <p class="mt-2 text-sm text-slate-600 in-[.demo-dark]:text-slate-300">Text color here comes from an <code>in-[.demo-dark]:</code> utility, not a named variant.</p><div data-sc-omit class="mt-3">
               <button type="button" aria-pressed="false" data-demo-dark data-target="hook-card" class="rounded-md border border-current/25 px-2.5 py-1 text-xs font-medium aria-pressed:bg-current/10">Toggle demo-dark</button>
             </div>
           </div>
@@ -1491,12 +1488,12 @@ localStorage.removeItem('theme')</pre>
           <div class="mx-auto grid max-w-md gap-3 sm:grid-cols-2">
             <div class="scheme-light rounded-xl border border-[GrayText] bg-[Canvas] p-4 text-[CanvasText]">
               <p class="font-semibold">Export report</p>
-              <p class="mt-1 text-sm text-[GrayText]">scheme-light</p>
+              <p class="mt-1 font-mono text-xs">scheme-light</p>
               <button type="button" class="mt-3 rounded-md border border-[ButtonText] bg-[ButtonFace] px-3 py-1 text-sm text-[ButtonText]">Download</button>
             </div>
             <div class="scheme-dark rounded-xl border border-[GrayText] bg-[Canvas] p-4 text-[CanvasText]">
               <p class="font-semibold">Export report</p>
-              <p class="mt-1 text-sm text-[GrayText]">scheme-dark</p>
+              <p class="mt-1 font-mono text-xs">scheme-dark</p>
               <button type="button" class="mt-3 rounded-md border border-[ButtonText] bg-[ButtonFace] px-3 py-1 text-sm text-[ButtonText]">Download</button>
             </div>
           </div>
@@ -1527,8 +1524,8 @@ localStorage.removeItem('theme')</pre>
         <li><code>stroke-[light-dark(#111,#eee)]</code></li>
         <li><code>supports-[color:light-dark(white,black)]:</code></li>
       </ul>
-      <p class="sc-note">Browser support: <code>light-dark()</code> is Baseline 2024 (Chrome and Edge 123, Firefox 120, Safari 17.5), newer than Tailwind v4's own floor (Chrome 111, Safari 16.4, Firefox 128). Older browsers drop the whole declaration, so give a plain fallback or guard it with <code>supports-[…]</code>. With the default <code>color-scheme: normal</code> you always get the light value.</p>
-      <p class="sc-meta"><a href="https://tailwindcss.com/docs/color-scheme" target="_blank" rel="noopener">Docs: color-scheme</a></p>
+      <p class="sc-note">Browser support: <code>light-dark()</code> is Baseline 2024 (Chrome and Edge 123, Firefox 120, Safari 17.5). That is newer than Tailwind v4's Chrome and Safari floors (111 and 16.4) but not its Firefox floor (128), so Chrome 111 to 122 and Safari 16.4 to 17.4 are the gap. They drop the whole declaration, so give a plain fallback or guard it with <code>supports-[…]</code>. With the default <code>color-scheme: normal</code> you always get the light value.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/colors#referencing-in-css" target="_blank" rel="noopener">Docs: colors, referencing in CSS</a> · <a href="https://tailwindcss.com/docs/color-scheme" target="_blank" rel="noopener">color-scheme</a></p>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
@@ -1602,7 +1599,7 @@ localStorage.removeItem('theme')</pre>
         <li><code>border-ld-line</code></li>
         <li><code>bg-ld-surface/50</code></li>
       </ul>
-      <p class="sc-note">It follows <code>color-scheme</code>, not <code>dark</code>. A toggle must change <code>color-scheme</code> (a <code>scheme-dark</code> class), and a lone <code>.dark</code> class will not flip it. Same browser floor as <code>light-dark()</code> above.</p>
+      <p class="sc-note">It follows <code>color-scheme</code>, not <code>dark</code>. A toggle must change <code>color-scheme</code> (a <code>scheme-dark</code> class), and a lone <code>.dark</code> class will not flip it. Same browser gap as <code>light-dark()</code> above (Chrome 111 to 122, Safari 16.4 to 17.4).</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/theme#referencing-other-variables" target="_blank" rel="noopener">Docs: referencing other variables</a></p>
     </div>
     <div class="sc-examples">
@@ -1616,8 +1613,7 @@ localStorage.removeItem('theme')</pre>
                 <p class="mt-1 text-2xl font-semibold">$19 <span class="text-sm font-normal opacity-70">per month</span></p>
                 <ul class="mt-3 space-y-1 text-sm opacity-80"><li>Unlimited projects</li><li>Priority support</li></ul>
               </div>
-            </div>
-            <div data-sc-omit role="group" aria-label="Color scheme" class="mt-3 inline-flex rounded-lg bg-slate-200 p-0.5 dark:bg-white/10">
+            </div><div data-sc-omit role="group" aria-label="Color scheme" class="mt-3 inline-flex rounded-lg bg-slate-200 p-0.5 dark:bg-white/10">
               <button type="button" data-scheme="" data-target="ld-card" aria-pressed="true" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Page</button>
               <button type="button" data-scheme="scheme-light" data-target="ld-card" aria-pressed="false" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Light</button>
               <button type="button" data-scheme="scheme-dark" data-target="ld-card" aria-pressed="false" class="rounded-md px-3 py-1 text-xs font-medium text-slate-700 aria-pressed:bg-white aria-pressed:text-slate-900 aria-pressed:shadow-sm dark:text-slate-200 dark:aria-pressed:bg-slate-600 dark:aria-pressed:text-white">Dark</button>
@@ -1661,7 +1657,7 @@ document.addEventListener('click', (e) =&gt; {
             </div>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The two cards look the same in every Theme menu state. The token version halves the color classes; the trade-off is the newer browser floor.</div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The two cards look the same in every Theme menu state. The token version halves the color classes; the trade-off is the Chrome and Safari gap noted above.</div>
         <pre class="sc-code" data-code="html" data-from="ld-tokens-2"></pre>
       </figure>
       <figure class="sc-example">
@@ -1684,44 +1680,61 @@ document.addEventListener('click', (e) =&gt; {
     <div class="sc-notes">
       <h2>Text shadows that adapt</h2>
       <span class="sc-since" data-v="4.1">v4.1</span>
-      <p><code>text-shadow-*</code> arrived in v4.1. The launch post uses it for dark legibility: <code>text-gray-950 dark:text-white dark:text-shadow-2xs</code>. Pick the color and opacity with <code>text-shadow-sky-300</code> or <code>text-shadow-white/60</code>.</p>
+      <p><code>text-shadow-*</code> arrived in v4.1. The launch post uses it for dark legibility: <code>text-gray-950 dark:text-white dark:text-shadow-2xs</code>. Pick the color with <code>text-shadow-sky-300</code>, or change only the opacity with <code>text-shadow-lg/50</code>.</p>
       <ul class="sc-parts">
         <li><code>text-shadow-2xs</code></li>
         <li><code>dark:text-shadow-2xs</code></li>
-        <li><code>text-shadow-white/60</code></li>
-        <li><code>dark:text-shadow-black/60</code></li>
-        <li><code>dark:text-shadow-none</code></li>
+        <li><code>text-shadow-xs text-shadow-white</code></li>
+        <li><code>dark:text-shadow-black</code></li>
+        <li><code>dark:text-shadow-sky-400</code></li>
+        <li><code>dark:text-shadow-[0_0_14px_var(--tw-text-shadow-color)]</code></li>
+        <li><code>text-shadow-lg/50</code></li>
       </ul>
-      <p class="sc-note">Keep it faint. Forced-colors mode removes text shadows too.</p>
+      <p class="sc-note">Keep it faint: the default sizes run from a 1px edge (<code>2xs</code>) to a soft 8px blur (<code>lg</code>). Forced-colors mode removes text shadows too.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/text-shadow" target="_blank" rel="noopener">Docs: text-shadow</a></p>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
         <figcaption>Glassy button label</figcaption>
         <div class="sc-demo" id="text-shadow-1">
-          <div class="mx-auto flex max-w-xs justify-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-500 p-8">
+          <div class="mx-auto flex max-w-xs justify-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-500 p-8 dark:from-sky-700 dark:to-indigo-800">
             <button type="button" class="rounded-full bg-linear-to-b from-white/10 to-white/20 px-5 py-2 text-sm font-semibold text-gray-950 shadow-md ring ring-black/20 dark:text-white dark:text-shadow-2xs">See pricing</button>
           </div>
         </div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The shadow is a 1px edge on purpose. It only shows in dark mode, where white text on a translucent fill needs a little separation.</div>
         <pre class="sc-code" data-code="html" data-from="text-shadow-1"></pre>
       </figure>
       <figure class="sc-example">
-        <figcaption>Embossed heading: a white shadow in light, a black one in dark</figcaption>
+        <figcaption>Embossed heading: a white edge in light, a black one in dark</figcaption>
         <div class="sc-demo" id="text-shadow-2">
-          <div class="mx-auto max-w-sm rounded-xl bg-slate-200 p-6 text-center dark:bg-slate-800">
-            <h3 class="text-3xl font-bold text-slate-700 text-shadow-2xs text-shadow-white/60 dark:text-slate-100 dark:text-shadow-black/60">Embossed</h3>
+          <div class="mx-auto max-w-sm rounded-xl bg-slate-300 p-6 text-center dark:bg-slate-800">
+            <h3 class="text-3xl font-bold text-slate-600 text-shadow-xs text-shadow-white dark:text-slate-200 dark:text-shadow-black">Embossed</h3>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="text-shadow-2"></pre>
       </figure>
       <figure class="sc-example">
-        <figcaption>Caption over an image tile</figcaption>
+        <figcaption>Neon glow that only exists in dark mode</figcaption>
         <div class="sc-demo" id="text-shadow-3">
-          <div class="mx-auto flex h-32 max-w-xs items-end rounded-xl bg-linear-to-br from-sky-300 via-sky-400 to-indigo-500 p-4">
-            <p class="text-lg font-semibold text-white text-shadow-2xs dark:text-shadow-black/60">Harbor at dawn</p>
+          <div class="mx-auto max-w-sm rounded-xl bg-white p-6 text-center ring-1 ring-slate-900/10 dark:bg-slate-950 dark:ring-white/10">
+            <h3 class="text-3xl font-bold tracking-tight text-sky-700 dark:text-sky-300 dark:text-shadow-sky-400 dark:text-shadow-[0_0_14px_var(--tw-text-shadow-color)]">Now live</h3>
+            <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">Plain in light, glowing in dark.</p>
           </div>
         </div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">The arbitrary value reads the color you set with <code>dark:text-shadow-sky-400</code> through <code>--tw-text-shadow-color</code>, the same trick the launch post uses for its big lettering.</div>
         <pre class="sc-code" data-code="html" data-from="text-shadow-3"></pre>
+      </figure>
+      <figure class="sc-example">
+        <figcaption>Opacity on a size: <code>text-shadow-lg/50</code></figcaption>
+        <div class="sc-demo" id="text-shadow-4">
+          <div class="mx-auto grid max-w-sm gap-2 rounded-xl bg-linear-45 from-indigo-600 via-sky-600 to-emerald-600 px-6 py-8 text-center text-xl font-semibold text-white">
+            <p class="text-shadow-lg">text-shadow-lg</p>
+            <p class="text-shadow-lg/50">text-shadow-lg/50</p>
+            <p class="text-shadow-lg/20">text-shadow-lg/20</p>
+          </div>
+        </div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)"><code>text-shadow-lg/50</code> is the same as <code>text-shadow-lg text-shadow-black/50</code>. This tile is the same in light and dark; a softer shadow suits a busy background.</div>
+        <pre class="sc-code" data-code="html" data-from="text-shadow-4"></pre>
       </figure>
     </div>
   </article>
@@ -1739,7 +1752,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>dark:scrollbar-thumb-sky-400</code></li>
         <li><code>dark:scrollbar-track-gray-700</code></li>
       </ul>
-      <p class="sc-note">Browser support: these set the standard <code>scrollbar-color</code> and <code>scrollbar-width</code> properties, which are newer than Tailwind v4's floor, so check older Safari. Overlay scrollbars (the macOS default) may hide the colors until you scroll.</p>
+      <p class="sc-note">Browser support: <code>scrollbar-color</code> works in Chrome and Edge 121+ and Firefox 64+, and Safari added it in 26.2, so it sits above Tailwind v4's Chrome and Safari floors (111 and 16.4). Where it is unsupported the scrollbar keeps its default look. Overlay scrollbars (the macOS default, and headless browsers) hide the colors until you scroll.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/scrollbar-color" target="_blank" rel="noopener">Docs: scrollbar-color</a> · <a href="14-v43-utilities.html">Page 14: scrollbars, zoom &amp; tabs</a></p>
     </div>
     <div class="sc-examples">
@@ -1786,11 +1799,11 @@ built in 1.42s</pre>
       <ul class="sc-parts">
         <li><code>forced-colors:border</code></li>
         <li><code>forced-colors:border-[CanvasText]</code></li>
-        <li><code>forced-colors:bg-[Highlight]</code></li>
+        <li><code>forced-colors:outline-[Highlight]</code></li>
         <li><code>forced-color-adjust-none</code></li>
         <li><code>outline-hidden</code></li>
       </ul>
-      <p class="sc-note">Emulate it in DevTools: Rendering, "Emulate CSS media feature forced-colors". <code>prefers-color-scheme</code> still reports the user's scheme, so <code>dark:</code> keeps matching, but its colors get overridden.</p>
+      <p class="sc-note">Emulate it in DevTools: Rendering, "Emulate CSS media feature forced-colors". <code>prefers-color-scheme</code> still reports the user's scheme, so <code>dark:</code> keeps matching, but its colors get overridden. <code>outline-hidden</code> is v4's name for what <code>outline-none</code> did in v3; v4's <code>outline-none</code> removes the outline entirely.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#forced-colors" target="_blank" rel="noopener">Docs: forced colors</a> · <a href="06-environment-variants.html#forced-colors">Page 06: the forced-colors variant</a></p>
     </div>
     <div class="sc-examples">
@@ -1828,12 +1841,12 @@ built in 1.42s</pre>
           <div class="mx-auto flex max-w-sm flex-wrap items-center justify-center gap-4">
             <button type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white forced-colors:border forced-colors:border-[ButtonText]">Save changes</button>
             <div role="tablist" aria-label="Report range" class="inline-flex gap-1 rounded-lg bg-slate-200 p-1 dark:bg-white/10">
-              <button type="button" role="tab" aria-selected="true" class="rounded-md bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm contrast-more:border-2 contrast-more:border-gray-900 forced-colors:bg-[Highlight] forced-colors:text-[HighlightText] dark:bg-slate-600 dark:text-white dark:contrast-more:border-white">Overview</button>
+              <button type="button" role="tab" aria-selected="true" class="rounded-md bg-white px-3 py-1.5 text-sm text-slate-900 shadow-sm dark:bg-slate-600 dark:text-white forced-colors:outline-2 forced-colors:outline-[Highlight]">Overview</button>
               <button type="button" role="tab" aria-selected="false" class="rounded-md px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300">Details</button>
             </div>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">In forced colors the button loses its fill, so it gets a <code>ButtonText</code> border. The selected tab swaps its white pill for the system <code>Highlight</code> colors, so the state is not carried by color alone.</div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2 text-xs text-(--muted)">In forced colors the button loses its fill, so it gets a <code>ButtonText</code> border. The selected tab loses its white pill, so it gets a <code>Highlight</code> outline and the state is not carried by color alone.</div>
         <pre class="sc-code" data-code="html" data-from="forced-2"></pre>
       </figure>
       <figure class="sc-example">

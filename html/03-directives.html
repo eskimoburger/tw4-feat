@@ -68,6 +68,17 @@
     }
   }
 
+  /* ---- 02-scrollbar-visible ---- */
+  @utility scrollbar-visible {
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 9999px;
+      background: --alpha(currentColor / 35%);
+    }
+  }
+
   /* ---- 02-scrollbar-hidden ---- */
   @utility scrollbar-hidden {
     scrollbar-width: none;
@@ -309,7 +320,7 @@
 
   /* ---- 09-nav-open ---- */
   @custom-variant nav-open {
-    @variant max-md {
+    @variant @max-md {
       &:where([data-nav="open"] *) {
         @slot;
       }
@@ -413,7 +424,7 @@
 
   /* ---- 13-autofit ---- */
   @utility autofit-* {
-    grid-template-columns: repeat(auto-fit, minmax(--value(--container-*, [length]), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, --value(--container-*, [length])), 1fr));
   }
 
   /* ---- 13-measure ---- */
@@ -686,7 +697,7 @@
     <div class="sc-notes">
       <h2>Simple <code class="whitespace-nowrap">@utility</code></h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>Register a one-class utility with <code>@utility</code> and it behaves like a built-in: it lands in the utilities layer, works with every variant (<code>hover:</code>, <code>md:</code>, <code>dark:</code>, <code>group-hover:</code>) and needs no extra config. Use it for a CSS feature Tailwind has no class for. Utilities with more declarations sort first, so a plain <code>px-8</code> or <code>rounded-none</code> still overrides them.</p>
+      <p>Register a one-class utility with <code>@utility</code> and it behaves like a built-in: it lands in the utilities layer, works with every variant (<code>hover:</code>, <code>md:</code>, <code>dark:</code>, <code>group-hover:</code>) and needs no extra config. Use it for a CSS feature Tailwind has no class for. Tailwind sorts custom utilities among the built-ins by the properties they set, so a multi-property component class such as <code>btn</code> can still be overridden by a plain <code>px-8</code> or <code>rounded-none</code>.</p>
       <ul class="sc-parts">
         <li><code>@utility glass { … }</code></li>
         <li><code>hover:glass</code></li>
@@ -749,42 +760,65 @@
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Long feed: <code>content-auto</code> on every row</figcaption>
+        <figcaption>Skipped rows reserve their <code>contain-intrinsic-size</code>: two identical lists, one with <code>content-auto</code></figcaption>
         <div class="sc-demo" id="utility-simple-3">
-          <ul class="max-h-56 divide-y divide-slate-200 overflow-auto rounded-xl bg-white px-4 dark:divide-slate-700 dark:bg-slate-800">
-            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Ada Lovelace</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Shipped the analytical engine docs.</p>
-            </li>
-            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Grace Hopper</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Found a moth in the relay. Logged it.</p>
-            </li>
-            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Katherine Johnson</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Verified the trajectory numbers by hand.</p>
-            </li>
-            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Margaret Hamilton</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Added priority scheduling to the flight software.</p>
-            </li>
-            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Annie Easley</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Merged the Centaur rocket stage fix.</p>
-            </li>
-            <li class="content-auto py-3 [contain-intrinsic-size:auto_40px]">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Radia Perlman</p>
-              <p class="text-sm text-slate-600 dark:text-slate-300">Opened a PR for the spanning-tree docs.</p>
-            </li>
-          </ul>
+          <div class="grid gap-4 text-sm sm:grid-cols-2">
+            <div>
+              <p class="mb-1.5 flex justify-between gap-2 text-xs font-medium text-slate-600 dark:text-slate-300"><span>plain rows</span><span data-sc-omit>scrollHeight <output class="font-mono text-slate-900 dark:text-white"></output></span></p>
+              <ul data-scrollh class="h-40 divide-y divide-slate-200 overflow-auto rounded-xl bg-white px-4 dark:divide-slate-700 dark:bg-slate-800">
+                <li class="py-3"><span class="font-medium text-slate-900 dark:text-slate-100">Ada Lovelace</span> <span class="text-slate-600 dark:text-slate-300">Analytical engine docs</span></li>
+                <li class="py-3"><span class="font-medium text-slate-900 dark:text-slate-100">Grace Hopper</span> <span class="text-slate-600 dark:text-slate-300">Found the moth</span></li>
+                <li class="py-3"><span class="font-medium text-slate-900 dark:text-slate-100">Katherine Johnson</span> <span class="text-slate-600 dark:text-slate-300">Checked the trajectory</span></li>
+              </ul>
+            </div>
+            <div>
+              <p class="mb-1.5 flex justify-between gap-2 text-xs font-medium text-slate-600 dark:text-slate-300"><span>content-auto rows</span><span data-sc-omit>scrollHeight <output class="font-mono text-slate-900 dark:text-white"></output></span></p>
+              <ul data-scrollh class="h-40 divide-y divide-slate-200 overflow-auto rounded-xl bg-white px-4 dark:divide-slate-700 dark:bg-slate-800">
+                <li class="content-auto [contain-intrinsic-size:auto_96px] py-3"><span class="font-medium text-slate-900 dark:text-slate-100">Ada Lovelace</span> <span class="text-slate-600 dark:text-slate-300">Analytical engine docs</span></li>
+                <li class="content-auto [contain-intrinsic-size:auto_96px] py-3"><span class="font-medium text-slate-900 dark:text-slate-100">Grace Hopper</span> <span class="text-slate-600 dark:text-slate-300">Found the moth</span></li>
+                <li class="content-auto [contain-intrinsic-size:auto_96px] py-3"><span class="font-medium text-slate-900 dark:text-slate-100">Katherine Johnson</span> <span class="text-slate-600 dark:text-slate-300">Checked the trajectory</span></li>
+              </ul>
+            </div>
+          </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="utility-simple-3"></pre>
         <pre class="sc-code" data-code="css" data-label="CSS">
   @utility content-auto {
     content-visibility: auto;
   }</pre>
+        <pre class="sc-code" data-code="js" data-label="JS">
+  // grow each [data-scrollh] list to 40 rows by cloning its rows, then show its scrollHeight
+  const FEED_ROWS = 40
+  function fillFeeds() {
+    document.querySelectorAll('[data-scrollh]').forEach((list) =&gt; {
+      const base = [...list.children]
+      for (let i = base.length; i &lt; FEED_ROWS; i++) list.append(base[i % base.length].cloneNode(true))
+    })
+  }
+  function showScrollHeights() {
+    document.querySelectorAll('[data-scrollh]').forEach((list) =&gt; {
+      const out = list.parentElement.querySelector('output')
+      if (out) out.textContent = list.scrollHeight.toLocaleString() + 'px'
+    })
+  }
+  // refresh after any scroll (the page or a list): rows render once they come into view.
+  // Scroll events do not bubble, so listen in the capture phase.
+  let pending = false
+  function refreshSoon() {
+    if (pending) return
+    pending = true
+    setTimeout(() =&gt; {
+      pending = false
+      showScrollHeights()
+    }, 120)
+  }
+  document.addEventListener('scroll', refreshSoon, true)
+  addEventListener('load', () =&gt; {
+    fillFeeds()
+    refreshSoon()
+  })</pre>
       </figure>
-      <p class="sc-note">This one has no visible effect: <code>content-visibility: auto</code> lets the browser skip layout and paint for rows that are scrolled out of view, and <code>contain-intrinsic-size</code> reserves their height so the scrollbar stays stable. It needs Chrome or Edge 85+, Firefox 125+ or Safari 18+. <code>backdrop-filter</code> (first example) is unprefixed in Chrome 76+, Firefox 103+ and Safari 18+.</p>
+      <p class="sc-note"><code>content-visibility: auto</code> lets the browser skip layout and paint for rows that are scrolled out of view. That speed-up is invisible, so this demo shows its side effect. Both lists hold the same 40 rows (the script clones the three shown), but the right-hand one reports a much larger <code>scrollHeight</code>: every skipped row reserves the 96px from <code>contain-intrinsic-size</code> instead of its real height. Scroll that list and the number falls as rows render for the first time (<code>auto</code> then remembers each real height). It needs Chrome or Edge 85+, Firefox 125+ or Safari 18+; elsewhere both numbers match. <code>backdrop-filter</code> (first example) is unprefixed in Chrome 76+, Firefox 103+ and Safari 18+.</p>
     </div>
   </article>
 
@@ -807,9 +841,9 @@
         <figcaption>Chip carousel: the second row hides its scrollbar</figcaption>
         <div class="sc-demo" id="utility-nested-1">
           <div class="grid gap-4">
-            <div>
-              <p class="mb-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">overflow-x-auto</p>
-              <div class="flex gap-2 overflow-x-auto rounded-xl bg-white p-3 dark:bg-slate-800">
+            <div class="min-w-0">
+              <p class="mb-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">scrollbar-visible overflow-x-auto</p>
+              <div class="scrollbar-visible flex gap-2 overflow-x-auto rounded-xl bg-white p-3 dark:bg-slate-800">
                 <button type="button" class="shrink-0 rounded-full bg-sky-600 px-4 py-1.5 text-sm font-medium whitespace-nowrap text-white">All</button>
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Design</button>
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Engineering</button>
@@ -821,9 +855,12 @@
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">People</button>
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Legal</button>
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Data</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Ops</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Security</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Research</button>
               </div>
             </div>
-            <div>
+            <div class="min-w-0">
               <p class="mb-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">scrollbar-hidden overflow-x-auto</p>
               <div class="scrollbar-hidden flex gap-2 overflow-x-auto rounded-xl bg-white p-3 dark:bg-slate-800">
                 <button type="button" class="shrink-0 rounded-full bg-sky-600 px-4 py-1.5 text-sm font-medium whitespace-nowrap text-white">All</button>
@@ -837,6 +874,9 @@
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">People</button>
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Legal</button>
                 <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Data</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Ops</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Security</button>
+                <button type="button" class="shrink-0 rounded-full bg-slate-100 px-4 py-1.5 text-sm whitespace-nowrap text-slate-700 dark:bg-slate-700 dark:text-slate-100">Research</button>
               </div>
             </div>
           </div>
@@ -848,9 +888,20 @@
     &amp;::-webkit-scrollbar {
       display: none;
     }
+  }
+
+  /* demo helper: draws a classic bar on every system, so the difference is visible */
+  @utility scrollbar-visible {
+    &amp;::-webkit-scrollbar {
+      height: 8px;
+    }
+    &amp;::-webkit-scrollbar-thumb {
+      border-radius: 9999px;
+      background: --alpha(currentColor / 35%);
+    }
   }</pre>
       </figure>
-      <p class="sc-note"><code>scrollbar-width: none</code> covers Firefox and current Chromium; the nested <code>::-webkit-scrollbar</code> rule covers older WebKit. Since v4.3 Tailwind also ships built-in <code>scrollbar-none</code> and <code>scrollbar-thin</code> (see page 14), but only this nested form also removes the WebKit pseudo-element. Classic scrollbars are only visible on systems that use them; overlay-scrollbar systems such as macOS hide both rows' bars until you scroll.</p>
+      <p class="sc-note"><code>scrollbar-width: none</code> covers Firefox and current Chromium; the nested <code>::-webkit-scrollbar</code> rule covers older WebKit. Since v4.3 Tailwind also ships built-in <code>scrollbar-none</code> and <code>scrollbar-thin</code> (see page 14), but only this nested form also removes the WebKit pseudo-element. The first row uses a small helper utility, <code>scrollbar-visible</code>, that styles <code>::-webkit-scrollbar</code> so Chrome, Edge and Safari always draw a bar, even with overlay scrollbars; Firefox follows the operating system setting.</p>
 
       <figure class="sc-example">
         <figcaption>Pure-CSS tooltips from <code>data-tip</code> (hover or tab to a button)</figcaption>
@@ -1068,11 +1119,12 @@
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
-        <figcaption>Hover both chips: only the <code>@utility</code> one reacts</figcaption>
+        <figcaption>Variants on the <code>@utility</code>: hover the first chip, widen the window past 768px for the second</figcaption>
         <div class="sc-demo" id="layer-vs-utility-1">
-          <div class="flex flex-wrap gap-4 text-sm">
-            <span class="rounded-lg border border-dashed border-slate-400 px-4 py-2 text-slate-700 hover:btn-layer dark:border-slate-500 dark:text-slate-200">hover:btn-layer</span>
+          <div class="flex flex-wrap items-center gap-4 text-sm">
             <span class="rounded-lg border border-dashed border-slate-400 px-4 py-2 text-slate-700 hover:btn-util dark:border-slate-500 dark:text-slate-200">hover:btn-util</span>
+            <span class="rounded-lg border border-dashed border-slate-400 px-4 py-2 text-slate-700 md:btn-util dark:border-slate-500 dark:text-slate-200">md:btn-util</span>
+            <span class="btn-layer">btn-layer (plain class)</span>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="layer-vs-utility-1"></pre>
@@ -1113,7 +1165,7 @@
     }
   }</pre>
       </figure>
-      <p class="sc-note">The first chip is deliberately broken: <code>hover:btn-layer</code> is not a class Tailwind can generate, so it produces no CSS. Tailwind silently ignores a class it cannot generate, and that is the lesson.</p>
+      <p class="sc-note">The first chip adds the recipe on hover, the second from the <code>md</code> breakpoint up, and <code>btn-layer</code> is the same recipe as a plain class. A variant only works on a real utility: <code>hover:btn-layer</code> is not something Tailwind can generate, because <code>.btn-layer</code> is plain CSS in a layer, so that class would silently produce no CSS (see the generated output above). It is left out of the live markup on purpose.</p>
 
       <figure class="sc-example">
         <figcaption>Both layers stay overridable: <code>rounded-none px-8</code> beats either recipe</figcaption>
@@ -1143,7 +1195,7 @@
     color: white;
   }</pre>
       </figure>
-      <p class="sc-note">Utilities win over <code>@layer components</code> because the layer order is <code>theme, base, components, utilities</code>. Among <code>@utility</code> rules, the one that declares more properties is emitted first, so single-property classes like <code>px-8</code> still override it.</p>
+      <p class="sc-note">Utilities win over <code>@layer components</code> because the layer order is <code>theme, base, components, utilities</code>. Tailwind also sorts <code>@utility</code> rules among the built-ins, putting a multi-property recipe ahead of single-property utilities such as <code>px-8</code> (the upgrade guide describes this as sorting by the number of properties), so the smaller utilities still win.</p>
 
       <figure class="sc-example">
         <figcaption>Migrating from v3 (code-only)</figcaption>
@@ -1321,7 +1373,7 @@
     }
   }</pre>
       </figure>
-      <p class="sc-note">Hover it with the mouse, then click it and keep the pointer over it: the outline ring needs both states. In dark mode the hover colour is lighter (<code>dark:hover</code>), and from the md breakpoint up it lifts by 1px (<code>md:hover</code>). Hover rules are wrapped in <code>@media (hover: hover)</code>, so touch screens never get a stuck hover.</p>
+      <p class="sc-note">Hover it with the mouse, then click it and keep the pointer over it: the outline ring needs both states. (Safari and Firefox on macOS do not focus a button on click: press Tab to focus it, then hover.) In dark mode the hover colour is lighter (<code>dark:hover</code>), and from the md breakpoint up it lifts by 1px (<code>md:hover</code>). Hover rules are wrapped in <code>@media (hover: hover)</code>, so touch screens never get a stuck hover.</p>
 
       <figure class="sc-example">
         <figcaption>Navigation: hover, keyboard focus and the current page share one rule</figcaption>
@@ -1377,7 +1429,7 @@
     }
   }</pre>
       </figure>
-      <p class="sc-note">Hover a row, or press Tab to move focus into it: both reveal the buttons. The docs point out that a component styled with utilities is usually better than this; reach for it when plain CSS is the right tool. Requires v4.3: older versions reject the stacked and compound forms.</p>
+      <p class="sc-note">Hover a row, or press Tab to move focus into it: both reveal the buttons. Tailwind's docs generally steer you to utility classes in markup; reach for <code>@variant</code> when plain CSS is the right tool, such as CMS markup or a third-party widget. Requires v4.3: older versions do not support the stacked and compound forms.</p>
     </div>
   </article>
 
@@ -1472,7 +1524,7 @@
         <pre class="sc-code" data-code="css" data-label="CSS">
   @custom-variant narrow-card (@container (width &lt; 24rem));</pre>
       </figure>
-      <p class="sc-note">Container queries need Chrome 105+, Safari 16+ or Firefox 110+. Touch screens cannot drag the resize handle, but a narrow phone already puts the card below 24rem. Redefining a built-in name overrides it: <code>@custom-variant hover (&amp;:hover);</code> restores the pre-v4 tap-to-hover behaviour, and this page's own <code>dark</code> variant is defined the same way (see the next card). Names may use letters, digits, dashes and underscores.</p>
+      <p class="sc-note">Container queries need Chrome 105+, Safari 16+ or Firefox 110+. Touch screens cannot drag the resize handle, but a narrow phone already puts the card below 24rem. Redefining a built-in name overrides it: <code>@custom-variant hover (&amp;:hover);</code> restores the pre-v4 tap-to-hover behaviour, and this page's own <code>dark</code> variant is defined the same way (see the next card). A name must start with a lowercase letter or digit, may contain letters, digits, dashes and underscores, and cannot end in a dash or underscore.</p>
     </div>
   </article>
 
@@ -1596,10 +1648,10 @@
     <div class="sc-notes">
       <h2><code class="whitespace-nowrap">@variant</code> inside <code class="whitespace-nowrap">@custom-variant</code></h2>
       <span class="sc-since" data-v="4.1">v4.1</span>
-      <p>Build a custom variant from other variants by nesting <code>@variant</code> in its block. The result inherits their behaviour, for example <code>hover</code> staying wrapped in <code>@media (hover: hover)</code>. Handling landed in v4.1.14; use v4.2 or later to avoid an infinite-loop bug.</p>
+      <p>Build a custom variant from other variants by nesting <code>@variant</code> in its block. The result inherits their behaviour, for example <code>hover</code> staying wrapped in <code>@media (hover: hover)</code> or <code>@max-md</code> becoming a container query. Handling landed in v4.1.14; use v4.2 or later to avoid an infinite-loop bug.</p>
       <ul class="sc-parts">
         <li><code>@variant hover { @slot; }</code></li>
-        <li><code>@variant max-md { … }</code></li>
+        <li><code>@variant @max-md { … }</code></li>
         <li><code>hocus-nested:</code></li>
         <li><code>nav-open:</code></li>
       </ul>
@@ -1630,22 +1682,24 @@
       <p class="sc-note">On a mouse they look the same. On a touch screen <code>hocus</code> can leave a tapped button stuck in its hover colour, while <code>hocus-nested</code> only applies the hover half when the device can really hover. Tab to either button to see the <code>focus-visible</code> half.</p>
 
       <figure class="sc-example">
-        <figcaption><code>nav-open:</code> only below the md breakpoint <span class="sc-spacer"></span><button class="sc-btn" type="button" data-flip="custom-variant-nested-variant-2" data-name="data-nav" data-on="open" data-off="closed" aria-pressed="true">Toggle nav</button></figcaption>
+        <figcaption><code>nav-open:</code> only while its container is narrower than <code>md</code> (28rem) <span class="sc-spacer"></span><button class="sc-btn" type="button" data-flip="custom-variant-nested-variant-2" data-name="data-nav" data-on="open" data-off="closed" aria-pressed="true">Toggle nav</button></figcaption>
         <div class="sc-demo" id="custom-variant-nested-variant-2">
-          <div data-nav="open" class="rounded-xl bg-white p-3 text-sm dark:bg-slate-800">
-            <p class="font-medium text-slate-900 dark:text-slate-100">Site menu</p>
-            <ul class="mt-2 hidden space-y-1 text-slate-700 nav-open:block dark:text-slate-200">
-              <li>Docs</li>
-              <li>Pricing</li>
-              <li>Blog</li>
-            </ul>
-            <p class="mt-2 hidden text-slate-500 md:block dark:text-slate-400">The menu list is hidden here. Make the window narrower than 768px to see it.</p>
+          <div class="@container w-80 max-w-full resize-x overflow-auto rounded-xl border border-dashed border-slate-400 bg-white p-3 text-sm dark:border-slate-500 dark:bg-slate-800">
+            <div data-nav="open">
+              <p class="font-medium text-slate-900 dark:text-slate-100">Site menu</p>
+              <ul class="mt-2 hidden space-y-1 text-slate-700 nav-open:block dark:text-slate-200">
+                <li>Docs</li>
+                <li>Pricing</li>
+                <li>Blog</li>
+              </ul>
+              <p class="mt-2 hidden text-slate-500 @md:block dark:text-slate-400">The box is 28rem or wider, so the menu list is hidden. Drag the corner to make it narrower.</p>
+            </div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="custom-variant-nested-variant-2"></pre>
         <pre class="sc-code" data-code="css" data-label="CSS">
   @custom-variant nav-open {
-    @variant max-md {
+    @variant @max-md {
       &amp;:where([data-nav="open"] *) {
         @slot;
       }
@@ -1679,7 +1733,7 @@
   }
 
   /* nav-open:block */
-  @media (width &lt; 48rem) {
+  @container (width &lt; 28rem) {
     .nav-open\:block:where([data-nav="open"] *) {
       display: block;
     }
@@ -1746,10 +1800,10 @@
       <figure class="sc-example">
         <figcaption>Elevation scale: each card lifts one step on hover</figcaption>
         <div class="sc-demo" id="utility-theme-values-3">
-          <div class="grid grid-cols-3 gap-4 text-center text-sm font-medium text-slate-800 dark:text-slate-100">
-            <div class="elevate-1 rounded-xl border border-slate-200 bg-white p-5 transition-shadow hover:elevate-2 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">elevate-1</div>
-            <div class="elevate-2 rounded-xl border border-slate-200 bg-white p-5 transition-shadow hover:elevate-3 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">elevate-2</div>
-            <div class="elevate-3 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">elevate-3</div>
+          <div class="grid grid-cols-3 gap-3 text-center text-xs font-medium sm:gap-4 sm:text-sm text-slate-800 dark:text-slate-100">
+            <div class="elevate-1 rounded-xl border border-slate-200 bg-white p-3 sm:p-5 transition-shadow hover:elevate-2 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">elevate-1</div>
+            <div class="elevate-2 rounded-xl border border-slate-200 bg-white p-3 sm:p-5 transition-shadow hover:elevate-3 motion-reduce:transition-none dark:border-slate-700 dark:bg-slate-800">elevate-2</div>
+            <div class="elevate-3 rounded-xl border border-slate-200 bg-white p-3 sm:p-5 dark:border-slate-700 dark:bg-slate-800">elevate-3</div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="utility-theme-values-3"></pre>
@@ -2030,10 +2084,10 @@
         <pre class="sc-code" data-code="html" data-from="utility-fallbacks-3"></pre>
         <pre class="sc-code" data-code="css" data-label="CSS">
   @utility autofit-* {
-    grid-template-columns: repeat(auto-fit, minmax(--value(--container-*, [length]), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, --value(--container-*, [length])), 1fr));
   }</pre>
       </figure>
-      <p class="sc-note"><code>autofit-xs</code> asks for columns of at least 20rem (<code>--container-xs</code>), <code>autofit-[9rem]</code> for 9rem. Resize the window to watch the column count change without a single breakpoint class.</p>
+      <p class="sc-note"><code>autofit-xs</code> asks for columns of at least 20rem (<code>--container-xs</code>), <code>autofit-[9rem]</code> for 9rem; <code>min(100%, …)</code> keeps a single column from overflowing a narrow box. Resize the window to watch the column count change without a single breakpoint class.</p>
     </div>
   </article>
 
@@ -2092,7 +2146,7 @@
       <figure class="sc-example">
         <figcaption>Padding shorthand: <code>pad-6/2</code> is inline 6, block 2 on the spacing scale</figcaption>
         <div class="sc-demo" id="utility-modifier-3">
-          <div class="flex items-center gap-3 text-sm">
+          <div class="flex flex-wrap items-center gap-3 text-sm">
             <span class="pad-3/1 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-3/1</span>
             <span class="pad-6/2 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-6/2</span>
             <span class="pad-8/3 rounded-full bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-100">pad-8/3</span>
@@ -2267,7 +2321,7 @@
     aspect-ratio: --value(--frame-*, ratio, [ratio]);
   }</pre>
       </figure>
-      <p class="sc-note">Pick a different root than <code>aspect-*</code>: the built-in <code>aspect-*</code> is its own utility and already accepts fractions. Fractions like <code>1.5/1</code> are rejected in custom utilities, and <code>--value(ratio)</code> cannot be combined with <code>--modifier()</code> in the same class.</p>
+      <p class="sc-note">Pick a different root than <code>aspect-*</code>: the built-in <code>aspect-*</code> is its own utility and already accepts fractions. A bare fraction such as <code>frame-1.5/1</code> is rejected because both sides must be integers (the arbitrary <code>frame-[1.5/1]</code> is accepted), and <code>--value(ratio)</code> cannot be combined with <code>--modifier()</code> in the same class.</p>
     </div>
   </article>
 
@@ -2456,12 +2510,12 @@
     <div class="sc-notes">
       <h2>Same utility defined more than once</h2>
       <span class="sc-since" data-v="4.3">v4.3</span>
-      <p>Since v4.3 you can write several <code>@utility</code> rules with the same functional name but different value types, for example one for theme keys and one for arbitrary values, and they merge instead of clashing. Duplicate static names merge their declarations into one rule.</p>
+      <p>Since v4.3 you can write several functional <code>@utility</code> rules with the same name but different value types, for example one for theme keys and one for arbitrary values, and each one resolves the values it understands (a 4.3.0 fix for definitions that used to clash). Two static rules with the same name compile into one class that carries both sets of declarations.</p>
       <ul class="sc-parts">
         <li><code>@utility elev-* { … }</code> twice</li>
         <li><code>elev-2</code></li>
         <li><code>elev-[0_4px_12px_red]</code></li>
-        <li><code>@utility chip-base</code> twice</li>
+        <li><code>@utility chip-base</code> twice (static)</li>
       </ul>
       <p class="sc-meta"><a href="https://github.com/tailwindlabs/tailwindcss/blob/main/CHANGELOG.md#430---2026-05-08" target="_blank" rel="noopener">Changelog: 4.3.0</a></p>
     </div>
@@ -2716,7 +2770,7 @@
     <div class="sc-notes">
       <h2><code class="whitespace-nowrap">--theme()</code>: read theme variables</h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p><code>--theme(--color-red-500)</code> returns the theme value as <code>var(--color-red-500)</code>. Inside at-rule parameters such as <code>@media</code>, <code>@container</code> and <code>@supports</code>, where CSS variables are invalid, it inlines the real value: <code>@media (width &gt;= --theme(--breakpoint-md))</code> becomes <code>48rem</code>. Add <code>inline</code> to force the literal anywhere.</p>
+      <p><code>--theme(--color-red-500)</code> returns the theme value as <code>var(--color-red-500)</code>. Inside at-rule parameters such as <code>@media</code>, <code>@container</code> and <code>@supports</code>, where CSS variables are invalid, it inlines the real value: <code>@media (width &gt;= --theme(--breakpoint-md))</code> becomes <code>48rem</code>. Add <code>inline</code> to force the literal anywhere. The official docs list only <code>--alpha()</code> and <code>--spacing()</code>; <code>--theme()</code> is in the engine and the upgrade tool, not on the functions page.</p>
       <ul class="sc-parts">
         <li><code>--theme(--color-red-500)</code></li>
         <li><code>--theme(--breakpoint-md)</code></li>
@@ -2724,7 +2778,7 @@
         <li><code>--theme(--color-red-500 inline)</code></li>
         <li><code>min-[--theme(--breakpoint-md)]:flex</code></li>
       </ul>
-      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#using-the-theme-function" target="_blank" rel="noopener">Docs: upgrade guide, theme() function</a></p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/upgrade-guide#using-the-theme-function" target="_blank" rel="noopener">Docs: upgrade guide, theme() function (the legacy <code>theme(--breakpoint-xl)</code> form)</a></p>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
@@ -2840,7 +2894,7 @@
     <div class="sc-notes">
       <h2>Legacy <code class="whitespace-nowrap">theme()</code> (deprecated)</h2>
       <span class="sc-since" data-v="core">core</span>
-      <p>The v3 dot-notation function, <code>theme(spacing.12)</code>, still works for compatibility, but the docs call it deprecated and recommend CSS variables instead. In media queries use the variable name: <code>theme(--breakpoint-xl)</code>, or better, <code>--theme(--breakpoint-xl)</code>.</p>
+      <p>The v3 dot-notation function, <code>theme(spacing.12)</code>, still works for compatibility, but the docs call it deprecated and recommend CSS variables instead. In media queries use the variable name, as the upgrade guide shows: <code>theme(--breakpoint-xl)</code>. The newer <code>--theme()</code> function (next card) does the same job.</p>
       <ul class="sc-parts">
         <li><code>theme(spacing.12)</code></li>
         <li><code>theme(colors.red.500)</code></li>
@@ -2920,7 +2974,7 @@
     .mq-v4 { background: var(--color-emerald-600); color: white; }
   }</pre>
       </figure>
-      <p class="sc-note">All three compile to <code>@media (width &gt;= 64rem)</code>. The first is the v3 spelling and still resolves; the second is what the upgrade guide recommends if you keep <code>theme()</code>; the third is the v4 function. Resize the window across 64rem to watch the chips change together. <code>theme(--spacing inline)</code> is not supported by the legacy function in 4.3.3; use <code>--theme(--spacing inline)</code>.</p>
+      <p class="sc-note">All three compile to <code>@media (width &gt;= 64rem)</code>. The first is the v3 spelling and still resolves; the second is what the upgrade guide recommends if you keep <code>theme()</code>; the third is the v4 function, which the docs do not cover. Resize the window across 64rem to watch the chips change together. <code>theme(--spacing inline)</code> is not supported by the legacy function in 4.3.3; use <code>--theme(--spacing inline)</code>.</p>
 
       <figure class="sc-example">
         <figcaption>Migration table: legacy call to v4 replacement</figcaption>
@@ -2995,7 +3049,7 @@
     return &lt;button className={styles.primary}&gt;{children}&lt;/button&gt;
   }</pre>
       </figure>
-      <p class="sc-note">Code-only: needs a bundler that processes CSS modules. The React app in this repo follows the same convention; every file in <code>react/src/demos/*.css</code> starts with <code>@reference "../index.css";</code>.</p>
+      <p class="sc-note">Code-only: needs a bundler that processes CSS modules. The React app in this repo follows the same convention: demo stylesheets such as <code>react/src/demos/32-reference-apply.css</code> and <code>36-functional-utility.css</code> start with <code>@reference "../index.css";</code>.</p>
 
       <figure class="sc-example">
         <figcaption>Default theme, and subpath imports (code-only)</figcaption>
@@ -3125,10 +3179,10 @@
       <figure class="sc-example">
         <figcaption>Typography: one line of CSS, then <code>prose</code> (code-only, with a hand-written approximation)</figcaption>
         <div class="sc-demo" id="plugin-directive-1">
-          <article class="max-w-md space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300 [&_a]:font-medium [&_a]:text-sky-700 [&_a]:underline dark:[&_a]:text-sky-300 [&_code]:rounded [&_code]:bg-slate-200 [&_code]:px-1 [&_code]:font-mono [&_code]:text-slate-900 dark:[&_code]:bg-slate-700 dark:[&_code]:text-slate-100 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-slate-900 dark:[&_h3]:text-white [&_ul]:list-disc [&_ul]:pl-5">
-            <h3>Release notes</h3>
-            <p>Typography styles <code>h3</code>, paragraphs, <a href="#">links</a> and lists without a single utility on any of them.</p>
-            <ul>
+          <article class="max-w-md space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Release notes</h3>
+            <p>Typography styles <code class="rounded bg-slate-200 px-1 font-mono text-slate-900 dark:bg-slate-700 dark:text-slate-100">h3</code>, paragraphs, <a class="font-medium text-sky-700 underline dark:text-sky-300" href="#">links</a> and lists from a single class on the wrapper.</p>
+            <ul class="list-disc space-y-1 pl-5">
               <li>Headings get a type scale</li>
               <li>Lists keep their markers</li>
             </ul>
@@ -3148,7 +3202,7 @@
     &lt;/ul&gt;
   &lt;/article&gt;</pre>
       </figure>
-      <p class="sc-note">Code-only: the browser build throws "The browser build does not support plugins or config files" and drops the whole stylesheet. The preview above approximates what <code>prose</code> automates using arbitrary variants (<code>[&amp;_a]:underline</code>); the real plugin covers far more elements. Open the React app at <code>react/</code> to see it for real.</p>
+      <p class="sc-note">Code-only: the browser build throws "The browser build does not support plugins or config files" and drops the whole stylesheet. The preview above approximates what <code>prose</code> automates by putting utilities on every element; the real plugin does it from one class and covers far more elements. Open the React app at <code>react/</code> to see it for real.</p>
 
       <figure class="sc-example">
         <figcaption>Forms: styled inputs from <code>form-*</code> classes (code-only)</figcaption>
@@ -3350,7 +3404,7 @@
         </div>
         <pre class="sc-code" data-code="html" data-from="source-inline-2"></pre>
         <pre class="sc-code" data-code="js" data-label="JS">
-  // The same brace expansion @source inline("...") performs: {a,b} lists and {1..9..2} ranges, nested
+  // Brace expansion as documented for @source inline("..."): {a,b} lists and {1..9..2} ranges, nested
   function expand(pattern) {
     const open = pattern.indexOf('{')
     if (open === -1) return [pattern]
@@ -3418,7 +3472,7 @@
   })
   document.querySelectorAll('[data-braces]').forEach(renderBraces)</pre>
       </figure>
-      <p class="sc-note">Try <code>{hover:,}underline</code>, <code>p-{1..4}</code> or <code>m-{2,4,6}</code>. A list is <code>{a,b,c}</code>; a numeric range is <code>{start..end..step}</code>; empty items are allowed, which is how <code>{hover:,focus:,}</code> includes the plain class. The demo ports Tailwind's own expansion algorithm, but only the real engine decides which of the expanded names are valid classes.</p>
+      <p class="sc-note">Try <code>{hover:,}underline</code>, <code>p-{1..4}</code> or <code>m-{2,4,6}</code>. A list is <code>{a,b,c}</code>; a numeric range is <code>{start..end..step}</code>; empty items are allowed, which is how <code>{hover:,focus:,}</code> includes the plain class. The demo re-implements the documented brace syntax in JavaScript (the real expansion happens in Tailwind's scanner), and only the real engine decides which of the expanded names are valid classes.</p>
 
       <figure class="sc-example">
         <figcaption>Exclude folders and classes (code-only)</figcaption>
@@ -3490,7 +3544,7 @@
   @import "tailwindcss/preflight.css" layer(base);
   @import "tailwindcss/utilities.css" layer(utilities) prefix(tw);</pre>
       </figure>
-      <p class="sc-note">Code-only. This is what <code>@import "tailwindcss"</code> expands to, and the way to put Preflight in a different layer or leave it out. <code>source()</code>, <code>theme()</code> and <code>prefix()</code> go on the import they apply to. <code>theme(static)</code> emits every theme variable whether or not a class uses it.</p>
+      <p class="sc-note">Code-only. This is <code>@import "tailwindcss"</code> split into its three parts (theme, Preflight, utilities), which is how you put Preflight in a different layer or leave it out. <code>theme(static)</code> and <code>prefix(tw)</code> are added here only to show where such options go. <code>source()</code>, <code>theme()</code> and <code>prefix()</code> go on the import they apply to. <code>theme(static)</code> emits every theme variable whether or not a class uses it.</p>
     </div>
   </article>
 </main>
@@ -3500,6 +3554,37 @@
 // demo plumbing: placeholder links must not scroll the page
 document.addEventListener('click', (e) => {
   if (e.target.closest('.sc-demo a[href="#"]')) e.preventDefault()
+})
+
+// grow each [data-scrollh] list to 40 rows by cloning its rows, then show its scrollHeight
+const FEED_ROWS = 40
+function fillFeeds() {
+  document.querySelectorAll('[data-scrollh]').forEach((list) => {
+    const base = [...list.children]
+    for (let i = base.length; i < FEED_ROWS; i++) list.append(base[i % base.length].cloneNode(true))
+  })
+}
+function showScrollHeights() {
+  document.querySelectorAll('[data-scrollh]').forEach((list) => {
+    const out = list.parentElement.querySelector('output')
+    if (out) out.textContent = list.scrollHeight.toLocaleString() + 'px'
+  })
+}
+// refresh after any scroll (the page or a list): rows render once they come into view.
+// Scroll events do not bubble, so listen in the capture phase.
+let pending = false
+function refreshSoon() {
+  if (pending) return
+  pending = true
+  setTimeout(() => {
+    pending = false
+    showScrollHeights()
+  }, 120)
+}
+document.addEventListener('scroll', refreshSoon, true)
+addEventListener('load', () => {
+  fillFeeds()
+  refreshSoon()
 })
 
 // <button data-flip="demo-id" data-name="data-sidebar" data-on="open" data-off="closed">
@@ -3538,7 +3623,7 @@ document.addEventListener('change', (e) => {
   if (badge) badge.className = 'shrink-0 rounded-full px-3 py-1 text-sm font-medium whitespace-nowrap text-white bg-' + select.value + '-600'
 })
 
-// The same brace expansion @source inline("...") performs: {a,b} lists and {1..9..2} ranges, nested
+// Brace expansion as documented for @source inline("..."): {a,b} lists and {1..9..2} ranges, nested
 function expand(pattern) {
   const open = pattern.indexOf('{')
   if (open === -1) return [pattern]
