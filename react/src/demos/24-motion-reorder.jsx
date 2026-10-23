@@ -10,7 +10,7 @@ export const meta = {
   order: 240,
   summary:
     'Reorder.Group and Reorder.Item turn a state array into a drag-to-sort list: a handle-driven task queue and a wrapping filter bar. Use Motion when sorting is a gesture; a native sortable library or plain buttons are fine when it is only a settings form.',
-  tailwind: ['touch-none', 'touch-pan-y', 'cursor-grab', 'active:cursor-grabbing', 'select-none', 'ring-accent', 'shadow-xl', 'transition-shadow'],
+  tailwind: ['touch-none', 'cursor-grab', 'active:cursor-grabbing', 'select-none', 'border-accent', 'shadow-xl', 'transition-shadow', 'disabled:opacity-35'],
 }
 
 const ICON_BTN =

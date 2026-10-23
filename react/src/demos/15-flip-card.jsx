@@ -83,7 +83,7 @@ function VirtualCard() {
           {/* front */}
           <div
             inert={flipped}
-            className="absolute inset-0 flex flex-col justify-between rounded-2xl bg-linear-to-br from-sky-600 via-sky-700 to-indigo-800 p-5 text-white shadow-xl shadow-sky-950/30 inset-ring inset-ring-white/20 backface-hidden"
+            className="absolute inset-0 flex flex-col justify-between rounded-2xl bg-linear-to-br from-sky-700 via-sky-800 to-indigo-900 p-5 text-white shadow-xl shadow-sky-950/30 inset-ring inset-ring-white/20 backface-hidden"
           >
             <div className="flex items-center justify-between">
               <span className="font-display text-lg font-bold tracking-tight">Harbor Pay</span>

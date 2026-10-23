@@ -10,7 +10,7 @@ export const meta = {
   order: 290,
   summary:
     'Race springs against tweens, interrupt them mid-flight, play keyframe sequences with custom times and tune a spring against its own curve. Tailwind\'s animate-* utilities are enough for a spinner or a ping; reach for Motion when timing, interruption or choreography matters.',
-  tailwind: ['motion-safe:animate-ping', 'animate-pulse', 'origin-top', 'rounded-full', 'stroke-accent', 'fill-none', 'accent-accent'],
+  tailwind: ['motion-safe:animate-ping', 'origin-top', 'rounded-full', 'stroke-accent', 'fill-none', 'accent-accent'],
 }
 
 const BTN = 'focus-ring cursor-pointer rounded-xl border px-3.5 py-1.5 text-sm font-semibold select-none transition-colors duration-150 motion-reduce:transition-none'

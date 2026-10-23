@@ -118,7 +118,7 @@
         <li><code>pointer-fine:scrollbar-thin</code></li>
         <li><code>pointer-coarse:scrollbar-none</code></li>
       </ul>
-      <p class="sc-note">Only the keywords <code>auto</code>, <code>thin</code> and <code>none</code> exist, no lengths. Chrome and Edge 121+ and Firefox 64+ support them; check <a href="https://caniuse.com/css-scrollbar" target="_blank" rel="noopener">caniuse.com/css-scrollbar</a> for Safari. macOS, iOS and Android draw overlay bars that take no layout space, so the readouts under the demos print the measured bar width (0px there).</p>
+      <p class="sc-note">Only the keywords <code>auto</code>, <code>thin</code> and <code>none</code> exist, no lengths. Support: Chrome and Edge 121+, Firefox 64+ and Safari 18.2+ (<a href="https://caniuse.com/css-scrollbar" target="_blank" rel="noopener">caniuse.com/css-scrollbar</a>). macOS, iOS and Android draw overlay bars that take no layout space, so the readouts under the demos print the measured bar width (0px there).</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/scrollbar-width" target="_blank" rel="noopener">Docs: scrollbar-width</a></p>
     </div>
     <div class="sc-examples">
@@ -291,6 +291,29 @@ Network: use --host to expose</pre>
         <pre class="sc-code" data-code="html" data-from="scrollbar-width-4"></pre>
       </figure>
 
+      <figure class="sc-example">
+        <figcaption>Sidebar that shows a thin bar only on hover</figcaption>
+        <div class="sc-demo" id="scrollbar-width-5">
+          <nav aria-label="Workspace" class="mx-auto h-56 w-60 overflow-y-auto rounded-xl bg-white p-2 ring-1 ring-slate-900/10 scrollbar-none hover:scrollbar-thin dark:bg-slate-900 dark:ring-white/10">
+            <ul class="space-y-0.5 text-sm">
+              <li><button type="button" class="block w-full rounded-md bg-slate-100 px-3 py-1.5 text-left font-medium text-slate-900 dark:bg-white/10 dark:text-white">Overview</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Inbox</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Projects</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Roadmap</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Reports</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Billing</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Team members</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Integrations</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Audit log</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">API keys</button></li>
+              <li><button type="button" class="block w-full rounded-md px-3 py-1.5 text-left text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Settings</button></li>
+            </ul>
+          </nav>
+          <p data-sc-omit class="sc-note mx-auto mt-3 max-w-md">Move the pointer over the list: the bar is hidden at rest and appears while you hover. <code>hover:</code> only applies on devices that can hover, so touch screens never show it. On a classic scrollbar the rows narrow by the bar's width while it shows.</p>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scrollbar-width-5"></pre>
+      </figure>
+
     </div>
   </article>
 
@@ -310,7 +333,7 @@ Network: use --host to expose</pre>
         <li><code>hover:scrollbar-thumb-*</code></li>
         <li><code>dark:scrollbar-track-*</code></li>
       </ul>
-      <p class="sc-note">Each utility sets a registered custom property plus the <code>scrollbar-color</code> shorthand. <code>hover:</code> fires while the pointer is anywhere over the box, not only over the thumb, and only on devices that can hover. Colours are applied by the browser: no rounded or padded thumbs. Same browser support as <code>scrollbar-width</code>; for Safari check caniuse.</p>
+      <p class="sc-note">Each utility sets a registered custom property plus the <code>scrollbar-color</code> shorthand. <code>hover:</code> fires while the pointer is anywhere over the box, not only over the thumb, and only on devices that can hover. Colours are applied by the browser: no rounded or padded thumbs. Support: Chrome and Edge 121+, Firefox 64+, and Safari 26.2+ (per Chrome's scrollbar-styling guide). Older Safari ignores the colours and shows its default bar.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/scrollbar-color" target="_blank" rel="noopener">Docs: scrollbar-color</a></p>
     </div>
     <div class="sc-examples">
@@ -435,16 +458,14 @@ document.addEventListener('click', (e) =&gt; {
               </div>
             </div>
             <div>
-              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">current: follows the text colour</p>
-              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-400 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-current scrollbar-track-transparent hover:text-sky-500 dark:bg-slate-900 dark:ring-white/10">
-                <div class="text-slate-700 dark:text-slate-300">
-                  <p>Draft saved at 10:02.</p>
-                  <p>Draft saved at 10:07.</p>
-                  <p>Draft saved at 10:12.</p>
-                  <p>Draft saved at 10:17.</p>
-                  <p>Draft saved at 10:22.</p>
-                  <p>Draft saved at 10:27.</p>
-                </div>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">current: thumb = text colour (hover me)</p>
+              <div class="h-36 overflow-y-auto rounded-lg bg-white p-3 text-sm/6 text-slate-700 ring-1 ring-slate-900/10 scrollbar-thin scrollbar-thumb-current scrollbar-track-transparent hover:text-sky-700 dark:bg-slate-900 dark:text-slate-300 dark:ring-white/10 dark:hover:text-sky-300">
+                <p>Draft saved at 10:02.</p>
+                <p>Draft saved at 10:07.</p>
+                <p>Draft saved at 10:12.</p>
+                <p>Draft saved at 10:17.</p>
+                <p>Draft saved at 10:22.</p>
+                <p>Draft saved at 10:27.</p>
               </div>
             </div>
             <div>
@@ -637,7 +658,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>hover:zoom-110</code></li>
         <li><code>md:zoom-125</code></li>
       </ul>
-      <p class="sc-note">Chrome and Safari have supported <code>zoom</code> for years and Firefox since version 126 (2024). It takes whole numbers only, so use <code>zoom-[1.5]</code> rather than <code>zoom-1.5</code>. In Chromium it does not animate, so use <code>scale-*</code> with a transition for motion. Use zoom to resize a component's footprint, scale to transform it without moving anything else.</p>
+      <p class="sc-note">Chrome and Safari have supported <code>zoom</code> for years and Firefox since version 126 (2024). It takes whole numbers only, so use <code>zoom-[1.5]</code> rather than <code>zoom-1.5</code>. Animating zoom is not interoperable: Firefox and Chrome 150+ interpolate it, Safari and older Chrome jump straight to the end value. For motion, use <code>scale-*</code> with a transition. Use zoom to resize a component's footprint, scale to transform it without moving anything else.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/zoom" target="_blank" rel="noopener">Docs: zoom</a></p>
     </div>
     <div class="sc-examples">
@@ -721,7 +742,7 @@ document.addEventListener('click', (e) =&gt; {
               </div>
             </div>
             <div class="overflow-hidden rounded-lg ring-1 ring-slate-900/15 dark:ring-white/20">
-              <div class="zoom-20 h-[720px] w-[1280px] bg-linear-to-br from-indigo-600 to-sky-500 p-14 text-white">
+              <div class="zoom-20 h-[720px] w-[1280px] bg-linear-to-br from-indigo-600 to-sky-600 p-14 text-white">
                 <h3 class="text-6xl font-bold">Meet the team</h3>
                 <p class="mt-2 text-3xl text-sky-100">Twelve people, four time zones</p>
                 <div class="mt-12 grid grid-cols-4 gap-10">
@@ -809,11 +830,11 @@ document.addEventListener('input', (e) =&gt; {
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Hover: zoom snaps and reflows, scale animates</figcaption>
+        <figcaption>Hover: zoom reflows its neighbours, scale does not</figcaption>
         <div class="sc-demo" id="zoom-5">
           <div class="space-y-6">
             <div>
-              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">hover:zoom-110 (no animation, neighbours move)</p>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">hover:zoom-110 (no transition: it snaps and the neighbours move)</p>
               <div class="flex flex-wrap items-start gap-3">
                 <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 hover:zoom-110 dark:bg-slate-800 dark:ring-white/10">
                   <div class="aspect-square rounded-lg bg-linear-to-br from-amber-200 to-orange-300"></div>
@@ -833,7 +854,7 @@ document.addEventListener('input', (e) =&gt; {
               </div>
             </div>
             <div>
-              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">hover:scale-105 with a transition (animates, nothing moves)</p>
+              <p class="mb-2 font-mono text-xs font-medium text-slate-700 dark:text-slate-300">hover:scale-105 with a transition (animates in every browser, nothing moves)</p>
               <div class="flex flex-wrap items-start gap-3">
                 <div class="w-28 rounded-xl bg-white p-2 text-center ring-1 ring-slate-900/10 transition-transform duration-200 hover:scale-105 motion-reduce:transition-none dark:bg-slate-800 dark:ring-white/10">
                   <div class="aspect-square rounded-lg bg-linear-to-br from-amber-200 to-orange-300"></div>
@@ -1045,6 +1066,7 @@ database&#9;orders
 timeout&#9;30s</pre>
             </div>
           </div>
+          <p data-sc-omit class="sc-note mt-3">A tab jumps to the next multiple of the tab size. 12px is shorter than most words here, so the values land on different stops and the columns are ragged. 10ch is longer than the longest key and follows the font size, so the same text lines up.</p>
         </div>
         <pre class="sc-code" data-code="html">
 &lt;pre class="tab-[12px] ..."&gt;host&amp;#9;db.internal
@@ -1143,7 +1165,7 @@ timeout&amp;#9;30s&lt;/pre&gt;</pre>
               <p class="mt-2 font-mono text-xs text-slate-700 dark:text-slate-300">hover, focus</p>
             </div>
           </div>
-          <p data-sc-omit class="sc-note mt-4">Hover the first button and click it (or press Tab while hovering): it turns green only when hovered and focused. The second turns green on hover alone or on focus alone. Safari does not focus buttons on click, so use Tab with the pointer resting on the button.</p>
+          <p data-sc-omit class="sc-note mt-4">Hover the first button and click it (or press Tab while hovering): it turns green only when hovered and focused. The second turns green on hover alone or on focus alone. Safari, and Firefox on macOS, do not focus buttons on click, so there use Tab with the pointer resting on the button.</p>
         </div>
         <pre class="sc-code" data-code="html" data-from="variant-stacked-compound-1"></pre>
         <pre class="sc-code" data-code="css" data-label="CSS">
@@ -1252,7 +1274,7 @@ timeout&amp;#9;30s&lt;/pre&gt;</pre>
         <li><code>tilt</code> / <code>tilt-12</code></li>
         <li><code>type-18/2</code></li>
       </ul>
-      <p class="sc-note">Defaults are plain numbers, so wrap them in <code>calc(… * 1deg)</code> for units. The demos define <code>tab-stop-*</code> rather than <code>tab-*</code> so the built-in <code>tab-&lt;n&gt;</code> above stays untouched. Upcoming, not in 4.3.3: whitespace inside <code>--default(…)</code> values is preserved on the main branch. See <a href="03-directives.html#utility-default">page 03</a>.</p>
+      <p class="sc-note">A default is emitted exactly as written, so it can carry its own unit (<code>--default(3deg)</code> gives <code>rotate: 3deg</code>). The <code>tilt</code> demo uses a bare 3 and wraps it in <code>calc(… * 1deg)</code> because <code>tilt-12</code> is a bare integer too. Bare number modifiers must be multiples of 0.25 (<code>/1.5</code>, <code>/2</code>), but a default is not checked: <code>type-18</code> falls back to 1.4 while <code>type-18/1.4</code> generates nothing. The demos define <code>tab-stop-*</code> rather than <code>tab-*</code> so the built-in <code>tab-&lt;n&gt;</code> above stays untouched. Not in 4.3.3: a default with spaces loses them (<code>--default(1fr 2fr)</code> becomes <code>1fr2fr</code>); the fix is on the main branch. See <a href="03-directives.html#utility-default">page 03</a>.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#default-values" target="_blank" rel="noopener">Docs: adding custom styles, default values</a></p>
     </div>
     <div class="sc-examples">
@@ -1376,14 +1398,14 @@ team&amp;#9;platform&lt;/pre&gt;
         <figcaption>Gallery tiles that span a fixed 3rem row grid</figcaption>
         <div class="sc-demo" id="auto-rows-cols-bare-1">
           <div class="mx-auto grid max-w-md grid-cols-3 auto-rows-12 gap-2">
-            <div class="row-span-2 rounded-lg bg-linear-to-br from-sky-500 to-sky-700 p-2 text-xs font-medium text-white">row-span-2</div>
-            <div class="row-span-3 rounded-lg bg-linear-to-br from-emerald-500 to-emerald-700 p-2 text-xs font-medium text-white">row-span-3</div>
-            <div class="row-span-1 rounded-lg bg-linear-to-br from-amber-500 to-amber-700 p-2 text-xs font-medium text-white">row-span-1</div>
-            <div class="row-span-1 rounded-lg bg-linear-to-br from-rose-500 to-rose-700 p-2 text-xs font-medium text-white">row-span-1</div>
-            <div class="row-span-2 rounded-lg bg-linear-to-br from-violet-500 to-violet-700 p-2 text-xs font-medium text-white">row-span-2</div>
-            <div class="row-span-1 rounded-lg bg-linear-to-br from-teal-500 to-teal-700 p-2 text-xs font-medium text-white">row-span-1</div>
-            <div class="row-span-1 rounded-lg bg-linear-to-br from-indigo-500 to-indigo-700 p-2 text-xs font-medium text-white">row-span-1</div>
-            <div class="row-span-1 rounded-lg bg-linear-to-br from-fuchsia-500 to-fuchsia-700 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-2 rounded-lg bg-linear-to-br from-sky-700 to-sky-900 p-2 text-xs font-medium text-white">row-span-2</div>
+            <div class="row-span-3 rounded-lg bg-linear-to-br from-emerald-700 to-emerald-900 p-2 text-xs font-medium text-white">row-span-3</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-amber-700 to-amber-900 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-rose-600 to-rose-800 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-2 rounded-lg bg-linear-to-br from-violet-600 to-violet-800 p-2 text-xs font-medium text-white">row-span-2</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-teal-700 to-teal-900 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-indigo-600 to-indigo-800 p-2 text-xs font-medium text-white">row-span-1</div>
+            <div class="row-span-1 rounded-lg bg-linear-to-br from-fuchsia-600 to-fuchsia-800 p-2 text-xs font-medium text-white">row-span-1</div>
           </div>
           <p data-sc-omit class="sc-note mx-auto mt-4 max-w-md">Every row is <code>auto-rows-12</code> (48px) plus the 8px gap, so a tile's height is always a clean multiple of the row. Before 4.3.2 this needed <code class="line-through">auto-rows-[3rem]</code>.</p>
         </div>
@@ -1394,18 +1416,18 @@ team&amp;#9;platform&lt;/pre&gt;
         <figcaption>Story rail: <code>auto-cols-16</code> with a slim scrollbar</figcaption>
         <div class="sc-demo" id="auto-rows-cols-bare-2">
           <div class="mx-auto grid max-w-lg grid-flow-col auto-cols-16 gap-3 overflow-x-auto pb-3 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-transparent">
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-500 to-rose-600 text-lg font-semibold text-white">M</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Maya</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-500 to-rose-600 text-lg font-semibold text-white">D</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Diego</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-500 to-rose-600 text-lg font-semibold text-white">P</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Priya</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 text-lg font-semibold text-white">T</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Tomás</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 text-lg font-semibold text-white">S</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Sofia</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 text-lg font-semibold text-white">J</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Jonas</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-lg font-semibold text-white">A</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Amara</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-lg font-semibold text-white">L</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Liam</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-lg font-semibold text-white">H</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Hana</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-500 to-fuchsia-600 text-lg font-semibold text-white">N</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Noah</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-500 to-fuchsia-600 text-lg font-semibold text-white">Z</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Zoe</p></div>
-            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-500 to-fuchsia-600 text-lg font-semibold text-white">R</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Ravi</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-600 to-rose-700 text-lg font-semibold text-white">M</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Maya</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-600 to-rose-700 text-lg font-semibold text-white">D</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Diego</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-amber-600 to-rose-700 text-lg font-semibold text-white">P</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Priya</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-600 to-indigo-700 text-lg font-semibold text-white">T</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Tomás</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-600 to-indigo-700 text-lg font-semibold text-white">S</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Sofia</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-sky-600 to-indigo-700 text-lg font-semibold text-white">J</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Jonas</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-600 to-teal-700 text-lg font-semibold text-white">A</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Amara</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-600 to-teal-700 text-lg font-semibold text-white">L</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Liam</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-emerald-600 to-teal-700 text-lg font-semibold text-white">H</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Hana</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-600 to-fuchsia-700 text-lg font-semibold text-white">N</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Noah</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-600 to-fuchsia-700 text-lg font-semibold text-white">Z</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Zoe</p></div>
+            <div class="text-center"><div class="grid size-16 place-items-center rounded-full bg-linear-to-tr from-violet-600 to-fuchsia-700 text-lg font-semibold text-white">R</div><p class="mt-1 truncate text-xs text-slate-700 dark:text-slate-300">Ravi</p></div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="auto-rows-cols-bare-2"></pre>
@@ -1458,7 +1480,7 @@ team&amp;#9;platform&lt;/pre&gt;
                 <span class="size-2.5 rounded-full bg-rose-400"></span><span class="size-2.5 rounded-full bg-amber-400"></span><span class="size-2.5 rounded-full bg-emerald-400"></span>
                 <span class="ml-2 font-mono text-xs text-slate-300">default</span>
               </div>
-              <pre class="p-4 font-mono text-xs/6 whitespace-pre-wrap text-slate-100">$ tailwindcss -i in.css -o out.css --minify
+              <pre class="overflow-x-auto p-4 font-mono text-xs/6 whitespace-pre text-slate-100">$ tailwindcss -i in.css -o out.css --minify
 ≈ tailwindcss v4.3.3
 
 Done in 32ms
@@ -1469,7 +1491,7 @@ $ </pre>
                 <span class="size-2.5 rounded-full bg-rose-400"></span><span class="size-2.5 rounded-full bg-amber-400"></span><span class="size-2.5 rounded-full bg-emerald-400"></span>
                 <span class="ml-2 font-mono text-xs text-slate-300">--silent</span>
               </div>
-              <pre class="p-4 font-mono text-xs/6 whitespace-pre-wrap text-slate-100">$ tailwindcss -i in.css -o out.css --minify --silent
+              <pre class="overflow-x-auto p-4 font-mono text-xs/6 whitespace-pre text-slate-100">$ tailwindcss -i in.css -o out.css --minify --silent
 $ </pre>
             </div>
           </div>
@@ -1523,7 +1545,7 @@ npx concurrently "vite" "tailwindcss -i src/input.css -o public/out.css --watch 
               <span class="size-2.5 rounded-full bg-rose-400"></span><span class="size-2.5 rounded-full bg-amber-400"></span><span class="size-2.5 rounded-full bg-emerald-400"></span>
               <span class="ml-2 font-mono text-xs text-slate-300">tailwindcss --watch --poll=300</span>
             </div>
-            <pre class="p-4 font-mono text-xs/6 whitespace-pre-wrap text-slate-100">$ tailwindcss -i in.css -o out.css --watch --poll=300
+            <pre class="overflow-x-auto p-4 font-mono text-xs/6 whitespace-pre text-slate-100">$ tailwindcss -i in.css -o out.css --watch --poll=300
 ≈ tailwindcss v4.3.3
 
 Done in 32ms
@@ -1551,7 +1573,7 @@ services:
         <figcaption>Native events or polling?</figcaption>
         <div class="sc-demo" id="cli-watch-poll-3">
           <div class="sc-table-wrap">
-            <table class="sc-table">
+            <table class="sc-table min-w-[32rem]">
               <thead>
                 <tr><th>Typical situation</th><th>Flags</th></tr>
               </thead>
@@ -1643,14 +1665,15 @@ tailwindcss -i in.css -o out.css --watch --poll=1000  # poll every second</pre>
         <figcaption>Support at a glance</figcaption>
         <div class="sc-demo" id="release-map-2">
           <div class="sc-table-wrap">
-            <table class="sc-table">
+            <table class="sc-table min-w-[36rem]">
               <thead>
                 <tr><th>Feature</th><th>Shipped</th><th>Runs in</th></tr>
               </thead>
               <tbody>
-                <tr><td><code>scrollbar-auto|thin|none</code>, <code>scrollbar-thumb-*</code>, <code>scrollbar-track-*</code></td><td>v4.3.0</td><td>Chrome and Edge 121+, Firefox 64+; Safari: check caniuse</td></tr>
+                <tr><td><code>scrollbar-auto</code>, <code>scrollbar-thin</code>, <code>scrollbar-none</code></td><td>v4.3.0</td><td>Chrome and Edge 121+, Firefox 64+, Safari 18.2+</td></tr>
+                <tr><td><code>scrollbar-thumb-*</code>, <code>scrollbar-track-*</code></td><td>v4.3.0</td><td>Chrome and Edge 121+, Firefox 64+, Safari 26.2+</td></tr>
                 <tr><td><code>scrollbar-gutter-*</code></td><td>v4.3.0</td><td>Chrome 94+, Firefox 97+, Safari 18.2+; visible with classic scrollbars only</td></tr>
-                <tr><td><code>zoom-*</code></td><td>v4.3.0</td><td>Chrome, Safari, Firefox 126+</td></tr>
+                <tr><td><code>zoom-*</code></td><td>v4.3.0</td><td>Chrome, Safari, Firefox 126+ (animating zoom: Firefox and Chrome 150+ only)</td></tr>
                 <tr><td><code>tab-*</code></td><td>v4.3.0</td><td>Every current browser</td></tr>
                 <tr><td><code>@container-size</code></td><td>v4.3.0</td><td>Every current browser (container queries)</td></tr>
                 <tr><td>Stacked and compound <code>@variant</code>, <code>--default()</code></td><td>v4.3.0</td><td>Build time, plain CSS output</td></tr>

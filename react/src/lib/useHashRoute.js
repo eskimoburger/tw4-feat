@@ -14,7 +14,8 @@ const getServerSnapshot = () => ''
  */
 export function useHashRoute() {
   const hash = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
-  const path = hash.replace(/^#\/?/, '')
+  // "#/demo-id/" is the same page as "#/demo-id"
+  const path = hash.replace(/^#\/?/, '').replace(/\/+$/, '')
   try {
     return decodeURIComponent(path)
   } catch {

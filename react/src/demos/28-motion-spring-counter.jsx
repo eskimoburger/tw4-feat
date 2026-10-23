@@ -128,7 +128,7 @@ function PriceCalculator() {
         </p>
         <p className="m-0 mt-1 text-sm text-muted">
           <AnimatedNumber key={`${feel}-rate`} value={rate} from={rate} format={(n) => cents.format(Math.max(0, n))} spring={FEELS[feel].options} /> per seat
-          {seats >= 25 && <span className="ml-2 rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-300">{seats >= 50 ? '20% off' : '10% off'}</span>}
+          {seats >= 25 && <span className="ml-2 rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:text-emerald-300">{seats >= 50 ? '20% off' : '10% off'}</span>}
         </p>
       </div>
 

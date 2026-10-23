@@ -10,7 +10,7 @@ export const meta = {
   order: 270,
   summary:
     'whileInView plus variants and stagger() reveal content as it scrolls into view: grouped lists, a grid that ripples from any origin and a timeline. Tailwind\'s starting: variant can fade something in on mount, but only Motion knows when an element enters the viewport.',
-  tailwind: ['overflow-y-auto', 'grid-cols-3', 'rounded-full', 'bg-sky-500/15', 'text-balance', 'before:absolute', 'dark:'],
+  tailwind: ['overflow-y-auto', 'grid-cols-3', 'rounded-full', 'bg-sky-500/15', 'text-pretty', 'before:absolute', 'dark:'],
 }
 
 const CHIP = 'focus-ring cursor-pointer rounded-full border px-3 py-1 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none'

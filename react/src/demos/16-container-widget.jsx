@@ -145,11 +145,11 @@ const PLANS = [
 
 // every tier gets its own chip, lit by its own variant: the proof is written in CSS, not in JS
 const TIERS = [
-  ['@xs', 'opacity-60 @xs:bg-accent @xs:text-surface @xs:opacity-100'],
-  ['@sm', 'opacity-60 @sm:bg-accent @sm:text-surface @sm:opacity-100'],
-  ['@md', 'opacity-60 @md:bg-accent @md:text-surface @md:opacity-100'],
-  ['@lg', 'opacity-60 @lg:bg-accent @lg:text-surface @lg:opacity-100'],
-  ['@xl', 'opacity-60 @xl:bg-accent @xl:text-surface @xl:opacity-100'],
+  ['@xs', '@xs:bg-accent @xs:text-surface'],
+  ['@sm', '@sm:bg-accent @sm:text-surface'],
+  ['@md', '@md:bg-accent @md:text-surface'],
+  ['@lg', '@lg:bg-accent @lg:text-surface'],
+  ['@xl', '@xl:bg-accent @xl:text-surface'],
 ]
 
 function RevenueWidget() {
@@ -161,7 +161,7 @@ function RevenueWidget() {
           <h4 className="m-0 text-sm font-medium text-muted">Monthly recurring revenue</h4>
           <p className="m-0 mt-1 font-display text-[clamp(1.75rem,9cqw,3rem)] leading-none font-bold tracking-tight">$48,290</p>
         </div>
-        <p className="m-0 inline-flex items-center gap-1 rounded-full bg-emerald-600/15 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-emerald-700 dark:text-emerald-400">
+        <p className="m-0 inline-flex items-center gap-1 rounded-full bg-emerald-600/15 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-emerald-800 dark:text-emerald-400">
           <span aria-hidden="true">▲</span> 6.4% <span className="font-normal text-muted">vs last month</span>
         </p>
       </header>
@@ -199,7 +199,7 @@ function RevenueWidget() {
       <p className="m-0 flex flex-wrap items-center gap-1.5 text-[11px] text-muted">
         Active queries
         {TIERS.map(([label, lit]) => (
-          <code key={label} className={`rounded-md bg-stage px-1.5 py-0.5 font-mono transition-[background-color,opacity] motion-reduce:transition-none ${lit}`}>
+          <code key={label} className={`rounded-md bg-stage px-1.5 py-0.5 font-mono transition-colors motion-reduce:transition-none ${lit}`}>
             {label}
           </code>
         ))}

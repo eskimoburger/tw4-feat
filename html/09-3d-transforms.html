@@ -28,7 +28,6 @@
   /* custom camera, hinge, angle and easing tokens */
   @theme {
     --perspective-remote: 1800px;
-    --perspective-origin-stage: 50% 20%;
     --transform-origin-hinge: 0% 50%;
     --rotate-flip: 180deg;
     --ease-flip: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -113,7 +112,7 @@
   <section class="sc-intro">
     <p class="sc-eyebrow">Page 09 · Visual</p>
     <h1>3D transforms</h1>
-    <p class="sc-lede">Tilt, flip, hinge and spin elements in 3D with <code>perspective-*</code>, <code>rotate-x/y/z</code>, <code>translate-z-*</code>, <code>transform-3d</code> and <code>backface-hidden</code>, plus the variables, keyframes and starting styles that make them move. Hover demos also respond to keyboard focus, because v4 only applies <code>hover:</code> on devices that can hover.</p>
+    <p class="sc-lede">Tilt, flip, hinge and spin elements in 3D with <code>perspective-*</code>, <code>rotate-x/y/z</code>, <code>translate-z-*</code>, <code>transform-3d</code> and <code>backface-hidden</code>, plus the variables, keyframes and starting styles that make them move. In v4, <code>hover:</code> only applies on devices that can hover, so the hover demos here also respond to keyboard focus and to a tap.</p>
     <nav data-sc-toc aria-label="Features on this page"></nav>
   </section>
 
@@ -276,42 +275,42 @@
         <div class="sc-demo" id="perspective-1">
           <div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4">
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-dramatic"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-dramatic"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-dramatic</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">100px</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-near"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-near"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-near</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">300px</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-normal"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-normal"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-normal</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">500px</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-midrange"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-midrange"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-midrange</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">800px</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-distant"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-distant"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-distant</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">1200px</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-none"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-none"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-none</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">no vanishing point</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-[750px]"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-[750px]"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-[750px]</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">arbitrary value</span>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <div class="flex justify-center perspective-(--cam) [--cam:400px]"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
+              <div class="flex h-40 items-center justify-center perspective-(--cam) [--cam:400px]"><div class="grid size-24 rotate-y-50 place-items-center rounded-xl bg-linear-to-br from-sky-400 to-indigo-600 text-2xl font-bold text-white">F</div></div>
               <code class="text-center text-xs text-slate-700 dark:text-slate-300">perspective-(--cam)</code>
               <span class="text-[11px] text-slate-500 dark:text-slate-400">variable, 400px</span>
             </div>
@@ -324,8 +323,8 @@
         <figcaption>Switch the camera on one live card</figcaption>
         <div class="sc-demo" id="perspective-2">
           <div class="grid items-center gap-6 sm:grid-cols-[1fr_auto]">
-            <div id="persp-stage" class="flex justify-center py-6 perspective-normal">
-              <div class="grid h-32 w-48 rotate-x-12 rotate-y-35 content-between rounded-xl bg-linear-to-br from-sky-500 to-indigo-600 p-4 text-white shadow-xl">
+            <div id="persp-stage" class="flex h-64 items-center justify-center perspective-normal">
+              <div class="grid h-32 w-48 rotate-x-10 rotate-y-25 content-between rounded-xl bg-linear-to-br from-sky-500 to-indigo-600 p-4 text-white shadow-xl">
                 <span class="text-xs font-medium text-sky-100">Q3 report</span>
                 <span>
                   <span class="block text-2xl font-bold">$48.2k</span>
@@ -697,7 +696,7 @@ document.addEventListener('click', (e) =&gt; {
 }</pre>
       </figure>
 
-      <p class="sc-note"><code>backface-hidden</code> goes on every face, not on the container. A hidden face is not clickable (the pointer hits whatever is in front), but it is still keyboard-focusable and still read by screen readers, so pair a flip with <code>group-focus-within:</code> as above. Inside a <code>&lt;button&gt;</code> use <code>&lt;span class="block"&gt;</code> faces, because a button cannot contain a <code>&lt;div&gt;</code>. The browser build writes the unprefixed property only; the CLI, Vite and PostCSS builds add vendor prefixes through Lightning CSS. Reduced motion: the coin and flap use <code>motion-safe:</code>, so they stay still.</p>
+      <p class="sc-note"><code>backface-hidden</code> goes on every face, not on the container. A hidden face is not clickable (the pointer hits whatever is in front), but it is still keyboard-focusable and still read by screen readers, so pair a flip with <code>group-focus-within:</code> as above. Inside a <code>&lt;button&gt;</code> use <code>&lt;span class="block"&gt;</code> faces, because a button cannot contain a <code>&lt;div&gt;</code>. No <code>-webkit-</code> prefix is needed: Safari has read the unprefixed property since 15.4 and v4 targets Safari 16.4 and newer. Reduced motion: the coin and flap use <code>motion-safe:</code>, so they stay still.</p>
     </div>
   </article>
 
@@ -858,7 +857,7 @@ document.addEventListener('click', (e) =&gt; {
         <pre class="sc-code" data-code="html" data-from="flip-state-variants-4"></pre>
       </figure>
 
-      <p class="sc-note">On a touch screen <code>hover:</code>, <code>group-hover:</code> and <code>peer-hover:</code> never fire (verified in mobile emulation: a tap did not flip a hover card, but did flip an <code>aria-pressed</code> one), so always ship a second trigger. <code>peer-checked:</code> only reaches later siblings, so the input must come first. <code>pointer-fine:</code> and <code>pointer-coarse:</code> need <span class="sc-since" data-v="4.1">v4.1</span>. The last example is for a mouse.</p>
+      <p class="sc-note">On a touch screen <code>hover:</code>, <code>group-hover:</code> and <code>peer-hover:</code> never fire (checked in mobile emulation), so always ship a second trigger. The first card above still flips on a tap because it has <code>tabindex="0"</code> and <code>group-focus-within:</code>, and the <code>aria-pressed</code> card flips on a tap too. <code>peer-checked:</code> only reaches later siblings, so the input must come first. <code>pointer-fine:</code> and <code>pointer-coarse:</code> need <span class="sc-since" data-v="4.1">v4.1</span>. The last example is for a mouse.</p>
     </div>
   </article>
 
@@ -937,7 +936,7 @@ document.addEventListener('click', (e) =&gt; {
         <pre class="sc-code" data-code="html" data-from="translate-z-3"></pre>
       </figure>
 
-      <p class="sc-note"><code>translate</code> is applied before <code>rotate</code> on the same element, so <code>translate-z-*</code> moves along the parent's z axis, not the element's own rotated normal. That is why a cube side is <code>translate-x-10 rotate-y-90</code> and not <code>rotate-y-90 translate-z-10</code>; nest a rotated wrapper around a <code>translate-z-*</code> child for a ring (see the Keep depth card). Fractions and percentages such as <code>translate-z-1/2</code> generate nothing. <code>translate-3d</code> and <code>scale-3d</code> exist in the engine as the full shorthand but add no visible change by themselves; <code>translate-3d</code> is not in the docs table. A custom <code>transition-[transform]</code> does not cover <code>translate</code>: write <code>transition-[translate]</code>.</p>
+      <p class="sc-note">The browser composes <code>translate</code>, then <code>rotate</code>, then <code>scale</code>, then <code>transform</code> (the order you would write them in a transform list), so <code>translate-z-*</code> moves along the parent's z axis, not the element's own rotated normal. That is why a cube side is <code>translate-x-10 rotate-y-90</code> and not <code>rotate-y-90 translate-z-10</code>; nest a rotated wrapper around a <code>translate-z-*</code> child for a ring (see the Keep depth card). Fractions and percentages such as <code>translate-z-1/2</code> generate nothing. <code>translate-3d</code> and <code>scale-3d</code> are the three-axis forms of <code>translate</code> and <code>scale</code>; they change nothing visible on their own (the last example in the Stretch depth card reads the values live). One gotcha, checked in 4.3.3: a later class that writes only x and y, such as <code>hover:translate-y-2</code>, rewrites <code>translate</code> without z, so the element drops back to z = 0 on hover. Add <code>hover:translate-3d</code> or repeat <code>hover:translate-z-8</code> to keep the depth. A custom <code>transition-[transform]</code> does not cover <code>translate</code>: write <code>transition-[translate]</code>.</p>
     </div>
   </article>
 
@@ -1103,7 +1102,7 @@ document.addEventListener('click', (e) =&gt; {
         <pre class="sc-code" data-code="html" data-from="transform-origin-5"></pre>
       </figure>
 
-      <p class="sc-note">The origin is measured from the element's own box, so <code>origin-right</code> on a half-width door is that door's right edge. Keyword origins compile to percentages (<code>origin-left</code> is <code>0</code>, <code>origin-top-right</code> is <code>100% 0</code>), though the docs table prints keyword pairs. Translate ignores the origin; only rotate, scale and skew use it.</p>
+      <p class="sc-note">The origin is measured from the element's own box, so <code>origin-right</code> on a half-width door is that door's right edge. Side and corner keywords compile to numbers (<code>origin-left</code> is <code>0</code>, <code>origin-top-right</code> is <code>100% 0</code>) although the docs table prints <code>left</code> and <code>top right</code>; <code>center</code>, <code>top</code> and <code>bottom</code> stay keywords. Translate ignores the origin; only rotate, scale and skew use it.</p>
     </div>
   </article>
 
@@ -1215,7 +1214,7 @@ document.addEventListener('pointerout', (e) =&gt; {
         <pre class="sc-code" data-code="html" data-from="perspective-origin-3"></pre>
       </figure>
 
-      <p class="sc-note">Percentages are relative to the perspective element's own box, so a bigger stage shows a bigger shift. Set it on the wrapper next to <code>perspective-*</code>, never on the rotating child. With <code>perspective-none</code> or a very large perspective the origin barely matters. The docs table prints keyword pairs, but the engine emits percentages (<code>perspective-origin-top-left</code> is <code>0 0</code>).</p>
+      <p class="sc-note">Percentages are relative to the perspective element's own box, so a bigger stage shows a bigger shift. Set it on the wrapper next to <code>perspective-*</code>, never on the rotating child. With <code>perspective-none</code> or a very large perspective the origin barely matters. The docs table prints keyword pairs, but the engine emits numbers for sides and corners (<code>perspective-origin-top-left</code> is <code>0 0</code>).</p>
     </div>
   </article>
 
@@ -1224,7 +1223,7 @@ document.addEventListener('pointerout', (e) =&gt; {
     <div class="sc-notes">
       <h2>Stretch depth: <code>scale-z-*</code></h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>Scales an element along z, in percent like <code>scale-x-*</code>. On a <code>transform-3d</code> parent it stretches or squeezes the gaps between everything inside, so one class explodes or collapses a whole layer stack. On a flat element it does nothing visible.</p>
+      <p>Scales an element along z, in percent like <code>scale-x-*</code>. On a <code>transform-3d</code> element it stretches or squeezes the gaps between everything inside, so one class explodes or collapses a whole layer stack. Keep the tilt (<code>rotate-x-*</code>, <code>rotate-z-*</code>) on an outer wrapper, or the z scale is hidden. On a flat element it does nothing visible.</p>
       <ul class="sc-parts">
         <li><code>scale-z-300</code></li>
         <li><code>-scale-z-100</code></li>
@@ -1239,11 +1238,13 @@ document.addEventListener('pointerout', (e) =&gt; {
         <figcaption>One class explodes the stack: <code>group-hover:scale-z-300</code></figcaption>
         <div class="sc-demo" id="scale-z-1">
           <div class="group h-72 pt-36 perspective-distant" tabindex="0">
-            <div class="relative mx-auto size-32 rotate-x-60 rotate-z-45 transform-3d transition-transform duration-500 group-hover:scale-z-300 group-focus-within:scale-z-300 motion-reduce:transition-none *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
-              <div class="bg-slate-400/90 text-slate-900">Background</div>
-              <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
-              <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
-              <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+            <div class="mx-auto size-32 rotate-x-60 rotate-z-45 transform-3d">
+              <div class="relative size-full transform-3d transition-transform duration-500 group-hover:scale-z-300 group-focus-within:scale-z-300 motion-reduce:transition-none *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
+                <div class="bg-slate-400/90 text-slate-900">Background</div>
+                <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
+                <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
+                <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+              </div>
             </div>
           </div>
         </div>
@@ -1255,11 +1256,13 @@ document.addEventListener('pointerout', (e) =&gt; {
         <div class="sc-demo" id="scale-z-2">
           <div class="grid justify-items-center gap-2">
             <div id="explode-stage" data-explode="false" class="group h-72 w-full pt-36 perspective-distant">
-              <div class="relative mx-auto size-32 scale-z-10 rotate-x-60 rotate-z-45 transform-3d transition-transform duration-700 group-data-[explode=true]:scale-z-300 motion-reduce:transition-none *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
-                <div class="bg-slate-400/90 text-slate-900">Background</div>
-                <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
-                <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
-                <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+              <div class="mx-auto size-32 rotate-x-60 rotate-z-45 transform-3d">
+                <div class="relative size-full scale-z-10 transform-3d transition-transform duration-700 group-data-[explode=true]:scale-z-300 motion-reduce:transition-none *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
+                  <div class="bg-slate-400/90 text-slate-900">Background</div>
+                  <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
+                  <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
+                  <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+                </div>
               </div>
             </div>
             <button type="button" data-explode-toggle="explode-stage" aria-pressed="false" class="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">Explode</button>
@@ -1283,16 +1286,18 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="scale-z-3">
           <div id="depth-demo" class="grid gap-3 [--sz:100%]">
             <div class="h-72 pt-36 perspective-distant">
-              <div class="relative mx-auto size-32 scale-z-(--sz) rotate-x-60 rotate-z-45 transform-3d *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
-                <div class="bg-slate-400/90 text-slate-900">Background</div>
-                <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
-                <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
-                <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+              <div class="mx-auto size-32 rotate-x-60 rotate-z-45 transform-3d">
+                <div class="relative size-full scale-z-(--sz) transform-3d *:absolute *:inset-0 *:rounded-xl *:p-2 *:text-[10px] *:font-semibold">
+                  <div class="bg-slate-400/90 text-slate-900">Background</div>
+                  <div class="translate-z-4 bg-sky-400/90 text-sky-950">Surface</div>
+                  <div class="translate-z-8 bg-indigo-500/90 text-white">Card</div>
+                  <div class="translate-z-12 bg-fuchsia-500/90 text-white">Badge</div>
+                </div>
               </div>
             </div>
             <label class="mx-auto flex w-full max-w-xs items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
               <span class="shrink-0">Depth</span>
-              <input type="range" min="100" max="300" step="10" value="100" data-sz-for="depth-demo" class="w-full accent-sky-600">
+              <input type="range" min="10" max="300" step="10" value="100" data-sz-for="depth-demo" class="w-full accent-sky-600">
               <output class="w-10 shrink-0 text-right">100%</output>
             </label>
           </div>
@@ -1307,7 +1312,62 @@ document.addEventListener('input', (e) =&gt; {
 })</pre>
       </figure>
 
-      <p class="sc-note">Never use <code>scale-z-0</code> as the collapsed state: the whole subtree becomes a singular matrix and vanishes. <code>scale-z-10</code> keeps the layers visible and nearly merged. <code>scale-110</code> sets a z value too but does not use it, so it stays a flat two-axis scale. <code>scale-3d</code> is the full <code>scale</code> shorthand from the docs API table and changes nothing on its own. A fixed <code>translate-z-*</code> on the children plus <code>scale-z-*</code> on the parent is cleaner than animating every child.</p>
+      <figure class="sc-example">
+        <figcaption>What lands in <code>translate</code> and <code>scale</code>: live computed values</figcaption>
+        <div class="sc-demo" id="scale-z-4">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3">
+            <div class="grid justify-items-center gap-2">
+              <div id="z3d-t1" class="size-10 translate-x-4 rounded-lg bg-sky-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">translate-x-4</code>
+              <dl data-sc-omit data-readout="z3d-t1" class="text-center text-xs text-slate-700 dark:text-slate-300"><dt class="sr-only">translate</dt><dd><code data-prop="translate" class="text-[11px]">…</code></dd></dl>
+            </div>
+            <div class="grid justify-items-center gap-2">
+              <div id="z3d-t2" class="size-10 translate-z-8 rounded-lg bg-sky-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">translate-z-8</code>
+              <dl data-sc-omit data-readout="z3d-t2" class="text-center text-xs text-slate-700 dark:text-slate-300"><dt class="sr-only">translate</dt><dd><code data-prop="translate" class="text-[11px]">…</code></dd></dl>
+            </div>
+            <div class="grid justify-items-center gap-2">
+              <div id="z3d-t3" class="size-10 translate-x-4 translate-z-8 rounded-lg bg-sky-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">translate-x-4 translate-z-8</code>
+              <dl data-sc-omit data-readout="z3d-t3" class="text-center text-xs text-slate-700 dark:text-slate-300"><dt class="sr-only">translate</dt><dd><code data-prop="translate" class="text-[11px]">…</code></dd></dl>
+            </div>
+            <div class="grid justify-items-center gap-2">
+              <div id="z3d-s1" class="size-10 scale-110 rounded-lg bg-indigo-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">scale-110</code>
+              <dl data-sc-omit data-readout="z3d-s1" class="text-center text-xs text-slate-700 dark:text-slate-300"><dt class="sr-only">scale</dt><dd><code data-prop="scale" class="text-[11px]">…</code></dd></dl>
+            </div>
+            <div class="grid justify-items-center gap-2">
+              <div id="z3d-s2" class="size-10 scale-z-150 rounded-lg bg-indigo-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">scale-z-150</code>
+              <dl data-sc-omit data-readout="z3d-s2" class="text-center text-xs text-slate-700 dark:text-slate-300"><dt class="sr-only">scale</dt><dd><code data-prop="scale" class="text-[11px]">…</code></dd></dl>
+            </div>
+            <div class="grid justify-items-center gap-2">
+              <div id="z3d-s3" class="size-10 scale-110 scale-3d rounded-lg bg-indigo-500"></div>
+              <code class="text-center text-xs text-slate-700 dark:text-slate-300">scale-110 scale-3d</code>
+              <dl data-sc-omit data-readout="z3d-s3" class="text-center text-xs text-slate-700 dark:text-slate-300"><dt class="sr-only">scale</dt><dd><code data-prop="scale" class="text-[11px]">…</code></dd></dl>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="scale-z-4"></pre>
+        <pre class="sc-code" data-code="js" data-label="JS: readout">// [data-readout="id"] lists the computed value of each [data-prop] child for that element
+const refresh = () =&gt; {
+  document.querySelectorAll('[data-readout]').forEach((panel) =&gt; {
+    const cs = getComputedStyle(document.getElementById(panel.dataset.readout))
+    panel.querySelectorAll('[data-prop]').forEach((out) =&gt; {
+      out.textContent = cs.getPropertyValue(out.dataset.prop) || 'none'
+    })
+  })
+}
+refresh()
+window.addEventListener('load', refresh)
+// the browser build rewrites its style tag when a new class appears: read again then
+new MutationObserver(refresh).observe(document.head, { childList: true, subtree: true, characterData: true })
+document.addEventListener('click', (e) =&gt; {
+  if (e.target.closest('[data-toggle-class]')) refresh()
+})</pre>
+      </figure>
+
+      <p class="sc-note">The tilt goes on an outer wrapper because <code>rotate-x-*</code> writes <code>transform</code>, which the browser applies before <code>scale</code>. With the tilt on the same element, the layers are tilted first and the z scale only stretches that result along the viewer's axis, which barely shows. Do not use <code>scale-z-0</code> as the collapsed state: it flattens every layer into one plane and the stack vanishes. <code>scale-z-10</code> keeps the layers visible and nearly merged. <code>scale-110</code> stores a z value too but its <code>scale</code> does not read it, so it stays a flat two-axis scale; <code>scale-3d</code> writes the three-axis form that does. <code>translate-3d</code> does the same for <code>translate</code>, but it only matters if you set <code>--tw-translate-z</code> by hand. You do not need either with <code>scale-z-*</code> or <code>translate-z-*</code>, which already write the z part. The same gotcha applies to scale: <code>scale-z-150 hover:scale-110</code> drops the z part on hover, and <code>hover:scale-3d</code> would only bring back 110%, so repeat <code>hover:scale-z-150</code> to keep it. <code>scale-3d</code> is in the docs table; <code>translate-3d</code> is not.</p>
     </div>
   </article>
 
@@ -1366,11 +1426,11 @@ document.addEventListener('pointerout', (e) =&gt; {
         <figcaption>Coverflow: three variables per card, click one to bring it forward</figcaption>
         <div class="sc-demo" id="css-variable-3d-2">
           <div class="relative mx-auto h-52 w-full max-w-lg perspective-[900px] [--step:2.5rem] sm:h-60 sm:[--step:5.5rem]">
-            <button type="button" data-cf-card style="--o:-2;--s:-1;--a:2" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Neon Tide</button>
-            <button type="button" data-cf-card style="--o:-1;--s:-1;--a:1" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Low Sun</button>
-            <button type="button" data-cf-card style="--o:0;--s:0;--a:0" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Fern</button>
-            <button type="button" data-cf-card style="--o:1;--s:1;--a:1" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Glass Lake</button>
-            <button type="button" data-cf-card style="--o:2;--s:1;--a:2" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32">Dusk</button>
+            <button type="button" data-cf-card style="--o:-2;--s:-1;--a:2" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32"><span class="opacity-[calc(1-var(--a))] transition-opacity duration-500 motion-reduce:transition-none">Neon Tide</span></button>
+            <button type="button" data-cf-card style="--o:-1;--s:-1;--a:1" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32"><span class="opacity-[calc(1-var(--a))] transition-opacity duration-500 motion-reduce:transition-none">Low Sun</span></button>
+            <button type="button" data-cf-card style="--o:0;--s:0;--a:0" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32"><span class="opacity-[calc(1-var(--a))] transition-opacity duration-500 motion-reduce:transition-none">Fern</span></button>
+            <button type="button" data-cf-card style="--o:1;--s:1;--a:1" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32"><span class="opacity-[calc(1-var(--a))] transition-opacity duration-500 motion-reduce:transition-none">Glass Lake</span></button>
+            <button type="button" data-cf-card style="--o:2;--s:1;--a:2" class="absolute top-4 left-1/2 -ml-12 z-[calc(10-var(--a))] flex h-40 w-24 translate-x-[calc(var(--o)*var(--step))] translate-z-[calc(var(--a)*-4rem)] rotate-y-[calc(var(--s)*-55deg)] items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-2 text-left text-xs font-semibold text-white shadow-xl transition-transform duration-500 ease-out motion-reduce:transition-none sm:-ml-16 sm:h-48 sm:w-32"><span class="opacity-[calc(1-var(--a))] transition-opacity duration-500 motion-reduce:transition-none">Dusk</span></button>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="css-variable-3d-2"></pre>
@@ -1443,7 +1503,7 @@ document.addEventListener('input', (e) =&gt; {
 })</pre>
       </figure>
 
-      <p class="sc-note">Give every variable a unit and a default (<code>[--rx:0deg]</code>): a unitless or unset variable makes the whole transform invalid, and the element snaps flat. Add a short <code>transition-transform duration-150 ease-out</code> to smooth pointer tracking, and <code>motion-reduce:transition-none</code>. Do not put <code>overflow-hidden</code> on a tilting <code>transform-3d</code> card; round and clip the leaf layers instead. <code>pointer-fine:</code> (<span class="sc-since" data-v="4.1">v4.1</span>) keeps the tilt off touch screens, where there is no hover to track.</p>
+      <p class="sc-note">Give every variable a unit and a default (<code>[--rx:0deg]</code>): a unitless value makes the whole transform invalid, and an unset variable drops that axis, so the element snaps flat either way. Add a short <code>transition-transform duration-150 ease-out</code> to smooth pointer tracking, and <code>motion-reduce:transition-none</code>. Do not put <code>overflow-hidden</code> on a tilting <code>transform-3d</code> card; round and clip the leaf layers instead. <code>pointer-fine:</code> (<span class="sc-since" data-v="4.1">v4.1</span>) keeps the tilt off touch screens, where there is no hover to track.</p>
     </div>
   </article>
 
@@ -1452,7 +1512,7 @@ document.addEventListener('input', (e) =&gt; {
     <div class="sc-notes">
       <h2>3D loops with <code>@theme</code> keyframes</h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>Define <code>--animate-*</code> and its <code>@keyframes</code> inside <code>@theme</code> and Tailwind generates an <code>animate-*</code> utility, and only emits the keyframes when the class is used. Keyframes that animate <code>transform</code> or <code>rotate</code> give you spinning cubes, rings and coins.</p>
+      <p>Define <code>--animate-*</code> and its <code>@keyframes</code> inside <code>@theme</code> and Tailwind generates an <code>animate-*</code> utility. Production builds only emit the keyframes when the animation is used. Keyframes that animate <code>transform</code> or <code>rotate</code> give you spinning cubes, rings and coins.</p>
       <ul class="sc-parts">
         <li><code>--animate-cube-spin</code></li>
         <li><code>motion-safe:animate-cube-spin</code></li>
@@ -1571,7 +1631,7 @@ document.addEventListener('input', (e) =&gt; {
 }</pre>
       </figure>
 
-      <p class="sc-note">A keyframe that sets <code>transform</code> overrides <code>rotate-x-*</code> and <code>rotate-y-*</code> on the same element, because animations beat normal declarations. Three ways out: bake the tilt into the keyframes (the cube), put the tilt on a parent (the ring), or animate <code>rotate:</code> and <code>translate:</code> instead (the turntable). Always pair loops with <code>motion-safe:</code> so people who ask for less motion get a still scene; the cube falls back to a fixed tilt.</p>
+      <p class="sc-note">A keyframe that sets <code>transform</code> overrides <code>rotate-x-*</code> and <code>rotate-y-*</code> on the same element, because animations beat normal declarations. Three ways out: bake the tilt into the keyframes (the cube), put the tilt on a parent (the ring), or animate <code>rotate:</code> and <code>translate:</code> instead (the turntable). To reuse the same keyframes with other timing, write <code>animate-[ring-spin_20s_linear_infinite]</code>; a production build keeps the keyframes for it too. Always pair loops with <code>motion-safe:</code> so people who ask for less motion get a still scene; the cube falls back to a fixed tilt.</p>
     </div>
   </article>
 
@@ -1781,7 +1841,7 @@ document.addEventListener('click', (e) =&gt; {
         <pre class="sc-code" data-code="html" data-from="individual-transforms-3"></pre>
       </figure>
 
-      <p class="sc-note">Since v4, <code>transform-none</code> no longer clears <code>rotate-45</code>, <code>scale-110</code> or <code>translate-x-2</code>; it only clears <code>rotate-x/y/z</code>, <code>skew-*</code> and arbitrary <code>transform</code> values. Reset the individual properties with <code>rotate-none</code>, <code>scale-none</code> and <code>translate-none</code>. A custom <code>transition-[opacity,transform]</code> no longer animates them either: write <code>transition-[opacity,scale]</code>. On one element the browser applies translate, then rotate, then scale, then <code>transform</code>. <code>rotate-45</code> and <code>rotate-z-45</code> both turn around z but live in different properties.</p>
+      <p class="sc-note">Since v4, <code>transform-none</code> no longer clears <code>rotate-45</code>, <code>scale-110</code> or <code>translate-x-2</code>; it only clears <code>rotate-x/y/z</code>, <code>skew-*</code> and arbitrary <code>transform</code> values. Reset the individual properties with <code>rotate-none</code>, <code>scale-none</code> and <code>translate-none</code>. A custom <code>transition-[opacity,transform]</code> no longer animates them either: write <code>transition-[opacity,scale]</code>. On one element the browser composes translate, then rotate, then scale, then <code>transform</code>. <code>rotate-45</code> and <code>rotate-z-45</code> both turn around z but live in different properties.</p>
     </div>
   </article>
 
@@ -1789,8 +1849,8 @@ document.addEventListener('click', (e) =&gt; {
   <article class="sc-feature" id="skew">
     <div class="sc-notes">
       <h2>Shear: <code>skew-*</code></h2>
-      <span class="sc-since" data-v="core">core</span>
-      <p>2D shear utilities. They work as in v3 and still write <code>transform</code>, so they compose with <code>rotate-x/y/z</code> and are cleared by <code>transform-none</code>. The skew helper variables do not inherit, so a child can apply the opposite skew and keep its text upright.</p>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>2D shear. <code>skew-x-*</code> and <code>skew-y-*</code> work as in v3; the both-axes <code>skew-*</code> shorthand is new in v4. They still write <code>transform</code>, so they compose with <code>rotate-x/y/z</code> and are cleared by <code>transform-none</code>. The skew helper variables do not inherit, so a child can apply the opposite skew and keep its text upright.</p>
       <ul class="sc-parts">
         <li><code>skew-3</code></li>
         <li><code>-skew-x-12</code></li>
@@ -1876,8 +1936,8 @@ document.addEventListener('click', (e) =&gt; {
   <article class="sc-feature" id="transform-family">
     <div class="sc-notes">
       <h2>The <code>transform-*</code> family</h2>
-      <span class="sc-since" data-v="core">core</span>
-      <p>The old transform helpers still exist. <code>transform-gpu</code> adds <code>translateZ(0)</code> to the composed rotate-x/y/z and skew transform as a compositing hint, <code>transform-cpu</code> is the plain composition, and <code>transform-none</code> clears <code>transform</code>. An arbitrary value writes any transform list, including a per-element <code>perspective()</code>.</p>
+      <span class="sc-since" data-v="4.0">v4.0</span>
+      <p>The old transform helpers still exist, but <code>transform-none</code> changed in v4 (see the last example), and the docs now list arbitrary and <code>(--var)</code> values for <code>transform-*</code>. <code>transform-gpu</code> adds <code>translateZ(0)</code> to the composed rotate-x/y/z and skew transform as a compositing hint, <code>transform-cpu</code> is the plain composition, and <code>transform-none</code> clears <code>transform</code>. An arbitrary value writes any transform list, including a per-element <code>perspective()</code>.</p>
       <ul class="sc-parts">
         <li><code>transform-gpu</code></li>
         <li><code>transform-cpu</code></li>
@@ -2018,10 +2078,9 @@ document.addEventListener('click', (e) =&gt; {
     <div class="sc-notes">
       <h2>Your own depths, hinges and angles in <code>@theme</code></h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>Name a camera distance, a hinge, an angle or an easing once, and use it as a utility everywhere. <code>--perspective-*</code> is documented. <code>--perspective-origin-*</code>, <code>--transform-origin-*</code> and <code>--rotate-*</code> are not in the theme docs table, but the utilities read them and they work in 4.3.3.</p>
+      <p>Name a camera distance, a hinge, an angle or an easing once, and use it as a utility everywhere. <code>--perspective-*</code> and <code>--ease-*</code> are documented. <code>--transform-origin-*</code> and <code>--rotate-*</code> are not in the theme docs table, but the utilities read them and they work in 4.3.3. Skip <code>--perspective-origin-*</code>: its name sits inside <code>--perspective-*</code>, which breaks the camera (see below).</p>
       <ul class="sc-parts">
         <li><code>--perspective-remote</code></li>
-        <li><code>--perspective-origin-stage</code></li>
         <li><code>--transform-origin-hinge</code></li>
         <li><code>--rotate-flip</code></li>
         <li><code>--ease-flip</code></li>
@@ -2045,9 +2104,9 @@ document.addEventListener('click', (e) =&gt; {
             </tr>
             <tr>
               <td><code>--perspective-origin-*</code></td>
-              <td><code>perspective-origin-*</code></td>
+              <td><code>perspective-origin-*</code>, and also <code>perspective-*</code></td>
               <td>None (the keywords are built into the utility)</td>
-              <td>No, works in 4.3.3</td>
+              <td>No. Avoid it: the same class also writes <code>perspective</code></td>
             </tr>
             <tr>
               <td><code>--transform-origin-*</code></td>
@@ -2093,10 +2152,10 @@ document.addEventListener('click', (e) =&gt; {
       </figure>
 
       <figure class="sc-example">
-        <figcaption>A door with a named hinge and a named vanishing point</figcaption>
+        <figcaption>A door with a named hinge and a named camera</figcaption>
         <div class="sc-demo" id="theme-3d-tokens-2">
           <div class="flex justify-center">
-            <div class="group relative h-40 w-40 perspective-remote perspective-origin-stage" tabindex="0">
+            <div class="group relative h-40 w-40 perspective-remote perspective-origin-[50%_20%]" tabindex="0">
               <div class="absolute inset-0 grid place-items-center rounded-xl bg-amber-300 text-center text-sm font-semibold text-slate-900">Welcome in</div>
               <div class="absolute inset-0 flex origin-hinge items-center justify-end rounded-xl bg-violet-600 pr-4 shadow-lg transition-transform duration-700 group-hover:-rotate-y-110 group-focus-within:-rotate-y-110 motion-reduce:transition-none"><span class="h-10 w-1.5 rounded bg-white/70"></span></div>
             </div>
@@ -2106,12 +2165,17 @@ document.addEventListener('click', (e) =&gt; {
         <pre class="sc-code" data-code="css" data-label="CSS">
 @theme {
   --perspective-remote: 1800px;
-  --perspective-origin-stage: 50% 20%;
   --transform-origin-hinge: 0% 50%;
+}</pre>
+        <pre class="sc-code" data-code="css" data-label="Why there is no --perspective-origin-* token">
+/* @theme { --perspective-origin-stage: 50% 20%; } makes this class: */
+.perspective-origin-stage {
+  perspective-origin: var(--perspective-origin-stage);
+  perspective: var(--perspective-origin-stage); /* invalid value, so perspective becomes none */
 }</pre>
       </figure>
 
-      <p class="sc-note">Theme variables are CSS variables, so you can read the defaults in your own CSS (<code>var(--perspective-near)</code>) or override them site-wide. Because only <code>--perspective-*</code> and <code>--ease-*</code> are documented for this, treat the other namespaces as an implementation detail that could change.</p>
+      <p class="sc-note">Theme variables are CSS variables, so you can read the defaults in your own CSS (<code>var(--perspective-near)</code>) or override them site-wide. The extra <code>perspective</code> line in that last block is real: <code>perspective-origin-stage</code> matches both utilities, and because it sorts after <code>perspective-near</code> (and every built-in size) it wins and turns the camera off. Checked in 4.3.3 with <code>perspective-near perspective-origin-stage</code>: the computed <code>perspective</code> is <code>none</code>. Use <code>perspective-origin-[50%_20%]</code> or <code>perspective-origin-(--po)</code> instead. Only <code>--perspective-*</code> and <code>--ease-*</code> are documented here, so treat <code>--transform-origin-*</code> and <code>--rotate-*</code> as an implementation detail that could change.</p>
     </div>
   </article>
 
@@ -2135,11 +2199,11 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Album coverflow: scroll sideways <span class="sc-spacer"></span><span class="hidden rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-800 supports-[animation-timeline:view()]:inline dark:text-emerald-300">supported here</span><span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-800 supports-[animation-timeline:view()]:hidden dark:text-amber-300">not supported here</span></figcaption>
         <div class="sc-demo" id="scroll-coverflow-1">
           <ul class="flex snap-x snap-mandatory gap-4 overflow-x-auto px-[40%] py-6 perspective-[800px]">
-            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-3 text-xs font-semibold text-white">Neon Tide</li>
-            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-3 text-xs font-semibold text-white">Low Sun</li>
-            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-3 text-xs font-semibold text-white">Fern</li>
-            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-3 text-xs font-semibold text-white">Glass Lake</li>
-            <li class="cf-view flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-3 text-xs font-semibold text-white">Dusk</li>
+            <li class="cf-view motion-reduce:animate-none flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-rose-400 to-rose-700 p-3 text-xs font-semibold text-white">Neon Tide</li>
+            <li class="cf-view motion-reduce:animate-none flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-amber-400 to-orange-600 p-3 text-xs font-semibold text-white">Low Sun</li>
+            <li class="cf-view motion-reduce:animate-none flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-emerald-400 to-emerald-700 p-3 text-xs font-semibold text-white">Fern</li>
+            <li class="cf-view motion-reduce:animate-none flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-sky-400 to-blue-700 p-3 text-xs font-semibold text-white">Glass Lake</li>
+            <li class="cf-view motion-reduce:animate-none flex h-40 w-32 shrink-0 snap-center items-end rounded-xl bg-linear-to-br from-violet-400 to-fuchsia-700 p-3 text-xs font-semibold text-white">Dusk</li>
           </ul>
         </div>
         <pre class="sc-code" data-code="html" data-from="scroll-coverflow-1"></pre>
@@ -2161,22 +2225,22 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Onboarding steps that tilt in as you scroll down <span class="sc-spacer"></span><span class="hidden rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-800 supports-[animation-timeline:view()]:inline dark:text-emerald-300">supported here</span><span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-800 supports-[animation-timeline:view()]:hidden dark:text-amber-300">not supported here</span></figcaption>
         <div class="sc-demo" id="scroll-coverflow-2">
           <div class="mx-auto h-72 max-w-xs overflow-y-auto rounded-xl bg-white/50 px-4 py-24 ring-1 ring-slate-900/10 perspective-[700px] dark:bg-white/5 dark:ring-white/10">
-            <article class="step-view mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+            <article class="step-view motion-reduce:animate-none mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
               <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 1</span>
               <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Create your workspace</h3>
               <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Pick a name and a region.</p>
             </article>
-            <article class="step-view mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+            <article class="step-view motion-reduce:animate-none mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
               <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 2</span>
               <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Invite your team</h3>
               <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Add teammates by email.</p>
             </article>
-            <article class="step-view mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+            <article class="step-view motion-reduce:animate-none mb-6 rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
               <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 3</span>
               <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Connect your repository</h3>
               <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Authorize read access to one repo.</p>
             </article>
-            <article class="step-view rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
+            <article class="step-view motion-reduce:animate-none rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-900/10 dark:bg-slate-800 dark:ring-white/10">
               <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Step 4</span>
               <h3 class="mt-1 font-semibold text-slate-900 dark:text-slate-100">Ship the first deploy</h3>
               <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Push to main and watch it go live.</p>
@@ -2198,7 +2262,7 @@ document.addEventListener('click', (e) =&gt; {
 }</pre>
       </figure>
 
-      <p class="sc-note">Browser support: Chrome and Edge 115+, Safari 26+. Firefox has scroll-driven animations behind a flag at the time of writing, so check caniuse. The <code>@supports</code> inside the utility keeps cards flat and readable elsewhere; without it an unsupported browser would jump every card to the last keyframe. The keyframes animate <code>transform</code>, so do not also put <code>rotate-y-*</code> on the cards. <code>perspective-*</code> goes on the scroll container, whose cards are its direct children. For a version that works everywhere with a little JavaScript, see the variable-driven coverflow above.</p>
+      <p class="sc-note">Browser support: Chrome and Edge 115+, Safari 26+. Firefox has scroll-driven animations behind a flag at the time of writing, so check caniuse. The <code>@supports</code> inside the utility keeps cards flat and readable elsewhere; without it an unsupported browser would jump every card to the last keyframe. The keyframes animate <code>transform</code>, so do not also put <code>rotate-y-*</code> on the cards. Each card also has <code>motion-reduce:animate-none</code>, so with reduced motion on the row stays flat. <code>perspective-*</code> goes on the scroll container, whose cards are its direct children. For a version that works everywhere with a little JavaScript, see the variable-driven coverflow above.</p>
     </div>
   </article>
 

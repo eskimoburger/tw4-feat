@@ -86,7 +86,7 @@
   <section class="sc-intro">
     <p class="sc-eyebrow">Page 07 · Motion</p>
     <h1>Motion: transitions</h1>
-    <p class="sc-lede">Everything that moves between two states without a keyframe: which properties transition, how long and how fast, entry and exit animations for popovers, dialogs and toasts, accordions, micro-interactions and staggers. Hover, click and press Replay: every example is live.</p>
+    <p class="sc-lede">Everything that moves between two states without a keyframe: which properties transition, how long and how fast, entry and exit animations for popovers, dialogs and toasts, accordions, micro-interactions and staggers. Hover, click and press Replay: every example runs live, except the React snippets at the end.</p>
     <nav data-sc-toc aria-label="Features on this page"></nav>
   </section>
 
@@ -315,7 +315,7 @@ document.addEventListener('input', (e) =&gt; {
             <div id="tp-probe" class="w-fit rounded-md bg-slate-900 px-2.5 py-1 font-mono text-xs text-white transition dark:bg-white dark:text-slate-900">class="transition"</div>
             <ul id="tp-chips" class="flex flex-wrap gap-1.5" data-sc-omit></ul>
             <p class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
-              <span class="inline-flex items-center gap-1.5"><i class="size-2.5 rounded-full bg-slate-400"></i>the rest of the list</span>
+              <span class="inline-flex items-center gap-1.5"><i class="size-2.5 rounded-full bg-slate-400"></i>already in v3</span>
               <span class="inline-flex items-center gap-1.5"><i class="size-2.5 rounded-full bg-sky-500"></i>added in v4.0</span>
               <span class="inline-flex items-center gap-1.5"><i class="size-2.5 rounded-full bg-violet-500"></i>added in v4.1.5</span>
             </p>
@@ -326,7 +326,7 @@ document.addEventListener('input', (e) =&gt; {
 const probe = document.getElementById('tp-probe')
 const since = {
   'outline-color': '4.0', '--tw-gradient-from': '4.0', '--tw-gradient-via': '4.0', '--tw-gradient-to': '4.0',
-  translate: '4.0', scale: '4.0', rotate: '4.0',
+  translate: '4.0', scale: '4.0', rotate: '4.0', '-webkit-backdrop-filter': '4.0',
   display: '4.1.5', 'content-visibility': '4.1.5', overlay: '4.1.5', 'pointer-events': '4.1.5',
 }
 const tone = {
@@ -386,7 +386,7 @@ addEventListener('load', show)</pre>
         <li><code>hover:duration-150</code></li>
         <li><code>motion-reduce:duration-0</code></li>
       </ul>
-      <p class="sc-note">Duration does nothing without a <code>transition-*</code> class. The duration that applies is the one on the state you are moving TO, so <code>duration-700 hover:duration-150</code> is fast in, slow out.</p>
+      <p class="sc-note">A duration on its own is enough to animate: the CSS default for <code>transition-property</code> is <code>all</code>, so <code>duration-300</code> alone transitions every property that changes, with the browser&rsquo;s plain <code>ease</code> curve. Add a <code>transition-*</code> class to narrow the list and to get Tailwind&rsquo;s default easing. The duration that applies is the one on the state you are moving TO, so <code>duration-700 hover:duration-150</code> is fast in, slow out.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/transition-duration" target="_blank" rel="noopener">Docs: transition-duration</a></p>
     </div>
     <div class="sc-examples">
@@ -449,6 +449,25 @@ document.addEventListener('click', (e) =&gt; {
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="du-inout"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>A duration with no <code>transition-*</code> class: everything animates</figcaption>
+        <div class="sc-demo" id="du-alone">
+          <div class="flex flex-wrap items-end justify-center gap-10 py-3">
+            <div class="text-center">
+              <div class="mx-auto h-16 w-24 rounded-lg bg-sky-600 duration-700 hover:w-40 hover:rotate-6 hover:rounded-full hover:bg-indigo-600"></div>
+              <p class="mt-3 font-mono text-xs">duration-700</p>
+              <p class="text-xs text-slate-600 dark:text-slate-300">width, shape, tilt and colour all glide</p>
+            </div>
+            <div class="text-center">
+              <div class="mx-auto h-16 w-24 rounded-lg bg-sky-600 transition-colors duration-700 hover:w-40 hover:rotate-6 hover:rounded-full hover:bg-indigo-600"></div>
+              <p class="mt-3 font-mono text-xs">transition-colors duration-700</p>
+              <p class="text-xs text-slate-600 dark:text-slate-300">only the colour glides, the rest snaps</p>
+            </div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="du-alone"></pre>
       </figure>
 
       <figure class="sc-example">
@@ -762,7 +781,7 @@ document.addEventListener('input', (e) =&gt; {
         <li><code>ease-bounce</code></li>
         <li><code>--default-transition-timing-function</code></li>
       </ul>
-      <p class="sc-note">Browser support for <code>linear()</code>: Chrome 113, Safari 17.2, Firefox 112. Older browsers drop the whole declaration and the element snaps. Overshoot curves go past the target on <code>translate</code> and <code>scale</code>; opacity is clamped. Generate your own curves with a linear() easing generator.</p>
+      <p class="sc-note">Browser support for <code>linear()</code>: Chrome 113, Safari 17.2, Firefox 112. In an older browser the curve is invalid, so the transition falls back to the plain <code>ease</code> curve: it still runs for the same duration, just without the spring. Overshoot curves go past the target on <code>translate</code> and <code>scale</code>; opacity is clamped. Generate your own curves with a linear() easing generator.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/transition-timing-function#customizing-your-theme" target="_blank" rel="noopener">Docs: customizing your theme</a></p>
     </div>
     <div class="sc-examples">
@@ -1155,7 +1174,7 @@ document.addEventListener('change', (e) =&gt; {
         <li><code>hover:after:origin-left</code></li>
         <li><code>transition-[outline-offset,outline-color]</code></li>
       </ul>
-      <p class="sc-note">In v4 <code>hover:</code> only applies on devices that can hover (<code>@media (hover: hover)</code>), so never hide essential UI behind it. <code>transform-origin</code> is not transitioned, which is exactly why swapping <code>after:origin-right</code> for <code>hover:after:origin-left</code> makes the underline enter from the left and leave to the right.</p>
+      <p class="sc-note">In v4 <code>hover:</code> only applies on devices that can hover (<code>@media (hover: hover)</code>), so never hide essential UI behind it. <code>transform-origin</code> is not in the list that <code>transition-transform</code> covers (<code>transform</code>, <code>translate</code>, <code>scale</code>, <code>rotate</code>), so it flips at once, which is exactly why swapping <code>after:origin-right</code> for <code>hover:after:origin-left</code> makes the underline enter from the left and leave to the right.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states" target="_blank" rel="noopener">Docs: hover, focus and other states</a></p>
     </div>
     <div class="sc-examples">
@@ -1335,11 +1354,11 @@ addEventListener('load', () =&gt; {
         <div class="sc-demo" id="it-trap">
           <div class="flex flex-wrap items-end justify-center gap-12 py-6">
             <div class="text-center">
-              <div class="mx-auto grid size-16 place-items-center rounded-xl bg-rose-500 text-xs font-semibold text-white transition-[opacity,transform] duration-500 hover:scale-150">snaps</div>
+              <div class="mx-auto grid size-16 place-items-center rounded-xl bg-rose-600 text-xs font-semibold text-white transition-[opacity,transform] duration-500 hover:scale-150">snaps</div>
               <p class="mt-5 font-mono text-[11px]">transition-[opacity,transform]</p>
             </div>
             <div class="text-center">
-              <div class="mx-auto grid size-16 place-items-center rounded-xl bg-emerald-500 text-xs font-semibold text-white transition-[opacity,scale] duration-500 hover:scale-150">animates</div>
+              <div class="mx-auto grid size-16 place-items-center rounded-xl bg-emerald-700 text-xs font-semibold text-white transition-[opacity,scale] duration-500 hover:scale-150">animates</div>
               <p class="mt-5 font-mono text-[11px]">transition-[opacity,scale]</p>
             </div>
           </div>
@@ -1487,7 +1506,7 @@ document.addEventListener('click', (e) =&gt; {
     <div class="sc-notes">
       <h2>Animate <code>display: none</code> with <code>transition-discrete</code></h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p><code>transition-discrete</code> sets <code>transition-behavior: allow-discrete</code>. Properties that normally flip instantly, such as <code>display</code> from <code>hidden</code> to <code>block</code>, wait until the transition ends, so an element can fade out and only then leave the layout. No timeouts, no JS.</p>
+      <p><code>transition-discrete</code> sets <code>transition-behavior: allow-discrete</code>. Properties that normally flip instantly, such as <code>display</code>, can then take part in a transition. An element that goes to <code>display: none</code> stays rendered until its other transitions finish, so it can fade out and only then leave the layout. No timeouts, no JS.</p>
       <ul class="sc-parts">
         <li><code>transition-discrete</code></li>
         <li><code>transition-normal</code></li>
@@ -1689,8 +1708,7 @@ document.addEventListener('click', (e) =&gt; {
         </div>
         <pre class="sc-code" data-code="html" data-from="sv-tasks-demo"></pre>
         <pre class="sc-code" data-code="js" data-label="JS">// &lt;button data-add-task="list-id"&gt; appends a copy of the last row.
-// Do not read layout (offsetWidth, getBoundingClientRect) right after
-// inserting: that would skip the @starting-style entry in the live Tailwind build.
+// The copy already carries every class, so its starting: entry plays on insert.
 const tasks = ['Review the pull request', 'Update the changelog', 'Book travel to Lisbon', 'Reply to Sam', 'Archive old drafts']
 let next = 0
 document.addEventListener('click', (e) =&gt; {
@@ -1742,11 +1760,11 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Avatar stack: blur-in with per-item delay <span class="sc-spacer"></span><button class="sc-btn" type="button" data-replay="sv-avatars">Replay</button></figcaption>
         <div class="sc-demo" id="sv-avatars" data-inview>
           <div class="flex justify-center -space-x-2 py-4">
-            <span style="--i:0" class="grid size-12 place-items-center rounded-full bg-rose-500 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">AK</span>
-            <span style="--i:1" class="grid size-12 place-items-center rounded-full bg-amber-500 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">JL</span>
-            <span style="--i:2" class="grid size-12 place-items-center rounded-full bg-emerald-500 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">MR</span>
-            <span style="--i:3" class="grid size-12 place-items-center rounded-full bg-sky-500 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">TS</span>
-            <span style="--i:4" class="grid size-12 place-items-center rounded-full bg-violet-500 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">PN</span>
+            <span style="--i:0" class="grid size-12 place-items-center rounded-full bg-rose-600 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">AK</span>
+            <span style="--i:1" class="grid size-12 place-items-center rounded-full bg-amber-400 text-sm font-semibold text-slate-900 ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">JL</span>
+            <span style="--i:2" class="grid size-12 place-items-center rounded-full bg-emerald-700 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">MR</span>
+            <span style="--i:3" class="grid size-12 place-items-center rounded-full bg-sky-700 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">TS</span>
+            <span style="--i:4" class="grid size-12 place-items-center rounded-full bg-violet-600 text-sm font-semibold text-white ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:ring-slate-900">PN</span>
             <span style="--i:5" class="grid size-12 place-items-center rounded-full bg-slate-200 text-sm font-semibold text-slate-700 ring-2 ring-white transition duration-700 delay-[calc(var(--i)*90ms)] starting:scale-90 starting:opacity-0 starting:blur-sm motion-reduce:delay-0 dark:bg-slate-700 dark:text-slate-100 dark:ring-slate-900">+8</span>
           </div>
         </div>
@@ -1808,7 +1826,7 @@ document.addEventListener('click', (e) =&gt; {
               <span class="grid size-7 place-items-center rounded-full bg-violet-500 text-xs font-semibold text-white">SP</span>
               Account
             </button>
-            <div id="po-menu" popover class="m-0 mt-16 mr-4 ml-auto w-56 origin-top-right scale-95 rounded-xl bg-white p-1.5 text-sm text-slate-900 opacity-0 shadow-lg ring-1 ring-black/5 transition transition-discrete duration-150 ease-out open:scale-100 open:opacity-100 starting:open:scale-95 starting:open:opacity-0 motion-reduce:duration-0 dark:bg-slate-800 dark:text-white dark:ring-white/10">
+            <div id="po-menu" popover class="m-0 mt-36 mr-4 ml-auto w-56 origin-top-right sm:mt-16 scale-95 rounded-xl bg-white p-1.5 text-sm text-slate-900 opacity-0 shadow-lg ring-1 ring-black/5 transition transition-discrete duration-150 ease-out open:scale-100 open:opacity-100 starting:open:scale-95 starting:open:opacity-0 motion-reduce:duration-0 dark:bg-slate-800 dark:text-white dark:ring-white/10">
               <p class="px-3 py-2 text-xs text-slate-500 dark:text-slate-400">Signed in as soontorn@example.com</p>
               <button type="button" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Profile</button>
               <button type="button" class="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700">Billing</button>
@@ -1876,7 +1894,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>backdrop:transition-discrete</code></li>
         <li><code>open:backdrop:bg-black/50</code></li>
         <li><code>starting:open:backdrop:bg-black/0</code></li>
-        <li><code>inert:opacity-50</code></li>
+        <li><code>inert:opacity-40</code></li>
       </ul>
       <p class="sc-note">Add <code>m-auto</code> (preflight removes the browser&rsquo;s centring) and close with <code>&lt;form method="dialog"&gt;</code>. Prefer plain <code>transition</code> over <code>transition-all</code> here: it already contains <code>display</code> and <code>overlay</code> (4.1.5+) without dragging in unrelated properties. The exit of a top-layer element needs <code>overlay</code> (Chromium 117+); Firefox and Safari animate the entry and may skip the exit.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#backdrop" target="_blank" rel="noopener">Docs: ::backdrop</a> · <a href="https://tailwindcss.com/docs/hover-focus-and-other-states#styling-inert-elements" target="_blank" rel="noopener">Docs: inert</a></p>
@@ -2060,7 +2078,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>popover="manual"</code></li>
         <li><code>open:</code></li>
       </ul>
-      <p class="sc-note">Filter <code>transitionend</code> by <code>propertyName</code>, or the toast is removed when the first of several properties finishes. For toasts that must sit above open modals, use <code>popover="manual"</code> so they live in the top layer. In the live Tailwind build, do not read layout (<code>offsetWidth</code>, <code>getBoundingClientRect</code>) right after inserting a toast: the forced style pass beats the generated CSS and the entry animation is skipped. A normal build does not have that problem.</p>
+      <p class="sc-note">Filter <code>transitionend</code> by <code>target</code> and <code>propertyName</code>, or the toast is removed when the first of several properties, or a transition on a child such as the close button, finishes. For toasts that must sit above open modals, use <code>popover="manual"</code> so they live in the top layer. In the live Tailwind build, the CSS for a class that has never been in the DOM is generated a moment after the element is inserted. Reading layout (<code>offsetWidth</code>, <code>getBoundingClientRect</code>) in that gap can make the browser style the element without its classes first and cause stray transitions. These toasts are clones of a prototype that already carries every class, so they are safe, and a normal build ships its CSS up front.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#starting-style" target="_blank" rel="noopener">Docs: @starting-style</a></p>
     </div>
     <div class="sc-examples">
@@ -2071,7 +2089,7 @@ document.addEventListener('click', (e) =&gt; {
           <button class="sc-btn" type="button" data-toast="success">Success</button>
           <button class="sc-btn" type="button" data-toast="error">Error</button>
           <button class="sc-btn" type="button" data-toast="info">Info</button></figcaption>
-        <div class="sc-demo" id="ts-demo">
+        <div class="sc-demo" id="ts-demo" data-inview>
           <div class="relative h-72 overflow-hidden rounded-xl bg-white text-slate-900 ring-1 ring-slate-200 dark:bg-slate-900 dark:text-white dark:ring-slate-700">
             <div class="space-y-2 p-4">
               <div class="h-4 w-1/3 rounded bg-slate-300 dark:bg-slate-600"></div>
@@ -2107,7 +2125,7 @@ const messages = {
 function closeToast(toast) {
   if (toast.hasAttribute('data-closing')) return
   toast.setAttribute('data-closing', '')
-  toast.addEventListener('transitionend', (e) =&gt; e.propertyName === 'opacity' &amp;&amp; toast.remove())
+  toast.addEventListener('transitionend', (e) =&gt; e.target === toast &amp;&amp; e.propertyName === 'opacity' &amp;&amp; toast.remove())
   setTimeout(() =&gt; toast.remove(), 800) // safety net if transitions are disabled
 }
 
@@ -2166,7 +2184,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>[interpolate-size:allow-keywords]</code></li>
         <li><code>group-open:rotate-180</code></li>
       </ul>
-      <p class="sc-note">You need both <code>interpolate-size</code> (so <code>0</code> can animate to <code>auto</code>) and <code>transition-discrete</code> with <code>content-visibility</code> in the list (so the closing animation is not cut off). Use <code>overflow-clip</code>, not <code>overflow-hidden</code>. Support: <code>::details-content</code> Chrome and Edge 131; <code>interpolate-size</code> Chromium 129+. Elsewhere the panel simply snaps open and shut, so treat it as a progressive enhancement and see the grid-rows card for a cross-browser version.</p>
+      <p class="sc-note">You need both <code>interpolate-size</code> (so <code>0</code> can animate to <code>auto</code>) and <code>transition-discrete</code> with <code>content-visibility</code> in the list (so the closing animation is not cut off). Clip the overflow so the content does not spill while the box is short: <code>overflow-clip</code> does that without turning the box into a scroll container. Support: <code>::details-content</code> is in Chrome and Edge 131, Safari 18.4 and Firefox 143; <code>interpolate-size</code> is Chromium 129+ only so far. Without <code>interpolate-size</code> the height snaps instead of animating, and without <code>::details-content</code> the rules are ignored and <code>&lt;details&gt;</code> works as normal. Treat it as a progressive enhancement and see the grid-rows card for a cross-browser version.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#details-content" target="_blank" rel="noopener">Docs: details-content</a></p>
     </div>
     <div class="sc-examples">
@@ -2223,6 +2241,7 @@ document.addEventListener('click', (e) =&gt; {
             </details>
           </div>
         </div>
+        <p class="sc-note" style="padding:8px 12px">Giving several <code>&lt;details&gt;</code> the same <code>name</code> makes them exclusive (Chrome 120, Safari 17.2, Firefox 130). In older browsers each one simply opens on its own.</p>
         <pre class="sc-code" data-code="html" data-from="dc-exclusive"></pre>
       </figure>
 
@@ -2296,7 +2315,7 @@ document.addEventListener('click', (e) =&gt; {
       <figure class="sc-example">
         <figcaption>Sidebar groups that collapse, chevrons from <code>data-state</code></figcaption>
         <div class="sc-demo" id="gr-sidebar">
-          <nav class="mx-auto w-64 rounded-2xl bg-white p-2 text-sm text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700">
+          <nav class="mx-auto w-full max-w-64 rounded-2xl bg-white p-2 text-sm text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700">
             <div data-state="open" class="group">
               <button type="button" data-state-toggle aria-expanded="true" class="flex w-full items-center justify-between rounded-lg px-3 py-2 font-semibold hover:bg-slate-100 dark:hover:bg-slate-700">Components
                 <svg viewBox="0 0 10 10" class="size-3 fill-none stroke-current stroke-[1.5] transition-transform duration-300 group-data-[state=open]:rotate-180" aria-hidden="true"><path d="M1 3l4 4 4-4" /></svg>
@@ -2405,7 +2424,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>data-[state=open]:h-auto</code></li>
         <li><code>h-[calc-size(auto,size)]</code></li>
       </ul>
-      <p class="sc-note">The property is inherited, so you can set it once on <code>:root</code> in <code>@layer base</code> for the whole site. Support: <code>interpolate-size</code> and <code>calc-size()</code> in Chromium 129+. Other engines snap to the final height, so this is progressive enhancement.</p>
+      <p class="sc-note">The property is inherited, so you can set it once on <code>:root</code> in <code>@layer base</code> for the whole site. One end of the animation must be a length or percentage, so <code>h-0</code> to <code>h-auto</code> works but <code>h-auto</code> to <code>h-max</code> does not. Support: <code>interpolate-size</code> and <code>calc-size()</code> in Chromium 129+. Other engines snap to the final height, so this is progressive enhancement.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/adding-custom-styles#arbitrary-properties" target="_blank" rel="noopener">Docs: arbitrary properties</a></p>
     </div>
     <div class="sc-examples">
@@ -2641,14 +2660,14 @@ document.addEventListener('click', (e) =&gt; {
     <div class="sc-notes">
       <h2>Rotate icons from state: <code>data-*</code>, <code>aria-*</code>, <code>open:</code></h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>A tiny script flips one attribute, and the variants do the rest. Style a chevron from <code>data-[state=open]</code>, <code>aria-expanded</code>, <code>aria-sort</code> or the native <code>open</code> state of a <code>&lt;details&gt;</code>. v4 adds valueless <code>data-open:</code> and the <code>in-*</code> variant, which needs no <code>group</code> class.</p>
+      <p>A tiny script flips one attribute, and the variants do the rest. Style a chevron from <code>data-[state=open]</code>, <code>aria-expanded</code>, <code>aria-sort</code> or the native <code>open</code> state of a <code>&lt;details&gt;</code>. v4 also lets you test a data attribute that has no value (<code>data-on:rotate-180</code> matches <code>[data-on]</code>) and adds the <code>in-*</code> variant, which needs no <code>group</code> class.</p>
       <ul class="sc-parts">
         <li><code>group-data-[state=open]:rotate-180</code></li>
         <li><code>group-aria-expanded:rotate-180</code></li>
         <li><code>group-aria-[sort=descending]:rotate-180</code></li>
         <li><code>group-open:rotate-180</code></li>
         <li><code>in-data-[state=open]:rotate-90</code></li>
-        <li><code>data-open:rotate-180</code></li>
+        <li><code>data-on:rotate-180</code></li>
         <li><code>group-data-[state=open]/dir:rotate-90</code></li>
       </ul>
       <p class="sc-note"><code>in-*</code> and a repeated <code>group</code> name match ANY ancestor in that state, not just the nearest one. For nested trees give each level its own group name (<code>group/dir</code>, <code>group/sub</code>).</p>
@@ -2657,7 +2676,7 @@ document.addEventListener('click', (e) =&gt; {
     <div class="sc-examples">
 
       <figure class="sc-example">
-        <figcaption>Disclosure buttons: one script, three ways to read the state</figcaption>
+        <figcaption>Disclosure buttons: four ways to react to one attribute</figcaption>
         <div class="sc-demo" id="sr-disclosure">
           <div class="flex flex-wrap items-center justify-center gap-6 py-3">
             <button type="button" data-state="closed" data-state-toggle aria-expanded="false" class="group inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-300 transition hover:bg-slate-50 dark:bg-slate-800 dark:text-white dark:ring-slate-600 dark:hover:bg-slate-700">
@@ -2672,9 +2691,12 @@ document.addEventListener('click', (e) =&gt; {
             <button type="button" data-state="closed" data-state-toggle aria-expanded="false" aria-label="Toggle section" class="grid size-10 place-items-center rounded-full bg-white text-slate-900 ring-1 ring-slate-300 transition-transform duration-300 ease-out data-[state=open]:rotate-180 dark:bg-slate-800 dark:text-white dark:ring-slate-600">
               <svg viewBox="0 0 10 10" class="size-3 fill-none stroke-current stroke-[1.5]" aria-hidden="true"><path d="M1 3l4 4 4-4" /></svg>
             </button>
+            <button type="button" id="sr-bell" data-toggle="sr-bell" aria-pressed="false" aria-label="Toggle bell" class="grid size-10 place-items-center rounded-full bg-white text-slate-900 ring-1 ring-slate-300 transition-transform duration-500 ease-spring data-on:-rotate-12 data-on:scale-110 motion-reduce:duration-0 dark:bg-slate-800 dark:text-white dark:ring-slate-600">
+              <svg viewBox="0 0 24 24" class="size-5 fill-none stroke-current stroke-2" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9zM10 20a2 2 0 0 0 4 0" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
           </div>
         </div>
-        <p class="sc-note" style="padding:8px 12px">The left button&rsquo;s chevron reads <code>data-state</code> from its parent, the middle one reads <code>aria-expanded</code> (the script sets both) and springs, and the round button carries <code>data-[state=open]:rotate-180</code> on itself. Same script, three spellings.</p>
+        <p class="sc-note" style="padding:8px 12px">The left button&rsquo;s chevron reads <code>data-state</code> from its parent, the middle one reads <code>aria-expanded</code> (the script sets both) and springs, and the round chevron button carries <code>data-[state=open]:rotate-180</code> on itself. The bell has no <code>data-state</code> at all: it carries <code>data-on:-rotate-12</code>, and the plain toggle script flips <code>data-on</code> on it.</p>
         <pre class="sc-code" data-code="html" data-from="sr-disclosure"></pre>
         <pre class="sc-code" data-code="css" data-label="CSS">@theme {
   /* a gentle spring (about 16% overshoot) written as a CSS linear() curve */
@@ -2689,13 +2711,23 @@ document.addEventListener('click', (e) =&gt; {
   const open = host.dataset.state !== 'open'
   host.dataset.state = open ? 'open' : 'closed'
   btn.setAttribute('aria-expanded', open)
+})
+
+// &lt;button data-toggle="box-id"&gt; flips the data-on attribute on #box-id
+// (the bell button toggles itself)
+document.addEventListener('click', (e) =&gt; {
+  const btn = e.target.closest('[data-toggle]')
+  if (!btn) return
+  const id = btn.dataset.toggle
+  const on = document.getElementById(id).toggleAttribute('data-on')
+  document.querySelectorAll(`[data-toggle="${id}"]`).forEach((b) =&gt; b.setAttribute('aria-pressed', on))
 })</pre>
       </figure>
 
       <figure class="sc-example">
         <figcaption>File tree: a named group per level, so each chevron follows its own folder</figcaption>
         <div class="sc-demo" id="sr-tree">
-          <ul class="mx-auto w-64 rounded-2xl bg-white p-2 font-mono text-[13px] text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700">
+          <ul class="mx-auto w-full max-w-64 rounded-2xl bg-white p-2 font-mono text-[13px] text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700">
             <li data-state="open" class="group/dir">
               <button type="button" data-state-toggle aria-expanded="true" class="flex w-full items-center gap-2 rounded-md px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-700">
                 <svg viewBox="0 0 10 10" class="size-2.5 fill-current transition-transform duration-200 group-data-[state=open]/dir:rotate-90" aria-hidden="true"><path d="M3 1l5 4-5 4z" /></svg>src
@@ -3102,7 +3134,7 @@ document.addEventListener('click', (e) =&gt; {
         <li><code>bg-linear-to-r/oklch</code></li>
         <li><code>transition-colors</code></li>
       </ul>
-      <p class="sc-note">Only the colour stops animate, not the angle or a switch between gradient types. Give each stop a colour in both states so the property exists on both ends.</p>
+      <p class="sc-note">Only the colour stops animate, not the angle or a switch between gradient types. A stop that exists in only one state, such as a <code>via-*</code> added on hover, fades in from transparent; give both states the same stops to blend one colour into another.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/background-image" target="_blank" rel="noopener">Docs: background-image</a></p>
     </div>
     <div class="sc-examples">
@@ -3111,9 +3143,9 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Gradient buttons that flow to a new palette on hover</figcaption>
         <div class="sc-demo" id="gt-buttons">
           <div class="flex flex-wrap items-center justify-center gap-5 py-3">
-            <button type="button" class="rounded-xl bg-linear-to-r from-indigo-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-colors duration-700 hover:from-pink-500 hover:to-indigo-500">Upgrade to Pro</button>
+            <button type="button" class="rounded-xl bg-linear-to-r from-indigo-600 to-pink-600 px-6 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-colors duration-700 hover:from-pink-600 hover:to-indigo-600">Upgrade to Pro</button>
             <button type="button" class="rounded-xl bg-linear-to-br from-emerald-400 to-cyan-500 px-6 py-3 font-semibold text-slate-900 transition-colors duration-500 hover:from-lime-300 hover:to-emerald-500">Get started</button>
-            <button type="button" class="rounded-full bg-linear-to-r from-amber-400 via-orange-500 to-rose-500 px-6 py-3 font-semibold text-white transition-colors duration-1000 hover:from-rose-500 hover:via-fuchsia-500 hover:to-violet-500">Go live</button>
+            <button type="button" class="rounded-full bg-linear-to-r from-amber-300 via-orange-400 to-rose-400 px-6 py-3 font-semibold text-slate-900 transition-colors duration-1000 hover:from-rose-400 hover:via-fuchsia-400 hover:to-violet-400">Go live</button>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="gt-buttons"></pre>
@@ -3194,9 +3226,9 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Buttons whose gradient slides on hover</figcaption>
         <div class="sc-demo" id="bp-buttons">
           <div class="flex flex-wrap items-center justify-center gap-5 py-3">
-            <button type="button" class="rounded-xl bg-linear-to-r from-indigo-500 via-pink-500 to-indigo-500 bg-size-[200%_auto] bg-position-[0%_0%] px-6 py-3 font-semibold text-white transition-[background-position] duration-1000 hover:bg-position-[100%_0%]">Shine</button>
-            <button type="button" class="rounded-xl bg-linear-to-r from-emerald-500 via-sky-500 to-emerald-500 bg-size-[200%_auto] bg-position-[0%_0%] px-6 py-3 font-semibold text-white transition-[background-position] duration-700 ease-out hover:bg-position-[100%_0%]">Deploy</button>
-            <button type="button" class="rounded-full bg-linear-to-r from-amber-400 via-rose-500 to-amber-400 bg-size-[300%_auto] bg-position-[0%_0%] px-6 py-3 font-semibold text-white transition-[background-position] duration-1000 ease-in-out hover:bg-position-[100%_0%]">Celebrate</button>
+            <button type="button" class="rounded-xl bg-linear-to-r from-indigo-600 via-pink-600 to-indigo-600 bg-size-[200%_auto] bg-position-[0%_0%] px-6 py-3 font-semibold text-white transition-[background-position] duration-1000 hover:bg-position-[100%_0%]">Shine</button>
+            <button type="button" class="rounded-xl bg-linear-to-r from-emerald-300 via-sky-300 to-emerald-300 bg-size-[200%_auto] bg-position-[0%_0%] px-6 py-3 font-semibold text-slate-900 transition-[background-position] duration-700 ease-out hover:bg-position-[100%_0%]">Deploy</button>
+            <button type="button" class="rounded-full bg-linear-to-r from-amber-300 via-rose-400 to-amber-300 bg-size-[300%_auto] bg-position-[0%_0%] px-6 py-3 font-semibold text-slate-900 transition-[background-position] duration-1000 ease-in-out hover:bg-position-[100%_0%]">Celebrate</button>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="bp-buttons"></pre>
@@ -3298,7 +3330,7 @@ addEventListener('resize', settle)</pre>
       <figure class="sc-example">
         <figcaption>Sidebar highlight that follows hover and focus</figcaption>
         <div class="sc-demo" id="si-follow">
-          <ul data-follow style="--y:0px;--h:2.5rem" class="group relative mx-auto w-60 rounded-2xl bg-white p-2 text-sm font-medium text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700">
+          <ul data-follow style="--y:0px;--h:2.5rem" class="group relative mx-auto w-full max-w-60 rounded-2xl bg-white p-2 text-sm font-medium text-slate-900 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-white dark:ring-slate-700">
             <li class="pointer-events-none absolute inset-x-2 top-0 h-(--h) translate-y-(--y) rounded-lg bg-indigo-100 opacity-0 transition-[translate,height,opacity] duration-200 ease-out group-data-active:opacity-100 dark:bg-indigo-900/60"></li>
             <li><a href="#si-follow" data-item class="relative block rounded-lg px-3 py-2.5">Overview</a></li>
             <li><a href="#si-follow" data-item class="relative block rounded-lg px-3 py-2.5">Reports</a></li>
@@ -3346,7 +3378,7 @@ document.addEventListener('pointerout', (e) =&gt; {
         <li><code>will-change-[top,left]</code></li>
         <li><code>data-hot:will-change-transform</code></li>
       </ul>
-      <p class="sc-note">A permanent <code>will-change-transform</code> on many elements wastes GPU memory and can make things slower. A <code>hover:will-change-transform</code> arrives only once the hover starts, which is already too late; the docs recommend adding and removing it from JS on <code>pointerenter</code> and <code>transitionend</code>.</p>
+      <p class="sc-note">A permanent <code>will-change-transform</code> on many elements wastes GPU memory and can make things slower. A <code>hover:will-change-transform</code> arrives only when the hover starts, which gives the browser no head start. The docs say to apply it just before the change and remove it shortly after with <code>will-change-auto</code>; the first demo below does that from JS with <code>pointerover</code> and <code>transitionend</code>.</p>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/will-change" target="_blank" rel="noopener">Docs: will-change</a></p>
     </div>
     <div class="sc-examples">
@@ -3392,10 +3424,10 @@ addEventListener('load', () =&gt; {
         <figcaption>A snapping carousel with <code>will-change-scroll</code></figcaption>
         <div class="sc-demo" id="wc-carousel-demo">
           <div id="wc-carousel" class="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 will-change-scroll">
-            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-rose-500 p-4 text-sm font-semibold text-white">Lisbon</div>
-            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-amber-500 p-4 text-sm font-semibold text-white">Kyoto</div>
-            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-emerald-600 p-4 text-sm font-semibold text-white">Oaxaca</div>
-            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-sky-600 p-4 text-sm font-semibold text-white">Reykjavik</div>
+            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-rose-600 p-4 text-sm font-semibold text-white">Lisbon</div>
+            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-amber-400 p-4 text-sm font-semibold text-slate-900">Kyoto</div>
+            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-emerald-700 p-4 text-sm font-semibold text-white">Oaxaca</div>
+            <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-sky-700 p-4 text-sm font-semibold text-white">Reykjavik</div>
             <div class="h-28 w-44 shrink-0 snap-center rounded-xl bg-violet-600 p-4 text-sm font-semibold text-white">Cape Town</div>
           </div>
           <output data-readout="wc-carousel" data-props="will-change" class="mt-2 block w-fit rounded-lg bg-slate-900 px-3 py-2 font-mono text-xs whitespace-pre text-emerald-300">will-change: scroll-position</output>
@@ -3613,6 +3645,7 @@ addEventListener('load', showCapabilities)</pre>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="ms-stack"></pre>
+        <pre class="sc-code" data-code="css" data-label="CSS">@custom-variant hocus (&amp;:is(:hover, :focus-visible));</pre>
       </figure>
 
     </div>
@@ -3847,7 +3880,7 @@ export function ConfirmDialog({ dialogRef }: { dialogRef: React.RefObject&lt;HTM
     const probe = document.getElementById('tp-probe')
     const since = {
       'outline-color': '4.0', '--tw-gradient-from': '4.0', '--tw-gradient-via': '4.0', '--tw-gradient-to': '4.0',
-      translate: '4.0', scale: '4.0', rotate: '4.0',
+      translate: '4.0', scale: '4.0', rotate: '4.0', '-webkit-backdrop-filter': '4.0',
       display: '4.1.5', 'content-visibility': '4.1.5', overlay: '4.1.5', 'pointer-events': '4.1.5',
     }
     const tone = {
@@ -3971,8 +4004,7 @@ export function ConfirmDialog({ dialogRef }: { dialogRef: React.RefObject&lt;HTM
 
   { // add-task
     // <button data-add-task="list-id"> appends a copy of the last row.
-    // Do not read layout (offsetWidth, getBoundingClientRect) right after
-    // inserting: that would skip the @starting-style entry in the live Tailwind build.
+    // The copy already carries every class, so its starting: entry plays on insert.
     const tasks = ['Review the pull request', 'Update the changelog', 'Book travel to Lisbon', 'Reply to Sam', 'Archive old drafts']
     let next = 0
     document.addEventListener('click', (e) => {
@@ -4019,7 +4051,7 @@ export function ConfirmDialog({ dialogRef }: { dialogRef: React.RefObject&lt;HTM
     function closeToast(toast) {
       if (toast.hasAttribute('data-closing')) return
       toast.setAttribute('data-closing', '')
-      toast.addEventListener('transitionend', (e) => e.propertyName === 'opacity' && toast.remove())
+      toast.addEventListener('transitionend', (e) => e.target === toast && e.propertyName === 'opacity' && toast.remove())
       setTimeout(() => toast.remove(), 800) // safety net if transitions are disabled
     }
 
@@ -4222,8 +4254,8 @@ export function ConfirmDialog({ dialogRef }: { dialogRef: React.RefObject&lt;HTM
 
   // ---- page chrome (not part of any demo) ----
   // Entry animations (starting:, @starting-style) and races play once on page
-  // load, usually off-screen. Press the first Replay/Play button of each flagged
-  // demo the first time it scrolls into view.
+  // load, usually off-screen. Press the first Replay/Play/toast button of each
+  // flagged demo the first time it scrolls into view.
   addEventListener('load', () => {
     setTimeout(() => {
       const io = new IntersectionObserver(
@@ -4231,7 +4263,7 @@ export function ConfirmDialog({ dialogRef }: { dialogRef: React.RefObject&lt;HTM
           for (const en of entries) {
             if (!en.isIntersecting) continue
             io.unobserve(en.target)
-            en.target.closest('.sc-example')?.querySelector('[data-replay],[data-play]')?.click()
+            en.target.closest('.sc-example')?.querySelector('[data-replay],[data-play],[data-toast]')?.click()
           }
         },
         { threshold: 0.6 },

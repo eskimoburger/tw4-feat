@@ -107,7 +107,7 @@ export default function MyFeature() {
 Rules:
 
 - A file starting with `_` (for example `_shared.jsx`) is not a demo. Sub-folders are not scanned either.
-- A demo's own CSS starts with `@reference "../index.css";` so `@apply` and the tokens work without duplicating Tailwind.
+- A demo's own CSS starts with `@reference "../index.css";` so `@apply` and the tokens work without duplicating Tailwind. (The one exception is `33-source-inline.css`: `@source inline()` needs a real entry point that emits CSS, and its header comment explains why.)
 - Routes use the URL hash, so do not use `#anchor` links inside a demo.
 - A broken demo never takes the app down: invalid `meta` is listed on the home view, and a render error is caught and shown in place.
 

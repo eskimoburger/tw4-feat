@@ -22,7 +22,7 @@ export const meta = {
     'shadow-*/30',
     'bg-white/15',
     '@container',
-    '@md:',
+    'prose-headings:',
     'prose',
     'prose-code:before:content-none',
     'text-balance',
@@ -57,7 +57,7 @@ function HeroCard() {
       variants={card}
       initial="hidden"
       animate="show"
-      className="relative isolate mx-auto max-w-3xl overflow-hidden rounded-3xl bg-linear-to-br from-sky-600 via-sky-700 to-indigo-800 p-6 text-white shadow-2xl shadow-sky-900/30 inset-ring inset-ring-white/20 sm:p-9"
+      className="relative isolate mx-auto max-w-3xl overflow-hidden rounded-3xl bg-linear-to-br from-sky-700 via-sky-800 to-indigo-900 p-6 text-white shadow-2xl shadow-sky-900/30 inset-ring inset-ring-white/20 sm:p-9"
     >
       {/* a slow glowing orb: Motion animates scale/opacity, Tailwind supplies size, blur and colour */}
       <motion.div

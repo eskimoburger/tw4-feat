@@ -36,8 +36,8 @@ export const meta = {
     'form-checkbox',
     'form-radio',
     'form-textarea',
-    'user-invalid:',
-    'accent-*',
+    'focus:ring-sky-600',
+    'placeholder:text-muted',
   ],
 }
 

@@ -72,7 +72,7 @@ function ConstrainedDrag() {
           role="group"
           aria-label="Draggable box. Use the arrow keys to move it."
           onKeyDown={onKeyDown}
-          className="focus-ring absolute top-4 left-4 grid size-20 cursor-grab touch-none place-items-center rounded-2xl bg-linear-to-br from-sky-500 to-indigo-600 text-sm font-semibold text-white shadow-lg select-none active:cursor-grabbing"
+          className="focus-ring absolute top-4 left-4 grid size-20 cursor-grab touch-none place-items-center rounded-2xl bg-linear-to-br from-sky-600 to-indigo-700 text-sm font-semibold text-white shadow-lg select-none active:cursor-grabbing"
         >
           Drag me
         </motion.div>

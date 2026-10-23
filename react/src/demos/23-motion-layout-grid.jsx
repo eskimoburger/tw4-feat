@@ -10,7 +10,7 @@ export const meta = {
   order: 230,
   summary:
     'Add the layout prop and siblings glide to their new slots when a grid is filtered, a list is re-sorted or an accordion opens. A CSS transition cannot animate a change in grid position, so use Motion for reflow; for a single height change, plain Tailwind is enough.',
-  tailwind: ['grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]', 'grid-rows-[0fr]', 'grid-rows-[1fr]', 'transition-[grid-template-rows]', 'aria-pressed:', 'tabular-nums'],
+  tailwind: ['grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]', 'grid-rows-[0fr]', 'grid-rows-[1fr]', 'transition-[grid-template-rows]', 'overflow-hidden', 'tabular-nums'],
 }
 
 const CHIP = 'focus-ring cursor-pointer rounded-full border px-3 py-1 text-sm font-medium transition-colors duration-150 motion-reduce:transition-none'

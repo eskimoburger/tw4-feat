@@ -60,7 +60,7 @@ function ModalExample() {
           <span
             className={cn(
               'rounded-full px-2 py-0.5 font-mono text-[11px] font-medium',
-              deleted ? 'bg-red-500/15 text-red-700 dark:text-red-300' : 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
+              deleted ? 'bg-red-500/15 text-red-700 dark:text-red-300' : 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300',
             )}
           >
             {deleted ? 'Deleted' : 'Live'}
@@ -85,7 +85,7 @@ function ModalExample() {
             ref={triggerRef}
             type="button"
             onClick={() => (deleted ? setDeleted(false) : setOpen(true))}
-            className={cn(BUTTON, 'w-fit', deleted ? BUTTON_QUIET : 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-400')}
+            className={cn(BUTTON, 'w-fit', deleted ? BUTTON_QUIET : 'bg-red-600 text-white hover:bg-red-700')}
           >
             {deleted ? 'Restore project' : 'Delete project…'}
           </button>
@@ -133,7 +133,7 @@ function ModalExample() {
                     setDeleted(true)
                     close()
                   }}
-                  className={cn(BUTTON, 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-400')}
+                  className={cn(BUTTON, 'bg-red-600 text-white hover:bg-red-700')}
                 >
                   Delete project
                 </button>

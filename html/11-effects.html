@@ -325,7 +325,7 @@
       <figure class="sc-example">
         <figcaption>Opacity ladder</figcaption>
         <div class="sc-demo" id="shadow-opacity-1">
-          <div class="flex flex-wrap gap-8 rounded-xl bg-slate-100 p-6 pb-12 dark:bg-slate-800">
+          <div class="flex flex-wrap gap-8 rounded-xl bg-slate-100 p-6 pb-12 dark:bg-slate-600">
             <div class="grid size-24 place-items-center rounded-lg bg-white font-mono text-xs text-slate-700 shadow-xl dark:bg-slate-700 dark:text-slate-100">xl</div>
             <div class="grid size-24 place-items-center rounded-lg bg-white font-mono text-xs text-slate-700 shadow-xl/20 dark:bg-slate-700 dark:text-slate-100">xl/20</div>
             <div class="grid size-24 place-items-center rounded-lg bg-white font-mono text-xs text-slate-700 shadow-xl/40 dark:bg-slate-700 dark:text-slate-100">xl/40</div>
@@ -333,7 +333,7 @@
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="shadow-opacity-1"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The modifier replaces the alpha. <code>shadow-xl</code> is 10% black, so <code>/20</code> is 20% black, not 2%. Needs a browser with relative color syntax; older ones keep the default shadow.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The modifier replaces the alpha. <code>shadow-xl</code> is 10% black, so <code>/20</code> is 20% black, not 2%. A production build compiles the result to a plain <code>oklab()</code> color. The in-browser compiler on this page writes it with relative color syntax instead, which needs Chrome 119+, Safari 16.4+ or Firefox 128+.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -373,14 +373,15 @@
       <figure class="sc-example">
         <figcaption>One modifier, four shadow types</figcaption>
         <div class="sc-demo" id="shadow-opacity-4">
-          <div class="flex flex-wrap items-center gap-10 rounded-xl bg-white p-8 pb-12 dark:bg-slate-800">
-            <div class="grid size-20 place-items-center rounded-lg bg-white text-center font-mono text-[10px] text-slate-600 shadow-lg/30 dark:bg-slate-700 dark:text-slate-200">shadow-lg/30</div>
-            <div class="grid size-20 place-items-center rounded-lg bg-white text-center font-mono text-[10px] text-slate-600 inset-shadow-sm/30 ring-1 ring-slate-950/10 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/10">inset-shadow-sm/30</div>
-            <svg class="size-20 fill-indigo-500 drop-shadow-lg/30 dark:fill-indigo-400" viewBox="0 0 24 24" role="img" aria-label="drop-shadow-lg/30"><circle cx="12" cy="12" r="9"/></svg>
-            <p class="text-4xl font-bold text-slate-800 text-shadow-lg/30 dark:text-white">Aa</p>
+          <div class="flex flex-wrap items-center gap-10 rounded-xl bg-white p-8 pb-12">
+            <div class="grid size-20 place-items-center rounded-lg bg-white text-center font-mono text-[10px] text-slate-600 shadow-lg/30">shadow-lg/30</div>
+            <div class="grid size-20 place-items-center rounded-lg bg-white text-center font-mono text-[10px] text-slate-600 inset-shadow-sm/30 ring-1 ring-slate-950/10">inset-shadow-sm/30</div>
+            <svg class="size-20 fill-indigo-500 drop-shadow-lg/30" viewBox="0 0 24 24" role="img" aria-label="drop-shadow-lg/30"><circle cx="12" cy="12" r="9"/></svg>
+            <p class="text-4xl font-bold text-slate-800 text-shadow-lg/30">Aa</p>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="shadow-opacity-4"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Left to right: box shadow, inset shadow, drop shadow on an SVG circle, text shadow. This stage stays white in both themes so the faint shadows remain visible.</p></div>
       </figure>
     </div>
   </article>
@@ -413,6 +414,7 @@
             <button type="button" class="rounded-md bg-white px-4 py-2 text-sm font-semibold ring-3 ring-blue-500 dark:bg-slate-900">ring-3 (v3 look)</button>
             <button type="button" class="rounded-md bg-white px-4 py-2 text-sm font-semibold ring-4 ring-blue-500/50 dark:bg-slate-900">ring-4 /50</button>
             <button type="button" class="rounded-md bg-white px-4 py-2 text-sm font-semibold ring-8 ring-rose-500/20 dark:bg-slate-900">ring-8 /20</button>
+            <button type="button" class="rounded-md bg-white px-4 py-2 text-sm font-semibold ring-8 ring-indigo-500/30 ring-inset dark:bg-slate-900">ring-8 ring-inset</button>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="ring-1"></pre>
@@ -631,6 +633,21 @@
       </figure>
 
       <figure class="sc-example">
+        <figcaption>Width ladder: <code>inset-ring-0</code> to <code>inset-ring-4</code></figcaption>
+        <div class="sc-demo" id="inset-ring-6">
+          <div class="flex flex-wrap items-center gap-4 rounded-xl bg-white p-6 text-xs font-medium text-slate-700 dark:bg-slate-900 dark:text-slate-200">
+            <span class="grid size-16 place-items-center rounded-lg bg-slate-50 inset-ring-0 inset-ring-indigo-500 dark:bg-slate-800">0</span>
+            <span class="grid size-16 place-items-center rounded-lg bg-slate-50 inset-ring-1 inset-ring-indigo-500 dark:bg-slate-800">1</span>
+            <span class="grid size-16 place-items-center rounded-lg bg-slate-50 inset-ring-2 inset-ring-indigo-500 dark:bg-slate-800">2</span>
+            <span class="grid size-16 place-items-center rounded-lg bg-slate-50 inset-ring-4 inset-ring-indigo-500 dark:bg-slate-800">4</span>
+            <span class="grid size-16 place-items-center rounded-lg bg-slate-50 inset-ring-4 inset-ring-indigo-500/30 dark:bg-slate-800">4 /30</span>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="inset-ring-6"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The ring grows inward, so the box keeps its size. An outer <code>ring-4</code> would spill into the gap between neighbours.</p></div>
+      </figure>
+
+      <figure class="sc-example">
         <figcaption>Machined edge: outer ring plus inner ring</figcaption>
         <div class="sc-demo" id="inset-ring-5">
           <div class="flex flex-wrap gap-4 rounded-xl bg-slate-200 p-6 dark:bg-slate-900">
@@ -648,7 +665,7 @@
     <div class="sc-notes">
       <h2>Layered shadows and rings</h2>
       <span class="sc-since" data-v="4.0">v4.0</span>
-      <p>v4 builds <code>box-shadow</code> from four independent layers, each with its own size and color, so up to four effects stack on one element without overriding each other. Painted top to bottom the order is inset shadow, inset ring, ring, then shadow. To remove one layer use <code>shadow-none</code>, <code>inset-shadow-none</code>, <code>ring-0</code> or <code>inset-ring-0</code>.</p>
+      <p>v4 builds <code>box-shadow</code> from independent layers, each with its own size and color, so four effects (shadow, inset shadow, ring, inset ring) stack on one element without overriding each other. The older <code>ring-offset-*</code> gap is a fifth layer. Painted top to bottom the order is inset shadow, inset ring, ring offset, ring, then shadow. To remove one layer use <code>shadow-none</code>, <code>inset-shadow-none</code>, <code>ring-0</code> or <code>inset-ring-0</code>.</p>
       <ul class="sc-parts">
         <li><code>shadow-lg shadow-indigo-500/40</code></li>
         <li><code>ring-1 ring-indigo-700</code></li>
@@ -673,22 +690,20 @@
       <figure class="sc-example">
         <figcaption>Layer inspector: switch each layer on and off</figcaption>
         <div class="sc-demo" id="layered-shadows-2">
-          <div class="flex flex-wrap items-center gap-8 rounded-xl bg-slate-100 p-8 dark:bg-slate-800">
+          <div class="flex flex-wrap items-center gap-2 rounded-xl bg-slate-100 p-8 text-xs font-medium dark:bg-slate-800">
             <input id="ls-shadow" type="checkbox" class="peer/a sr-only" checked>
             <input id="ls-inset" type="checkbox" class="peer/b sr-only">
             <input id="ls-ring" type="checkbox" class="peer/c sr-only" checked>
             <input id="ls-iring" type="checkbox" class="peer/d sr-only">
-            <div class="size-24 rounded-2xl bg-white dark:bg-slate-700 peer-checked/a:shadow-xl/40 peer-checked/b:inset-shadow-sm peer-checked/b:inset-shadow-indigo-500/40 peer-checked/c:ring-2 peer-checked/c:ring-indigo-500 peer-checked/d:inset-ring-4 peer-checked/d:inset-ring-amber-400"></div>
-            <div class="flex flex-wrap gap-2 text-xs font-medium">
-              <label for="ls-shadow" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/a:bg-indigo-600 peer-checked/a:text-white peer-checked/a:ring-indigo-600 peer-focus-visible/a:outline-2 peer-focus-visible/a:outline-offset-2 peer-focus-visible/a:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">shadow</label>
-              <label for="ls-inset" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/b:bg-indigo-600 peer-checked/b:text-white peer-checked/b:ring-indigo-600 peer-focus-visible/b:outline-2 peer-focus-visible/b:outline-offset-2 peer-focus-visible/b:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">inset-shadow</label>
-              <label for="ls-ring" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/c:bg-indigo-600 peer-checked/c:text-white peer-checked/c:ring-indigo-600 peer-focus-visible/c:outline-2 peer-focus-visible/c:outline-offset-2 peer-focus-visible/c:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">ring</label>
-              <label for="ls-iring" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/d:bg-indigo-600 peer-checked/d:text-white peer-checked/d:ring-indigo-600 peer-focus-visible/d:outline-2 peer-focus-visible/d:outline-offset-2 peer-focus-visible/d:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">inset-ring</label>
-            </div>
+            <div class="mr-6 size-24 rounded-2xl bg-white dark:bg-slate-700 peer-checked/a:shadow-xl/40 peer-checked/b:inset-shadow-sm peer-checked/b:inset-shadow-indigo-500/40 peer-checked/c:ring-2 peer-checked/c:ring-indigo-500 peer-checked/d:inset-ring-4 peer-checked/d:inset-ring-amber-400"></div>
+            <label for="ls-shadow" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/a:bg-indigo-600 peer-checked/a:text-white peer-checked/a:ring-indigo-600 peer-focus-visible/a:outline-2 peer-focus-visible/a:outline-offset-2 peer-focus-visible/a:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">shadow</label>
+            <label for="ls-inset" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/b:bg-indigo-600 peer-checked/b:text-white peer-checked/b:ring-indigo-600 peer-focus-visible/b:outline-2 peer-focus-visible/b:outline-offset-2 peer-focus-visible/b:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">inset-shadow</label>
+            <label for="ls-ring" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/c:bg-indigo-600 peer-checked/c:text-white peer-checked/c:ring-indigo-600 peer-focus-visible/c:outline-2 peer-focus-visible/c:outline-offset-2 peer-focus-visible/c:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">ring</label>
+            <label for="ls-iring" class="cursor-pointer rounded-full bg-white px-3 py-1 font-mono text-slate-700 ring-1 ring-slate-300 peer-checked/d:bg-indigo-600 peer-checked/d:text-white peer-checked/d:ring-indigo-600 peer-focus-visible/d:outline-2 peer-focus-visible/d:outline-offset-2 peer-focus-visible/d:outline-indigo-500 dark:bg-slate-700 dark:text-slate-200 dark:ring-white/15">inset-ring</label>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="layered-shadows-2"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Four named peers (<code>peer/a</code> to <code>peer/d</code>) each switch one layer. Because every layer has its own variable, none of them replaces another.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Four named peers (<code>peer/a</code> to <code>peer/d</code>) each switch one layer, and the box and the chips are all siblings of the checkboxes, which is what <code>peer-*</code> needs. Because every layer has its own variable, none of them replaces another.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -761,7 +776,7 @@
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="text-shadow-1"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The sizes are only 7 to 20 percent black, so they stay subtle. Add <code>/50</code> when the background is busy.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The built-in sizes are only 7.5 to 20 percent black, so they stay subtle. Add <code>/50</code> when the background is busy.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -782,8 +797,8 @@
       <figure class="sc-example">
         <figcaption>Letterpress and emboss</figcaption>
         <div class="sc-demo" id="text-shadow-3">
-          <div class="grid gap-4 rounded-xl bg-slate-200 p-6 dark:bg-slate-800">
-            <p class="text-4xl font-bold text-slate-400 text-shadow-2xs text-shadow-white/80 dark:text-slate-900 dark:text-shadow-white/20">Letterpress</p>
+          <div class="grid gap-4 rounded-xl bg-slate-200 p-6 dark:bg-slate-600">
+            <p class="text-4xl font-bold text-slate-400 text-shadow-2xs text-shadow-white/80 dark:text-slate-900 dark:text-shadow-white/30">Letterpress</p>
             <p class="text-4xl font-bold text-slate-700 text-shadow-2xs text-shadow-white dark:text-slate-100 dark:text-shadow-black">Emboss</p>
           </div>
         </div>
@@ -864,6 +879,24 @@
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="drop-shadow-1"></pre>
+      </figure>
+
+      <figure class="sc-example">
+        <figcaption>Scale specimen: <code>drop-shadow-xs</code> to <code>drop-shadow-2xl</code></figcaption>
+        <div class="sc-demo" id="drop-shadow-6">
+          <div class="flex flex-wrap items-end gap-6 rounded-xl bg-slate-200 p-6 pb-10 text-center font-mono text-[10px] text-slate-600">
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-xs" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>xs</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-sm" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>sm</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-md" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>md</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-lg" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>lg</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-xl" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>xl</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-2xl" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>2xl</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-lg drop-shadow-cyan-500/50" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>lg + cyan-500/50</div>
+            <div class="grid gap-2"><svg viewBox="0 0 24 24" class="size-14 fill-white drop-shadow-none" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>none</div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="drop-shadow-6"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The stage stays light gray in both themes so the pale shadows stay visible on the white shapes. <code>drop-shadow-cyan-500/50</code> only recolors the shadow, so it is combined with a size. <code>drop-shadow-none</code> is the no-shadow baseline.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -1037,7 +1070,6 @@
         <li><code>focus-visible:ring-3</code></li>
         <li><code>has-focus-visible:outline-2</code></li>
         <li><code>forced-colors:</code></li>
-        <li><code>forced-color-adjust-none</code></li>
       </ul>
       <p class="sc-meta"><a href="https://tailwindcss.com/docs/hover-focus-and-other-states#forced-colors" target="_blank" rel="noopener">Docs: forced-colors</a></p>
     </div>
@@ -1172,9 +1204,13 @@
         <div class="sc-demo" id="backdrop-filter-3">
           <div class="grid grid-cols-2 gap-3 rounded-xl bg-[repeating-linear-gradient(45deg,#f43f5e_0_10px,#3b82f6_10px_20px)] p-4 sm:grid-cols-4">
             <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900">none</div>
+            <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-blur-xs">blur-xs</div>
             <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-blur-sm">blur-sm</div>
+            <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-blur-3xl">blur-3xl</div>
             <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-blur-md backdrop-saturate-200">blur-md saturate-200</div>
             <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-grayscale backdrop-contrast-125">grayscale contrast-125</div>
+            <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-brightness-110">brightness-110</div>
+            <div class="grid h-24 place-items-center rounded-lg bg-white/30 text-center font-mono text-[10px] font-semibold text-slate-900 backdrop-opacity-50">opacity-50</div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="backdrop-filter-3"></pre>
@@ -1190,7 +1226,7 @@
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="backdrop-filter-4"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The <code>backdrop:</code> variant targets <code>::backdrop</code> of a popover or a modal <code>&lt;dialog&gt;</code>. The Popover API needs a 2024 or newer browser.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The <code>backdrop:</code> variant targets <code>::backdrop</code> of a popover or a modal <code>&lt;dialog&gt;</code>. The Popover API needs Chrome 114+, Safari 17+ or Firefox 125+.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -1745,13 +1781,13 @@
       <figure class="sc-example">
         <figcaption>Pie slices and a radar sweep</figcaption>
         <div class="sc-demo" id="mask-conic-4">
-          <div class="flex flex-wrap items-center gap-8">
-            <div class="size-20 rounded-full bg-sky-500 mask-conic-from-25% mask-conic-to-25%"></div>
-            <div class="size-20 -rotate-90 rounded-full bg-sky-500 mask-conic-from-50% mask-conic-to-50%"></div>
-            <div class="size-20 rounded-full bg-sky-500 -mask-conic-90 mask-conic-from-25% mask-conic-to-25%"></div>
-            <div class="relative size-36 rounded-full bg-slate-900 ring-1 ring-emerald-500/40">
+          <div class="flex flex-wrap items-center gap-8 text-center font-mono text-[10px] text-slate-500 dark:text-slate-400">
+            <div class="grid gap-2"><div class="size-20 rounded-full bg-sky-500 mask-conic-from-25% mask-conic-to-25%"></div>from-25% to-25%<br>12 to 3 o'clock</div>
+            <div class="grid gap-2"><div class="size-20 rounded-full bg-sky-500 -mask-conic-90 mask-conic-from-25% mask-conic-to-25%"></div>-mask-conic-90<br>9 to 12 o'clock</div>
+            <div class="grid gap-2"><div class="size-20 -rotate-90 rounded-full bg-sky-500 mask-conic-from-50% mask-conic-to-50%"></div>from-50% + -rotate-90<br>top half</div>
+            <div class="grid gap-2"><div class="relative size-24 rounded-full bg-slate-900 ring-1 ring-emerald-500/40">
               <div class="absolute inset-0 animate-spin rounded-full bg-emerald-400/60 mask-conic-from-0% mask-conic-to-25% [animation-duration:3s] motion-reduce:animate-none"></div>
-            </div>
+            </div>radar sweep<br>animate-spin</div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="mask-conic-4"></pre>
@@ -1764,7 +1800,7 @@
     <div class="sc-notes">
       <h2>Combining masks</h2>
       <span class="sc-since" data-v="4.1">v4.1</span>
-      <p>The edge, linear, radial and conic mask utilities are separate layers that Tailwind intersects, so stacking them multiplies the shapes. <code>mask-add</code>, <code>mask-subtract</code>, <code>mask-intersect</code> and <code>mask-exclude</code> choose the boolean operation, mainly for arbitrary multi-layer masks.</p>
+      <p>Tailwind's gradient masks write three layers: one for edge and angled-linear masks, one for radial and one for conic. It sets <code>mask-composite: intersect</code>, so stacking layers keeps only the area every layer shows. <code>mask-add</code>, <code>mask-subtract</code>, <code>mask-intersect</code> and <code>mask-exclude</code> choose the boolean operation, mainly for arbitrary multi-layer masks.</p>
       <ul class="sc-parts">
         <li><code>mask-b-from-50% mask-radial-from-80%</code></li>
         <li><code>mask-x-from-80% mask-y-from-80%</code></li>
@@ -1774,8 +1810,8 @@
         <li><code>mask-exclude</code></li>
         <li><code>mask-[radial-gradient(…),radial-gradient(…)]</code></li>
       </ul>
-      <p class="sc-meta"><a href="https://tailwindcss.com/docs/mask-composite" target="_blank" rel="noopener">Docs: mask-composite</a></p>
-      <p class="sc-note">A raw <code>mask-[...]</code> value and the gradient utilities both write <code>mask-image</code>, so they replace each other. To combine them, nest one masked element inside another.</p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/mask-composite" target="_blank" rel="noopener">Docs: mask-composite</a> · <a href="https://tailwindcss.com/docs/mask-image#combining-masks" target="_blank" rel="noopener">combining masks</a></p>
+      <p class="sc-note">Edge masks (<code>mask-b-from-*</code>) and angled linear masks (<code>mask-linear-*</code>) share one layer, so using both keeps only the angled one. Radial and conic masks have their own layers, so they combine with either. A raw <code>mask-[...]</code> value and the gradient utilities both write <code>mask-image</code> and replace each other. To combine them, nest one masked element inside another.</p>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
@@ -1886,6 +1922,18 @@
       </figure>
 
       <figure class="sc-example">
+        <figcaption>A literal <code>mask-[url(data:…)]</code> with no theme variable</figcaption>
+        <div class="sc-demo" id="mask-image-custom-6">
+          <div class="flex flex-wrap items-center gap-6">
+            <div class="size-24 bg-linear-to-br from-rose-500 to-amber-400 mask-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2010%2010%27%3E%3Cpath%20d=%27M5%208.8C-1%204.5%202.2%200.2%205%203.2C7.8%200.2%2011%204.5%205%208.8Z%27/%3E%3C/svg%3E)] mask-contain mask-center mask-no-repeat"></div>
+            <div class="size-24 bg-linear-to-br from-sky-400 to-indigo-600 mask-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2010%2010%27%3E%3Ccircle%20cx=%275%27%20cy=%275%27%20r=%274.5%27/%3E%3C/svg%3E)] mask-contain mask-center mask-no-repeat"></div>
+          </div>
+        </div>
+        <pre class="sc-code" data-code="html" data-from="mask-image-custom-6"></pre>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The SVG is URL-encoded and written with <code>%20</code> instead of spaces, so the class has no whitespace and no <code>#</code>. It works, but a theme variable is easier to read and reuse.</p></div>
+      </figure>
+
+      <figure class="sc-example">
         <figcaption>Halftone dots</figcaption>
         <div class="sc-demo" id="mask-image-custom-3">
           <div class="h-24 w-48 bg-linear-45 from-amber-300 to-rose-500 mask-[radial-gradient(circle,#000_30%,transparent_31%)] mask-size-[12px_12px] mask-repeat"></div>
@@ -1895,15 +1943,16 @@
       </figure>
 
       <figure class="sc-example">
-        <figcaption>Alpha mask vs luminance mask</figcaption>
+        <figcaption>One mask, three modes: <code>mask-alpha</code>, <code>mask-luminance</code>, <code>mask-match</code></figcaption>
         <div class="sc-demo" id="mask-image-custom-4">
-          <div class="flex flex-wrap gap-6">
-            <div class="grid gap-1"><div class="w-fit rounded-lg ring-1 ring-slate-950/10 dark:ring-white/10"><div class="h-24 w-48 rounded-lg bg-linear-45 from-amber-300 via-rose-500 to-indigo-700 mask-alpha mask-r-from-black mask-r-from-50% mask-r-to-transparent"></div></div><span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-alpha: black to transparent</span></div>
-            <div class="grid gap-1"><div class="w-fit rounded-lg ring-1 ring-slate-950/10 dark:ring-white/10"><div class="h-24 w-48 rounded-lg bg-linear-45 from-amber-300 via-rose-500 to-indigo-700 mask-luminance mask-r-from-white mask-r-from-50% mask-r-to-black"></div></div><span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-luminance: white to black</span></div>
+          <div class="flex flex-wrap gap-5">
+            <div class="grid gap-1"><div class="w-fit rounded-lg ring-1 ring-slate-950/10 dark:ring-white/10"><div class="h-24 w-44 rounded-lg bg-linear-45 from-amber-300 via-rose-500 to-indigo-700 mask-alpha mask-r-from-white mask-r-from-30% mask-r-to-black mask-r-to-90%"></div></div><span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-alpha: all opaque, all shows</span></div>
+            <div class="grid gap-1"><div class="w-fit rounded-lg ring-1 ring-slate-950/10 dark:ring-white/10"><div class="h-24 w-44 rounded-lg bg-linear-45 from-amber-300 via-rose-500 to-indigo-700 mask-luminance mask-r-from-white mask-r-from-30% mask-r-to-black mask-r-to-90%"></div></div><span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-luminance: black hides</span></div>
+            <div class="grid gap-1"><div class="w-fit rounded-lg ring-1 ring-slate-950/10 dark:ring-white/10"><div class="h-24 w-44 rounded-lg bg-linear-45 from-amber-300 via-rose-500 to-indigo-700 mask-match mask-r-from-white mask-r-from-30% mask-r-to-black mask-r-to-90%"></div></div><span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-match: gradient reads as alpha</span></div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="mask-image-custom-4"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note"><code>mask-alpha</code> reads transparency; <code>mask-luminance</code> reads brightness (white shows, black hides). <code>mask-match</code> picks whichever fits the mask source.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The mask is a gradient from opaque white to opaque black. <code>mask-alpha</code> reads transparency, and nothing here is transparent, so everything shows. <code>mask-luminance</code> reads brightness (white shows, black hides), so the right side fades out. <code>mask-match</code> uses the source's own default: alpha for images and gradients, luminance for an SVG <code>&lt;mask&gt;</code> element.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -1911,17 +1960,17 @@
         <div class="sc-demo" id="mask-image-custom-5">
           <div class="flex flex-wrap gap-8">
             <div class="grid gap-1">
-              <svg viewBox="0 0 120 80" class="h-24" aria-hidden="true"><mask id="mic-lum" class="mask-type-luminance"><circle cx="60" cy="40" r="32" fill="black" fill-opacity=".7"/></mask><rect width="120" height="80" fill="#6366f1" mask="url(#mic-lum)"/></svg>
+              <svg viewBox="0 0 120 80" class="h-24" aria-hidden="true"><defs><linearGradient id="mic-grad-lum"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="black"/></linearGradient></defs><mask id="mic-lum" class="mask-type-luminance"><rect width="120" height="80" fill="url(#mic-grad-lum)"/></mask><rect width="120" height="80" rx="8" fill="#6366f1" mask="url(#mic-lum)"/></svg>
               <span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-type-luminance: black hides</span>
             </div>
             <div class="grid gap-1">
-              <svg viewBox="0 0 120 80" class="h-24" aria-hidden="true"><mask id="mic-alpha" class="mask-type-alpha"><circle cx="60" cy="40" r="32" fill="black" fill-opacity=".7"/></mask><rect width="120" height="80" fill="#6366f1" mask="url(#mic-alpha)"/></svg>
-              <span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-type-alpha: opacity shows</span>
+              <svg viewBox="0 0 120 80" class="h-24" aria-hidden="true"><defs><linearGradient id="mic-grad-alpha"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="black"/></linearGradient></defs><mask id="mic-alpha" class="mask-type-alpha"><rect width="120" height="80" fill="url(#mic-grad-alpha)"/></mask><rect width="120" height="80" rx="8" fill="#6366f1" mask="url(#mic-alpha)"/></svg>
+              <span class="font-mono text-[10px] text-slate-500 dark:text-slate-400">mask-type-alpha: opaque shows</span>
             </div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="mask-image-custom-5"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The same black circle at 70% opacity: read as luminance it is invisible, read as alpha it paints a 70% circle.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The same white-to-black gradient, fully opaque. Read as luminance, the black end hides the rectangle. Read as alpha, every pixel is opaque, so the whole rectangle shows. <code>mask-type-*</code> sets the type on an SVG <code>&lt;mask&gt;</code> element, and <code>mask-mode</code> overrides it.</p></div>
       </figure>
     </div>
   </article>
@@ -2056,7 +2105,7 @@
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="mix-blend-mode-1"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">On a dark stage the circles still mix with each other, because <code>isolate</code> keeps the page background out of the blend.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">In the dark theme the circles still mix only with each other, because <code>isolate</code> keeps the page background out of the blend. Without it, <code>multiply</code> would darken them against the page.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -2287,13 +2336,13 @@ echo "four lines overflow both ways"</pre>
         <figcaption><code>scheme-normal</code> and the two <code>only</code> keywords</figcaption>
         <div class="sc-demo" id="color-scheme-4">
           <div class="grid gap-4 text-sm sm:grid-cols-3">
-            <div class="scheme-normal grid gap-2 rounded-lg bg-white p-3 text-slate-900 ring-1 ring-slate-950/10 dark:bg-slate-900 dark:text-slate-100 dark:ring-white/10"><p class="font-mono text-xs">scheme-normal</p><input type="date" aria-label="Date, normal" class="rounded-lg border border-slate-950/10 bg-[Field] px-3 py-2 text-[FieldText] dark:border-white/10"></div>
+            <div class="scheme-normal grid gap-2 rounded-lg bg-white p-3 text-slate-900 ring-1 ring-slate-950/10"><p class="font-mono text-xs">scheme-normal</p><input type="date" aria-label="Date, normal" class="rounded-lg border border-slate-950/10 bg-[Field] px-3 py-2 text-[FieldText]"></div>
             <div class="scheme-only-light grid gap-2 rounded-lg bg-white p-3 text-slate-900 ring-1 ring-slate-950/10"><p class="font-mono text-xs">scheme-only-light</p><input type="date" aria-label="Date, only light" class="rounded-lg border border-slate-950/10 bg-[Field] px-3 py-2 text-[FieldText]"></div>
             <div class="scheme-only-dark grid gap-2 rounded-lg bg-slate-900 p-3 text-slate-100 ring-1 ring-white/10"><p class="font-mono text-xs">scheme-only-dark</p><input type="date" aria-label="Date, only dark" class="rounded-lg border border-white/10 bg-[Field] px-3 py-2 text-[FieldText]"></div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="color-scheme-4"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note"><code>only</code> forbids the browser from forcing the other scheme, for example Chrome's auto-dark. Use <code>scheme-only-light</code> on content that must stay light, such as an invoice or print preview.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note"><code>scheme-normal</code> means the browser default, which is light, so it does not follow a dark page (this tile stays light in both themes). <code>only</code> forbids the browser from forcing the other scheme, for example Chrome's auto-dark. Use <code>scheme-only-light</code> on content that must stay light, such as an invoice or print preview.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -2405,15 +2454,15 @@ echo "four lines overflow both ways"</pre>
         <li><code>text-shadow-olive-950/30</code></li>
         <li><code>dark:bg-mauve-950</code></li>
       </ul>
-      <p class="sc-meta"><a href="https://tailwindcss.com/blog/tailwindcss-v4-3" target="_blank" rel="noopener">Blog: v4.3 (recaps v4.2 palettes)</a></p>
+      <p class="sc-meta"><a href="https://tailwindcss.com/docs/colors" target="_blank" rel="noopener">Docs: colors</a> · <a href="https://tailwindcss.com/blog/tailwindcss-v4-3#new-mauve-olive-mist-and-taupe-palettes" target="_blank" rel="noopener">Blog: v4.3 recap of the v4.2 palettes</a></p>
     </div>
     <div class="sc-examples">
       <figure class="sc-example">
         <figcaption>Warm taupe card and cool mist tile</figcaption>
         <div class="sc-demo" id="tinted-neutral-shadows-1">
-          <div class="flex flex-wrap gap-8 rounded-xl bg-taupe-100 p-6 pb-10 dark:bg-taupe-950">
-            <div class="w-52 rounded-2xl bg-taupe-50 p-6 text-sm text-taupe-900 shadow-xl shadow-taupe-950/10 ring-1 ring-taupe-950/5 dark:bg-taupe-900 dark:text-taupe-50 dark:shadow-black/40 dark:ring-white/10">Warm paper card</div>
-            <div class="w-52 rounded-2xl bg-mist-100 p-6 text-sm text-mist-900 shadow-lg shadow-mist-950/10 ring-1 ring-mist-950/10 dark:bg-mist-900 dark:text-mist-50 dark:shadow-black/40 dark:ring-white/10">Cool dashboard tile</div>
+          <div class="flex flex-wrap gap-8 rounded-xl bg-taupe-100 p-6 pb-10 dark:bg-taupe-900">
+            <div class="w-52 rounded-2xl bg-taupe-50 p-6 text-sm text-taupe-900 shadow-xl shadow-taupe-950/10 ring-1 ring-taupe-950/5 dark:bg-taupe-800 dark:text-taupe-50 dark:shadow-black/40 dark:ring-white/10">Warm paper card</div>
+            <div class="w-52 rounded-2xl bg-mist-100 p-6 text-sm text-mist-900 shadow-lg shadow-mist-950/10 ring-1 ring-mist-950/10 dark:bg-mist-800 dark:text-mist-50 dark:shadow-black/40 dark:ring-white/10">Cool dashboard tile</div>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="tinted-neutral-shadows-1"></pre>
@@ -2450,7 +2499,7 @@ echo "four lines overflow both ways"</pre>
     <div class="sc-notes">
       <h2>Animating effects</h2>
       <span class="sc-since" data-v="4.1">v4.1</span>
-      <p>What animates and what snaps. <code>transition</code> eases <code>box-shadow</code> and <code>filter</code>. Tailwind's mask stop variables are registered with the syntax <code>*</code>, so they jump instead of transitioning, while gradient <code>from-*</code> and <code>to-*</code> stops glide. To animate a mask, keyframe <code>mask-position</code> or register your own typed <code>@property</code>.</p>
+      <p>What animates and what snaps. The default <code>transition</code> eases <code>box-shadow</code>, <code>filter</code> and gradient stop colors. Tailwind registers its mask stop variables with the syntax <code>*</code>, so they jump instead of transitioning. Gradient stop positions are typed values, so they can glide once you list them in <code>transition-property</code>. To animate a mask, keyframe <code>mask-position</code> or register your own typed <code>@property</code>.</p>
       <ul class="sc-parts">
         <li><code>transition-shadow</code></li>
         <li><code>hover:shadow-xl</code></li>
@@ -2506,7 +2555,7 @@ echo "four lines overflow both ways"</pre>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="animated-effects-3"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Both the size and the color of the shadow ease, because they are separate variables inside one <code>box-shadow</code>.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The transition runs on the final <code>box-shadow</code> value, so the size, offset and color of the shadow all ease together.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -2524,7 +2573,7 @@ echo "four lines overflow both ways"</pre>
           </div>
         </div>
         <pre class="sc-code" data-code="html" data-from="animated-effects-4"></pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Mask stop variables are registered with the syntax <code>*</code>, which cannot be interpolated. The gradient stops are typed, so they animate.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Mask stop variables are registered with the syntax <code>*</code>, which cannot be interpolated, so the mask jumps even though <code>transition-[--tw-mask-bottom-from-position]</code> names it. The gradient stop position is registered as <code>&lt;length-percentage&gt;</code>, so it animates.</p></div>
       </figure>
     </div>
   </article>

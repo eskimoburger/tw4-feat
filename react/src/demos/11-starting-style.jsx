@@ -122,7 +122,7 @@ const KINDS = {
     title: 'Deploy finished',
     body: 'harbor-web 2.14.0 is live in eu-west.',
     icon: 'check',
-    tone: 'bg-emerald-600/15 text-emerald-700 dark:text-emerald-400',
+    tone: 'bg-emerald-600/15 text-emerald-800 dark:text-emerald-400',
     bar: 'border-l-emerald-600 dark:border-l-emerald-400',
   },
   error: {

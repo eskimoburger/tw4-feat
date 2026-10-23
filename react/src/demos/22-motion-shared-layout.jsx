@@ -10,7 +10,7 @@ export const meta = {
   order: 220,
   summary:
     'Give two elements the same layoutId and Motion glides one into the other: a tab underline, a billing pill and a card that grows into its detail view. CSS transitions cannot move an element between two places in the DOM, so this is where Motion earns its keep.',
-  tailwind: ['absolute inset-x-1', 'bg-linear-to-br', 'aspect-*', 'overflow-x-auto', 'rounded-full', 'tabular-nums', 'text-white'],
+  tailwind: ['absolute inset-x-2', 'bg-linear-to-br', 'min-h-44', 'overflow-x-auto', 'rounded-full', 'tabular-nums', 'text-white'],
 }
 
 const TAB_BASE = 'focus-ring relative cursor-pointer whitespace-nowrap text-sm font-medium transition-colors duration-150 motion-reduce:transition-none'
@@ -185,7 +185,7 @@ function PillToggle() {
               )
             })}
           </div>
-          <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
+          <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 font-mono text-xs font-medium text-emerald-800 dark:text-emerald-300">
             Yearly saves 20%
           </span>
         </div>
@@ -230,7 +230,7 @@ const TRIPS = [
     country: 'Portugal',
     nights: 5,
     price: 640,
-    gradient: 'from-orange-600 to-rose-700',
+    gradient: 'from-orange-700 to-rose-700',
     blurb: 'Tiled hillsides, trams and a late sunset over the Tagus. Mild in October and easy to cover on foot.',
     stops: ['Alfama morning walk', 'Day trip to Sintra', 'Pastéis de Belém at closing time'],
   },
@@ -260,7 +260,7 @@ const TRIPS = [
     country: 'Mexico',
     nights: 6,
     price: 780,
-    gradient: 'from-emerald-600 to-teal-700',
+    gradient: 'from-emerald-700 to-teal-800',
     blurb: 'Mole in the markets, mezcal workshops and the Day of the Dead parades in the first days of November.',
     stops: ['Monte Albán at opening', 'Hierve el Agua springs', 'Cooking class at Mercado 20 de Noviembre'],
   },
@@ -428,14 +428,14 @@ export default function MotionSharedLayout() {
         title="Card to detail: layoutId on the card and its title"
         lang="jsx"
         code={`<motion.button layoutId={'trip-' + id} style={{ borderRadius: 16 }}
-  className="bg-linear-to-br from-orange-600 to-rose-700 p-3 text-white">
+  className="bg-linear-to-br from-orange-700 to-rose-700 p-3 text-white">
   <motion.span layoutId={'trip-title-' + id}>{city}</motion.span>
 </motion.button>
 
 <AnimatePresence>
   {trip && (
     <motion.div layoutId={'trip-' + trip.id} style={{ borderRadius: 16 }}
-      className="absolute inset-0 bg-linear-to-br from-orange-600 to-rose-700" />
+      className="absolute inset-0 bg-linear-to-br from-orange-700 to-rose-700" />
   )}
 </AnimatePresence>`}
       >
