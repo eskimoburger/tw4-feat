@@ -83,6 +83,7 @@
             <p class="mt-2 text-sm text-slate-500 group-hover:text-white dark:text-slate-400">Create a new project from a variety of starting templates.</p>
           </a>
         </div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">In v4, <code>hover:</code> and <code>group-hover:</code> only apply on devices that can hover: they compile inside <code>@media (hover: hover)</code>. A tap on a touch screen no longer leaves the card stuck in its hover state, so treat hover effects as a bonus and never hide something people need behind them (see the <a href="https://tailwindcss.com/docs/upgrade-guide#hover-styles-on-mobile" target="_blank" rel="noopener">upgrade guide</a>).</p></div>
         <pre class="sc-code" data-code="html" data-from="group-1"></pre>
         <pre class="sc-code" data-code="js" data-label="JS (demo links stay on this page)">// Demo links use href="#": stop them jumping to the top of the page
 document.addEventListener('click', (e) =&gt; {
@@ -172,21 +173,21 @@ document.addEventListener('click', (e) =&gt; {
             <label class="flex cursor-pointer items-center justify-between gap-4">
               Email notifications
               <input type="checkbox" class="peer sr-only" checked>
-              <span class="relative block h-6 w-11 shrink-0 rounded-full bg-slate-300 transition peer-checked:bg-indigo-600 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-indigo-500 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:transition-transform after:content-[''] peer-checked:after:translate-x-5 motion-reduce:transition-none motion-reduce:after:transition-none dark:bg-slate-600 dark:peer-checked:bg-indigo-500"></span>
+              <span class="relative block h-6 w-11 shrink-0 rounded-full bg-slate-300 transition peer-checked:bg-indigo-600 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-indigo-500 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:after:translate-x-5 motion-reduce:transition-none motion-reduce:after:transition-none dark:bg-slate-600 dark:peer-checked:bg-indigo-500"></span>
             </label>
             <label class="flex cursor-pointer items-center justify-between gap-4">
               Weekly digest
               <input type="checkbox" class="peer sr-only">
-              <span class="relative block h-6 w-11 shrink-0 rounded-full bg-slate-300 transition peer-checked:bg-indigo-600 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-indigo-500 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:transition-transform after:content-[''] peer-checked:after:translate-x-5 motion-reduce:transition-none motion-reduce:after:transition-none dark:bg-slate-600 dark:peer-checked:bg-indigo-500"></span>
+              <span class="relative block h-6 w-11 shrink-0 rounded-full bg-slate-300 transition peer-checked:bg-indigo-600 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-indigo-500 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:after:translate-x-5 motion-reduce:transition-none motion-reduce:after:transition-none dark:bg-slate-600 dark:peer-checked:bg-indigo-500"></span>
             </label>
-            <label class="flex items-center justify-between gap-4 text-slate-400 dark:text-slate-500">
+            <label class="flex items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
               SMS (not on your plan)
               <input type="checkbox" class="peer sr-only" disabled>
-              <span class="relative block h-6 w-11 shrink-0 rounded-full bg-slate-300 peer-disabled:opacity-50 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow after:content-[''] dark:bg-slate-600"></span>
+              <span class="relative block h-6 w-11 shrink-0 rounded-full bg-slate-300 peer-disabled:opacity-50 after:absolute after:top-0.5 after:left-0.5 after:size-5 after:rounded-full after:bg-white after:shadow dark:bg-slate-600"></span>
             </label>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The real <code>&lt;input&gt;</code> stays in the page (<code>sr-only</code>), so it keeps keyboard and screen-reader behaviour. It must come <em>before</em> the track in the DOM, because <code>peer-*</code> only reaches later siblings. The knob is an <code>after:</code> pseudo-element, stacked as <code>peer-checked:after:translate-x-5</code>.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The real <code>&lt;input&gt;</code> stays in the page (<code>sr-only</code>), so it keeps keyboard and screen-reader behaviour. It must come <em>before</em> the track in the DOM, because <code>peer-*</code> only reaches later siblings. The knob is an <code>after:</code> pseudo-element, stacked as <code>peer-checked:after:translate-x-5</code>. v4 adds the empty <code>content</code> for you, so no <code>after:content-['']</code> is needed.</p></div>
         <pre class="sc-code" data-code="html" data-from="peer-1"></pre>
       </figure>
 
@@ -219,9 +220,9 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Strike through a finished task</figcaption>
         <div class="sc-demo" id="peer-4">
           <ul class="mx-auto grid max-w-xs gap-3 rounded-xl bg-white p-5 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
-            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600" checked><span class="transition-colors peer-checked:text-slate-400 peer-checked:line-through dark:peer-checked:text-slate-500">Write the release notes</span></label></li>
-            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors peer-checked:text-slate-400 peer-checked:line-through dark:peer-checked:text-slate-500">Update the changelog</span></label></li>
-            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors peer-checked:text-slate-400 peer-checked:line-through dark:peer-checked:text-slate-500">Tag v4.3.3</span></label></li>
+            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600" checked><span class="transition-colors peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Write the release notes</span></label></li>
+            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Update the changelog</span></label></li>
+            <li><label class="flex cursor-pointer items-center gap-3"><input type="checkbox" class="peer size-4 accent-indigo-600"><span class="transition-colors peer-checked:text-slate-500 peer-checked:line-through dark:peer-checked:text-slate-400">Tag v4.3.3</span></label></li>
           </ul>
         </div>
         <pre class="sc-code" data-code="html" data-from="peer-4"></pre>
@@ -279,7 +280,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="named-2">
           <div class="mx-auto grid max-w-xl gap-4 sm:grid-cols-2">
             <div>
-              <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Unnamed</p>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">Unnamed</p>
               <article class="group rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                 <h3 class="font-semibold group-hover:text-indigo-600 dark:group-hover:text-indigo-300">Pro plan</h3>
                 <button type="button" class="group mt-3 inline-flex items-center gap-1 rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">
@@ -287,10 +288,10 @@ document.addEventListener('click', (e) =&gt; {
                   <span class="transition group-hover:translate-x-1 motion-reduce:transition-none">→</span>
                 </button>
               </article>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Hover the card, not the button: the arrow still slides.</p>
+              <p class="mt-2 text-xs text-slate-600 dark:text-slate-400">Hover the card, not the button: the arrow still slides.</p>
             </div>
             <div>
-              <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Named</p>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-400">Named</p>
               <article class="group/card rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm transition hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                 <h3 class="font-semibold group-hover/card:text-indigo-600 dark:group-hover/card:text-indigo-300">Pro plan</h3>
                 <button type="button" class="group/cta mt-3 inline-flex items-center gap-1 rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-white dark:text-slate-900">
@@ -298,7 +299,7 @@ document.addEventListener('click', (e) =&gt; {
                   <span class="transition group-hover/cta:translate-x-1 motion-reduce:transition-none">→</span>
                 </button>
               </article>
-              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">The arrow moves only when the button is hovered.</p>
+              <p class="mt-2 text-xs text-slate-600 dark:text-slate-400">The arrow moves only when the button is hovered.</p>
             </div>
           </div>
         </div>
@@ -327,9 +328,9 @@ document.addEventListener('click', (e) =&gt; {
             <fieldset class="flex flex-wrap items-center gap-x-4 gap-y-2">
               <legend class="sr-only">Post status</legend>
               <input id="named-draft" type="radio" name="named-status" class="peer/draft size-4 accent-sky-600" checked>
-              <label for="named-draft" class="-ml-2 font-medium peer-checked/draft:text-sky-600 dark:peer-checked/draft:text-sky-300">Draft</label>
+              <label for="named-draft" class="-ml-2 font-medium peer-checked/draft:text-sky-700 dark:peer-checked/draft:text-sky-300">Draft</label>
               <input id="named-published" type="radio" name="named-status" class="peer/published size-4 accent-sky-600">
-              <label for="named-published" class="-ml-2 font-medium peer-checked/published:text-sky-600 dark:peer-checked/published:text-sky-300">Published</label>
+              <label for="named-published" class="-ml-2 font-medium peer-checked/published:text-sky-700 dark:peer-checked/published:text-sky-300">Published</label>
               <div class="hidden basis-full text-slate-500 peer-checked/draft:block dark:text-slate-400">Drafts are only visible to administrators.</div>
               <div class="hidden basis-full text-slate-500 peer-checked/published:block dark:text-slate-400">Your post will be publicly visible on your site.</div>
             </fieldset>
@@ -471,10 +472,10 @@ document.addEventListener('click', (e) =&gt; {
       <figure class="sc-example">
         <figcaption>Arbitrary selector: border turns red when any child is invalid</figcaption>
         <div class="sc-demo" id="has-5">
-          <fieldset class="mx-auto grid max-w-sm gap-3 rounded-lg border-2 border-slate-300 bg-white p-4 text-sm text-slate-900 has-[:invalid]:border-red-500 has-[:invalid]:bg-red-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:has-[:invalid]:border-red-400 dark:has-[:invalid]:bg-red-950/40">
+          <fieldset class="mx-auto grid min-w-0 max-w-sm gap-3 rounded-lg border-2 border-slate-300 bg-white p-4 text-sm text-slate-900 has-[:invalid]:border-red-500 has-[:invalid]:bg-red-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:has-[:invalid]:border-red-400 dark:has-[:invalid]:bg-red-950/40">
             <legend class="px-1 font-semibold">Contact</legend>
-            <input type="text" required value="Ada Lovelace" aria-label="Name" autocomplete="off" class="rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
-            <input type="email" required value="ada@" aria-label="Email" autocomplete="off" class="rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
+            <input type="text" required value="Ada Lovelace" aria-label="Name" autocomplete="off" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
+            <input type="email" required value="ada@" aria-label="Email" autocomplete="off" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
           </fieldset>
         </div>
         <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The email is incomplete, so the fieldset is red. Fix it and the border goes back to grey. <code>has-*</code> also stacks with other variants, for example <code>has-not-checked:</code> or <code>has-hover:</code>.</p></div>
@@ -560,7 +561,7 @@ document.addEventListener('click', (e) =&gt; {
               </span>
               Indeterminate
             </label>
-            <label class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+            <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400">
               <span class="group grid size-5 grid-cols-1">
                 <input type="checkbox" checked disabled class="col-start-1 row-start-1 appearance-none rounded-sm border border-slate-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-slate-300 disabled:bg-slate-100 disabled:checked:bg-slate-100 dark:border-slate-500 dark:bg-slate-900 dark:disabled:border-slate-600 dark:disabled:bg-slate-700 dark:disabled:checked:bg-slate-700 forced-colors:appearance-auto">
                 <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-4 self-center justify-self-center stroke-white group-has-disabled:stroke-slate-950/25 dark:group-has-disabled:stroke-white/25">
@@ -585,12 +586,12 @@ document.querySelectorAll('[data-indeterminate]').forEach((box) =&gt; (box.indet
             <div class="group">
               <label for="gh-now" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Checked straight away</label>
               <input id="gh-now" type="email" required value="ada@" autocomplete="off" class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-900 dark:text-white">
-              <p class="mt-1 hidden text-sm text-red-600 group-has-[:invalid]:block dark:text-red-400">Enter a valid email.</p>
+              <p class="mt-1 hidden text-sm text-red-700 group-has-[:invalid]:block dark:text-red-400">Enter a valid email.</p>
             </div>
             <div class="group">
               <label for="gh-later" class="block text-sm font-medium text-slate-700 dark:text-slate-200">Checked after you touch it</label>
               <input id="gh-later" type="email" required autocomplete="off" placeholder="you@company.com" class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500">
-              <p class="mt-1 hidden text-sm text-red-600 group-has-user-invalid:block dark:text-red-400">Enter a valid email.</p>
+              <p class="mt-1 hidden text-sm text-red-700 group-has-user-invalid:block dark:text-red-400">Enter a valid email.</p>
             </div>
           </div>
         </div>
@@ -620,15 +621,15 @@ document.querySelectorAll('[data-indeterminate]').forEach((box) =&gt; (box.indet
           <ul class="mx-auto max-w-xs divide-y divide-slate-100 rounded-xl bg-white text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:divide-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <li class="flex items-center justify-between gap-4 px-4 py-3">
               <label class="peer flex cursor-pointer items-center gap-3"><input type="checkbox" class="size-4 accent-indigo-600"> Write copy</label>
-              <button type="button" aria-label="Delete Write copy" class="rounded px-2 text-lg leading-none text-slate-400 hover:text-red-600 peer-has-checked:hidden dark:hover:text-red-400">×</button>
+              <button type="button" aria-label="Delete Write copy" class="rounded px-2 text-lg leading-none text-slate-500 hover:text-red-600 peer-has-checked:hidden dark:text-slate-400 dark:hover:text-red-400">×</button>
             </li>
             <li class="flex items-center justify-between gap-4 px-4 py-3">
               <label class="peer flex cursor-pointer items-center gap-3"><input type="checkbox" class="size-4 accent-indigo-600" checked> Design the hero</label>
-              <button type="button" aria-label="Delete Design the hero" class="rounded px-2 text-lg leading-none text-slate-400 hover:text-red-600 peer-has-checked:hidden dark:hover:text-red-400">×</button>
+              <button type="button" aria-label="Delete Design the hero" class="rounded px-2 text-lg leading-none text-slate-500 hover:text-red-600 peer-has-checked:hidden dark:text-slate-400 dark:hover:text-red-400">×</button>
             </li>
             <li class="flex items-center justify-between gap-4 px-4 py-3">
               <label class="peer flex cursor-pointer items-center gap-3"><input type="checkbox" class="size-4 accent-indigo-600"> Ship it</label>
-              <button type="button" aria-label="Delete Ship it" class="rounded px-2 text-lg leading-none text-slate-400 hover:text-red-600 peer-has-checked:hidden dark:hover:text-red-400">×</button>
+              <button type="button" aria-label="Delete Ship it" class="rounded px-2 text-lg leading-none text-slate-500 hover:text-red-600 peer-has-checked:hidden dark:text-slate-400 dark:hover:text-red-400">×</button>
             </li>
           </ul>
         </div>
@@ -660,7 +661,7 @@ document.querySelectorAll('[data-indeterminate]').forEach((box) =&gt; (box.indet
             <div class="peer mt-1">
               <input id="ph-email" type="email" value="billing@example.com" autocomplete="off" class="block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-600 dark:bg-slate-900 dark:text-white dark:disabled:bg-slate-800 dark:disabled:text-slate-500">
             </div>
-            <p class="mt-1 text-slate-500 peer-has-disabled:opacity-50 dark:text-slate-400">Invoices are sent here.</p>
+            <p class="mt-1 text-slate-600 peer-has-disabled:opacity-50 dark:text-slate-400">Invoices are sent here.</p>
             <label class="mt-3 flex items-center gap-2 text-slate-600 dark:text-slate-300"><input type="checkbox" data-disables="#ph-email" class="accent-indigo-600"> Lock this field</label>
           </div>
         </div>
@@ -782,15 +783,15 @@ document.addEventListener('click', (e) =&gt; {
           <div class="mx-auto grid max-w-md gap-3 sm:grid-cols-3">
             <button type="button" data-plan class="rounded-lg border border-slate-300 bg-white p-3 text-left text-sm text-slate-900 hover:border-slate-400 data-active:border-purple-500 data-active:bg-purple-50 data-active:ring-1 data-active:ring-purple-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-500 dark:data-active:border-purple-400 dark:data-active:bg-purple-500/20 dark:data-active:ring-purple-400">
               <span class="block font-semibold">Starter</span>
-              <span class="text-slate-500 dark:text-slate-400">$9 / month</span>
+              <span class="text-slate-600 dark:text-slate-400">$9 / month</span>
             </button>
             <button type="button" data-plan data-active class="rounded-lg border border-slate-300 bg-white p-3 text-left text-sm text-slate-900 hover:border-slate-400 data-active:border-purple-500 data-active:bg-purple-50 data-active:ring-1 data-active:ring-purple-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-500 dark:data-active:border-purple-400 dark:data-active:bg-purple-500/20 dark:data-active:ring-purple-400">
               <span class="block font-semibold">Pro</span>
-              <span class="text-slate-500 dark:text-slate-400">$29 / month</span>
+              <span class="text-slate-600 dark:text-slate-400">$29 / month</span>
             </button>
             <button type="button" data-plan class="rounded-lg border border-slate-300 bg-white p-3 text-left text-sm text-slate-900 hover:border-slate-400 data-active:border-purple-500 data-active:bg-purple-50 data-active:ring-1 data-active:ring-purple-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-500 dark:data-active:border-purple-400 dark:data-active:bg-purple-500/20 dark:data-active:ring-purple-400">
               <span class="block font-semibold">Team</span>
-              <span class="text-slate-500 dark:text-slate-400">$79 / month</span>
+              <span class="text-slate-600 dark:text-slate-400">$79 / month</span>
             </button>
           </div>
         </div>
@@ -891,17 +892,17 @@ document.addEventListener('click', (e) =&gt; {
           <table class="mx-auto w-full max-w-md overflow-hidden rounded-lg bg-white text-left text-sm shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-white/10">
             <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-900/50 dark:text-slate-400">
               <tr>
-                <th scope="col" aria-sort="ascending" class="group px-4 py-2 aria-[sort=ascending]:text-indigo-600 aria-[sort=descending]:text-indigo-600 dark:aria-[sort=ascending]:text-indigo-300 dark:aria-[sort=descending]:text-indigo-300">
+                <th scope="col" aria-sort="ascending" class="group px-1.5 py-2 sm:px-4 aria-[sort=ascending]:text-indigo-600 aria-[sort=descending]:text-indigo-600 dark:aria-[sort=ascending]:text-indigo-300 dark:aria-[sort=descending]:text-indigo-300">
                   <button type="button" data-sort="0" class="inline-flex cursor-pointer items-center gap-1 font-semibold uppercase tracking-wide">Invoice
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3 opacity-0 transition group-aria-[sort=ascending]:rotate-0 group-aria-[sort=ascending]:opacity-100 group-aria-[sort=descending]:rotate-180 group-aria-[sort=descending]:opacity-100 motion-reduce:transition-none" aria-hidden="true"><path d="m5 12 5-5 5 5"/></svg>
                   </button>
                 </th>
-                <th scope="col" aria-sort="none" class="group px-4 py-2 aria-[sort=ascending]:text-indigo-600 aria-[sort=descending]:text-indigo-600 dark:aria-[sort=ascending]:text-indigo-300 dark:aria-[sort=descending]:text-indigo-300">
+                <th scope="col" aria-sort="none" class="group px-1.5 py-2 sm:px-4 aria-[sort=ascending]:text-indigo-600 aria-[sort=descending]:text-indigo-600 dark:aria-[sort=ascending]:text-indigo-300 dark:aria-[sort=descending]:text-indigo-300">
                   <button type="button" data-sort="1" class="inline-flex cursor-pointer items-center gap-1 font-semibold uppercase tracking-wide">Customer
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3 opacity-0 transition group-aria-[sort=ascending]:rotate-0 group-aria-[sort=ascending]:opacity-100 group-aria-[sort=descending]:rotate-180 group-aria-[sort=descending]:opacity-100 motion-reduce:transition-none" aria-hidden="true"><path d="m5 12 5-5 5 5"/></svg>
                   </button>
                 </th>
-                <th scope="col" aria-sort="none" class="group px-4 py-2 text-right aria-[sort=ascending]:text-indigo-600 aria-[sort=descending]:text-indigo-600 dark:aria-[sort=ascending]:text-indigo-300 dark:aria-[sort=descending]:text-indigo-300">
+                <th scope="col" aria-sort="none" class="group px-1.5 py-2 sm:px-4 text-right aria-[sort=ascending]:text-indigo-600 aria-[sort=descending]:text-indigo-600 dark:aria-[sort=ascending]:text-indigo-300 dark:aria-[sort=descending]:text-indigo-300">
                   <button type="button" data-sort="2" class="inline-flex cursor-pointer items-center gap-1 font-semibold uppercase tracking-wide">Amount
                     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="size-3 opacity-0 transition group-aria-[sort=ascending]:rotate-0 group-aria-[sort=ascending]:opacity-100 group-aria-[sort=descending]:rotate-180 group-aria-[sort=descending]:opacity-100 motion-reduce:transition-none" aria-hidden="true"><path d="m5 12 5-5 5 5"/></svg>
                   </button>
@@ -909,10 +910,10 @@ document.addEventListener('click', (e) =&gt; {
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-slate-900 dark:divide-slate-700 dark:text-slate-100">
-              <tr><td class="px-4 py-2.5">INV-1042</td><td class="px-4 py-2.5">Northwind</td><td class="px-4 py-2.5 text-right">$1,200</td></tr>
-              <tr><td class="px-4 py-2.5">INV-1043</td><td class="px-4 py-2.5">Acme Corp</td><td class="px-4 py-2.5 text-right">$860</td></tr>
-              <tr><td class="px-4 py-2.5">INV-1044</td><td class="px-4 py-2.5">Globex</td><td class="px-4 py-2.5 text-right">$2,450</td></tr>
-              <tr><td class="px-4 py-2.5">INV-1045</td><td class="px-4 py-2.5">Initech</td><td class="px-4 py-2.5 text-right">$310</td></tr>
+              <tr><td class="px-1.5 py-2.5 sm:px-4">INV-1042</td><td class="px-1.5 py-2.5 sm:px-4">Northwind</td><td class="px-1.5 py-2.5 sm:px-4 text-right">$1,200</td></tr>
+              <tr><td class="px-1.5 py-2.5 sm:px-4">INV-1043</td><td class="px-1.5 py-2.5 sm:px-4">Acme Corp</td><td class="px-1.5 py-2.5 sm:px-4 text-right">$860</td></tr>
+              <tr><td class="px-1.5 py-2.5 sm:px-4">INV-1044</td><td class="px-1.5 py-2.5 sm:px-4">Globex</td><td class="px-1.5 py-2.5 sm:px-4 text-right">$2,450</td></tr>
+              <tr><td class="px-1.5 py-2.5 sm:px-4">INV-1045</td><td class="px-1.5 py-2.5 sm:px-4">Initech</td><td class="px-1.5 py-2.5 sm:px-4 text-right">$310</td></tr>
             </tbody>
           </table>
         </div>
@@ -974,7 +975,7 @@ document.addEventListener('click', (e) =&gt; {
             <nav data-nav aria-label="Main" class="flex flex-wrap gap-x-5 gap-y-1">
               <a href="#" aria-current="page" class="text-slate-600 hover:text-slate-900 aria-[current=page]:font-semibold aria-[current=page]:text-indigo-600 dark:text-slate-300 dark:hover:text-white dark:aria-[current=page]:text-indigo-300">Dashboard</a>
               <a href="#" class="text-slate-600 hover:text-slate-900 aria-[current=page]:font-semibold aria-[current=page]:text-indigo-600 dark:text-slate-300 dark:hover:text-white dark:aria-[current=page]:text-indigo-300">Projects</a>
-              <a href="#" aria-disabled="true" class="text-slate-600 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-slate-300">Billing (locked)</a>
+              <a href="#" aria-disabled="true" class="text-slate-700 aria-disabled:pointer-events-none aria-disabled:opacity-60 dark:text-slate-300">Billing (locked)</a>
             </nav>
             <section id="aria-busy-panel" aria-busy="false" class="rounded-lg bg-white p-4 text-slate-900 shadow-sm ring-1 ring-slate-900/5 aria-busy:animate-pulse motion-reduce:animate-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
               <p class="text-slate-500 dark:text-slate-400">Revenue this month</p>
@@ -1120,7 +1121,7 @@ document.addEventListener('change', (e) =&gt; {
         <figcaption>Badge that exists only while it has content (<code>not-empty:</code>)</figcaption>
         <div class="sc-demo" id="not-4">
           <div class="mx-auto flex max-w-xs items-center justify-between gap-4 text-sm">
-            <span class="relative inline-block px-1 font-medium text-slate-900 dark:text-slate-100">Inbox<span id="not-badge" class="absolute -top-2 -right-5 hidden size-5 items-center justify-center rounded-full bg-rose-500 text-xs font-semibold text-white not-empty:inline-flex">3</span></span>
+            <span class="relative inline-block px-1 font-medium text-slate-900 dark:text-slate-100">Inbox<span id="not-badge" class="absolute -top-2 -right-5 hidden size-5 items-center justify-center rounded-full bg-rose-600 text-xs font-semibold text-white not-empty:inline-flex">3</span></span>
             <div class="flex gap-2">
               <button type="button" data-badge="add" data-target="#not-badge" class="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600">New message</button>
               <button type="button" data-badge="clear" data-target="#not-badge" class="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600">Mark all read</button>
@@ -1214,7 +1215,7 @@ document.addEventListener('click', (e) =&gt; {
             </div>
             <div class="group rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-white/10 hover:ring-indigo-400 dark:hover:ring-indigo-400">
               <p class="font-semibold not-group-hover:text-slate-500 dark:not-group-hover:text-slate-400">Hover this card</p>
-              <p class="mt-1 text-slate-600 not-group-hover:opacity-60 dark:text-slate-300">The text dims whenever the group is not hovered.</p>
+              <p class="mt-1 text-slate-800 not-group-hover:opacity-70 dark:text-slate-200">The text dims whenever the group is not hovered.</p>
             </div>
           </div>
         </div>
@@ -1261,23 +1262,23 @@ document.addEventListener('change', (e) =&gt; {
           <ul class="mx-auto grid max-w-md gap-2 rounded-xl bg-white p-4 text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <li class="flex items-center justify-between gap-3">
               <code class="font-mono text-xs">supports-[display:grid]:</code>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[display:grid]:bg-emerald-600 supports-[display:grid]:text-white supports-[display:grid]:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[display:grid]:bg-emerald-700 supports-[display:grid]:text-white supports-[display:grid]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="font-mono text-xs">supports-[display:nonsense]:</code>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[display:nonsense]:bg-emerald-600 supports-[display:nonsense]:text-white supports-[display:nonsense]:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[display:nonsense]:bg-emerald-700 supports-[display:nonsense]:text-white supports-[display:nonsense]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="font-mono text-xs">not-supports-[display:grid]:</code>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-supports-[display:grid]:bg-emerald-600 not-supports-[display:grid]:text-white not-supports-[display:grid]:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-supports-[display:grid]:bg-emerald-700 not-supports-[display:grid]:text-white not-supports-[display:grid]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="font-mono text-xs">not-supports-[display:nonsense]:</code>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-supports-[display:nonsense]:bg-emerald-600 not-supports-[display:nonsense]:text-white not-supports-[display:nonsense]:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-supports-[display:nonsense]:bg-emerald-700 not-supports-[display:nonsense]:text-white not-supports-[display:nonsense]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="font-mono text-xs">not-supports-hanging-punctuation:</code>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-supports-hanging-punctuation:bg-emerald-600 not-supports-hanging-punctuation:text-white not-supports-hanging-punctuation:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-supports-hanging-punctuation:bg-emerald-700 not-supports-hanging-punctuation:text-white not-supports-hanging-punctuation:before:content-['on']"></span>
             </li>
           </ul>
         </div>
@@ -1291,23 +1292,23 @@ document.addEventListener('change', (e) =&gt; {
           <ul class="mx-auto grid max-w-md gap-2 rounded-xl bg-white p-4 text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">not-sm:</code> <span class="text-xs text-slate-500 dark:text-slate-400">viewport under 640px</span></span>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-sm:bg-emerald-600 not-sm:text-white not-sm:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-sm:bg-emerald-700 not-sm:text-white not-sm:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">not-lg:</code> <span class="text-xs text-slate-500 dark:text-slate-400">viewport under 1024px</span></span>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-lg:bg-emerald-600 not-lg:text-white not-lg:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-lg:bg-emerald-700 not-lg:text-white not-lg:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">not-motion-reduce:</code> <span class="text-xs text-slate-500 dark:text-slate-400">motion allowed</span></span>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-motion-reduce:bg-emerald-600 not-motion-reduce:text-white not-motion-reduce:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-motion-reduce:bg-emerald-700 not-motion-reduce:text-white not-motion-reduce:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">not-forced-colors:</code> <span class="text-xs text-slate-500 dark:text-slate-400">no forced colours</span></span>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-forced-colors:bg-emerald-600 not-forced-colors:text-white not-forced-colors:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-forced-colors:bg-emerald-700 not-forced-colors:text-white not-forced-colors:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">not-print:</code> <span class="text-xs text-slate-500 dark:text-slate-400">on screen</span></span>
-              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-print:bg-emerald-600 not-print:text-white not-print:before:content-['on']"></span>
+              <span class="w-12 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] not-print:bg-emerald-700 not-print:text-white not-print:before:content-['on']"></span>
             </li>
           </ul>
         </div>
@@ -1321,17 +1322,17 @@ document.addEventListener('change', (e) =&gt; {
           <div class="mx-auto grid max-w-lg gap-4 sm:grid-cols-2">
             <div>
               <div class="relative h-36 overflow-hidden rounded-xl bg-linear-to-br from-indigo-500 to-fuchsia-500">
-                <div class="absolute -top-4 left-8 size-20 rounded-full bg-amber-300"></div>
+                <div class="absolute -top-8 left-8 size-20 rounded-full bg-amber-300"></div>
                 <div class="absolute right-6 bottom-0 size-24 rounded-full bg-sky-300"></div>
-                <div class="absolute inset-x-4 top-10 rounded-lg bg-white/20 p-3 text-sm font-medium text-white backdrop-blur-md not-supports-backdrop-filter:bg-slate-900">Frosted panel</div>
+                <div class="absolute inset-x-4 top-10 rounded-lg bg-slate-900/40 p-3 text-sm font-medium text-white backdrop-blur-md not-supports-backdrop-filter:bg-slate-900">Frosted panel</div>
               </div>
               <p class="mt-2 text-xs text-slate-600 dark:text-slate-300"><code class="font-mono">not-supports-backdrop-filter:bg-slate-900</code> does nothing here, because your browser supports it.</p>
             </div>
             <div>
               <div class="relative h-36 overflow-hidden rounded-xl bg-linear-to-br from-indigo-500 to-fuchsia-500">
-                <div class="absolute -top-4 left-8 size-20 rounded-full bg-amber-300"></div>
+                <div class="absolute -top-8 left-8 size-20 rounded-full bg-amber-300"></div>
                 <div class="absolute right-6 bottom-0 size-24 rounded-full bg-sky-300"></div>
-                <div class="absolute inset-x-4 top-10 rounded-lg bg-white/20 p-3 text-sm font-medium text-white backdrop-blur-md not-supports-[backdrop-filter:blur(nonsense)]:bg-slate-900">Fallback panel</div>
+                <div class="absolute inset-x-4 top-10 rounded-lg bg-slate-900/40 p-3 text-sm font-medium text-white backdrop-blur-md not-supports-[backdrop-filter:blur(nonsense)]:bg-slate-900">Fallback panel</div>
               </div>
               <p class="mt-2 text-xs text-slate-600 dark:text-slate-300">Same panel, but the query asks for a value no browser has, so the solid fallback applies.</p>
             </div>
@@ -1366,13 +1367,13 @@ document.addEventListener('change', (e) =&gt; {
         <div class="sc-demo" id="not-media-5">
           <div class="mx-auto grid max-w-md gap-4">
             <div class="grid gap-3 sm:grid-cols-3">
-              <div class="rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 transition-opacity not-hover:opacity-70 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><p class="font-semibold">Starter</p><p class="text-slate-500 dark:text-slate-400">$9</p></div>
-              <div class="rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 transition-opacity not-hover:opacity-70 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><p class="font-semibold">Pro</p><p class="text-slate-500 dark:text-slate-400">$29</p></div>
-              <div class="rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 transition-opacity not-hover:opacity-70 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><p class="font-semibold">Team</p><p class="text-slate-500 dark:text-slate-400">$79</p></div>
+              <div class="rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 transition-opacity not-hover:opacity-70 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><p class="font-semibold">Starter</p><p class="text-slate-800 dark:text-slate-200">$9</p></div>
+              <div class="rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 transition-opacity not-hover:opacity-70 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><p class="font-semibold">Pro</p><p class="text-slate-800 dark:text-slate-200">$29</p></div>
+              <div class="rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 transition-opacity not-hover:opacity-70 motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10"><p class="font-semibold">Team</p><p class="text-slate-800 dark:text-slate-200">$79</p></div>
             </div>
             <p class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
               This device:
-              <span class="rounded-full bg-slate-300 px-2.5 py-0.5 font-semibold text-slate-700 before:content-['cannot_hover'] [@media(hover:hover)]:bg-emerald-600 [@media(hover:hover)]:text-white [@media(hover:hover)]:before:content-['can_hover']"></span>
+              <span class="rounded-full bg-slate-300 px-2.5 py-0.5 font-semibold text-slate-700 before:content-['cannot_hover'] [@media(hover:hover)]:bg-emerald-700 [@media(hover:hover)]:text-white [@media(hover:hover)]:before:content-['can_hover']"></span>
             </p>
           </div>
         </div>
@@ -1412,13 +1413,13 @@ document.addEventListener('change', (e) =&gt; {
         <div class="sc-demo" id="supports-1">
           <div class="mx-auto grid max-w-md gap-5 text-sm">
             <div>
-              <p class="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-300"><code class="font-mono">supports-[display:grid]:</code> <span class="rounded-full bg-slate-300 px-2 py-0.5 text-slate-700 before:content-['stays_flex'] supports-[display:grid]:bg-emerald-600 supports-[display:grid]:text-white supports-[display:grid]:before:content-['becomes_grid']"></span></p>
+              <p class="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-300"><code class="font-mono">supports-[display:grid]:</code> <span class="rounded-full bg-slate-300 px-2 py-0.5 text-slate-700 before:content-['stays_flex'] supports-[display:grid]:bg-emerald-700 supports-[display:grid]:text-white supports-[display:grid]:before:content-['becomes_grid']"></span></p>
               <div class="flex gap-2 supports-[display:grid]:grid supports-[display:grid]:grid-cols-3 *:rounded-md *:bg-indigo-100 *:p-3 *:text-center *:text-indigo-900 dark:*:bg-indigo-500/25 dark:*:text-indigo-100">
                 <div>Basic</div><div>Pro</div><div>Team</div>
               </div>
             </div>
             <div>
-              <p class="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-300"><code class="font-mono">supports-[display:nonsense]:</code> <span class="rounded-full bg-slate-300 px-2 py-0.5 text-slate-700 before:content-['stays_flex'] supports-[display:nonsense]:bg-emerald-600 supports-[display:nonsense]:text-white supports-[display:nonsense]:before:content-['becomes_grid']"></span></p>
+              <p class="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-300"><code class="font-mono">supports-[display:nonsense]:</code> <span class="rounded-full bg-slate-300 px-2 py-0.5 text-slate-700 before:content-['stays_flex'] supports-[display:nonsense]:bg-emerald-700 supports-[display:nonsense]:text-white supports-[display:nonsense]:before:content-['becomes_grid']"></span></p>
               <div class="flex gap-2 supports-[display:nonsense]:grid supports-[display:nonsense]:grid-cols-3 *:rounded-md *:bg-indigo-100 *:p-3 *:text-center *:text-indigo-900 dark:*:bg-indigo-500/25 dark:*:text-indigo-100">
                 <div>Basic</div><div>Pro</div><div>Team</div>
               </div>
@@ -1436,7 +1437,7 @@ document.addEventListener('change', (e) =&gt; {
             <div class="h-52 overflow-y-auto bg-white dark:bg-slate-900">
               <header class="sticky top-0 z-10 flex items-center justify-between bg-slate-900/95 px-4 py-3 text-sm text-white supports-backdrop-filter:bg-slate-900/70 supports-backdrop-filter:backdrop-blur-md">
                 <span class="font-semibold">Acme</span>
-                <span class="text-white/80">Scroll the page</span>
+                <span class="text-white/80">Scroll down</span>
               </header>
               <div class="-mt-12 grid gap-3 p-4 pt-16">
                 <div class="h-24 rounded-lg bg-linear-to-br from-fuchsia-500 to-amber-400"></div>
@@ -1456,23 +1457,23 @@ document.addEventListener('change', (e) =&gt; {
           <ul class="mx-auto grid max-w-md gap-2 rounded-xl bg-white p-4 text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <li class="flex items-center justify-between gap-3">
               <code class="min-w-0 font-mono text-xs break-all">supports-[(display:grid)_and_(gap:1px)]:</code>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[(display:grid)_and_(gap:1px)]:bg-emerald-600 supports-[(display:grid)_and_(gap:1px)]:text-white supports-[(display:grid)_and_(gap:1px)]:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[(display:grid)_and_(gap:1px)]:bg-emerald-700 supports-[(display:grid)_and_(gap:1px)]:text-white supports-[(display:grid)_and_(gap:1px)]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="min-w-0 font-mono text-xs break-all">supports-[(display:grid)_and_(display:nonsense)]:</code>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[(display:grid)_and_(display:nonsense)]:bg-emerald-600 supports-[(display:grid)_and_(display:nonsense)]:text-white supports-[(display:grid)_and_(display:nonsense)]:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[(display:grid)_and_(display:nonsense)]:bg-emerald-700 supports-[(display:grid)_and_(display:nonsense)]:text-white supports-[(display:grid)_and_(display:nonsense)]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="min-w-0 font-mono text-xs break-all">supports-[(display:grid)_or_(display:nonsense)]:</code>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[(display:grid)_or_(display:nonsense)]:bg-emerald-600 supports-[(display:grid)_or_(display:nonsense)]:text-white supports-[(display:grid)_or_(display:nonsense)]:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[(display:grid)_or_(display:nonsense)]:bg-emerald-700 supports-[(display:grid)_or_(display:nonsense)]:text-white supports-[(display:grid)_or_(display:nonsense)]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="min-w-0 font-mono text-xs break-all">supports-[selector(:has(*))]:</code>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[selector(:has(*))]:bg-emerald-600 supports-[selector(:has(*))]:text-white supports-[selector(:has(*))]:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[selector(:has(*))]:bg-emerald-700 supports-[selector(:has(*))]:text-white supports-[selector(:has(*))]:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <code class="min-w-0 font-mono text-xs break-all">supports-[selector(:nonsense(*))]:</code>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[selector(:nonsense(*))]:bg-emerald-600 supports-[selector(:nonsense(*))]:text-white supports-[selector(:nonsense(*))]:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-[selector(:nonsense(*))]:bg-emerald-700 supports-[selector(:nonsense(*))]:text-white supports-[selector(:nonsense(*))]:before:content-['on']"></span>
             </li>
           </ul>
         </div>
@@ -1486,19 +1487,19 @@ document.addEventListener('change', (e) =&gt; {
           <ul class="mx-auto grid max-w-md gap-2 rounded-xl bg-white p-4 text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">supports-grid:</code> <span class="text-xs text-slate-500 dark:text-slate-400">custom: display:grid</span></span>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-grid:bg-emerald-600 supports-grid:text-white supports-grid:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-grid:bg-emerald-700 supports-grid:text-white supports-grid:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">supports-backdrop-filter:</code> <span class="text-xs text-slate-500 dark:text-slate-400">property only</span></span>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-backdrop-filter:bg-emerald-600 supports-backdrop-filter:text-white supports-backdrop-filter:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-backdrop-filter:bg-emerald-700 supports-backdrop-filter:text-white supports-backdrop-filter:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">supports-hanging-punctuation:</code> <span class="text-xs text-slate-500 dark:text-slate-400">property only</span></span>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-hanging-punctuation:bg-emerald-600 supports-hanging-punctuation:text-white supports-hanging-punctuation:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-hanging-punctuation:bg-emerald-700 supports-hanging-punctuation:text-white supports-hanging-punctuation:before:content-['on']"></span>
             </li>
             <li class="flex items-center justify-between gap-3">
               <span><code class="font-mono text-xs">supports-nonsense:</code> <span class="text-xs text-slate-500 dark:text-slate-400">property only</span></span>
-              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-nonsense:bg-emerald-600 supports-nonsense:text-white supports-nonsense:before:content-['on']"></span>
+              <span class="w-12 shrink-0 rounded-full bg-slate-300 px-2.5 py-0.5 text-center text-xs font-semibold text-slate-700 before:content-['off'] supports-nonsense:bg-emerald-700 supports-nonsense:text-white supports-nonsense:before:content-['on']"></span>
             </li>
           </ul>
         </div>
@@ -1556,7 +1557,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="in-2">
           <div tabindex="0" class="mx-auto max-w-xs rounded-xl bg-white p-4 text-sm text-slate-900 shadow-sm outline-none ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-500 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-600 dark:focus:ring-indigo-400">
             <p class="font-semibold">Keyboard shortcuts</p>
-            <p class="mt-1 text-slate-500 opacity-50 transition-opacity in-focus:opacity-100 motion-reduce:transition-none dark:text-slate-400">Press ? at any time to see every shortcut.</p>
+            <p class="mt-1 text-slate-800 opacity-70 transition-opacity in-focus:opacity-100 motion-reduce:transition-none dark:text-slate-200">Press ? at any time to see every shortcut.</p>
           </div>
         </div>
         <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Click the card or <kbd>Tab</kbd> into it. The card itself has <code>tabindex="0"</code>, and the paragraph inside brightens through <code>in-focus:opacity-100</code>. This is the docs' own implicit-group example.</p></div>
@@ -1569,10 +1570,10 @@ document.addEventListener('click', (e) =&gt; {
           <div class="mx-auto max-w-sm">
             <label class="mb-3 flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200"><input type="checkbox" data-toggle-class="demo-compact" data-target="#in-rows" class="accent-indigo-600"> Compact rows</label>
             <div id="in-rows" class="divide-y divide-slate-100 rounded-xl bg-white text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:divide-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
-              <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #482</span><span class="text-emerald-600 dark:text-emerald-400">Passed</span></div>
+              <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #482</span><span class="text-emerald-700 dark:text-emerald-400">Passed</span></div>
               <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #481</span><span class="text-red-600 dark:text-red-400">Failed</span></div>
-              <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #480</span><span class="text-emerald-600 dark:text-emerald-400">Passed</span></div>
-              <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #479</span><span class="text-emerald-600 dark:text-emerald-400">Passed</span></div>
+              <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #480</span><span class="text-emerald-700 dark:text-emerald-400">Passed</span></div>
+              <div class="flex justify-between px-4 py-3 text-sm in-[.demo-compact]:py-1 in-[.demo-compact]:text-xs"><span>Build #479</span><span class="text-emerald-700 dark:text-emerald-400">Passed</span></div>
             </div>
           </div>
         </div>
@@ -1744,7 +1745,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="structure-5">
           <div class="mx-auto max-w-md">
             <table class="w-full overflow-hidden rounded-lg text-left text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:text-slate-100 dark:ring-white/10">
-              <thead class="bg-slate-100 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+              <thead class="bg-slate-100 text-xs uppercase tracking-wide text-slate-600 dark:bg-slate-900 dark:text-slate-400">
                 <tr><th class="px-4 py-2 font-semibold">Name</th><th class="px-4 py-2 font-semibold">Role</th></tr>
               </thead>
               <tbody id="structure-zebra">
@@ -1768,7 +1769,7 @@ document.addEventListener('click', (e) =&gt; {
           <article class="mx-auto max-w-sm rounded-xl bg-white p-5 text-sm text-slate-700 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10">
             <h3 class="mb-2 text-base font-semibold text-slate-900 only-of-type:text-indigo-600 dark:text-white dark:only-of-type:text-indigo-300">Weekly report</h3>
             <p class="first-of-type:text-base first-of-type:font-medium first-of-type:text-slate-900 dark:first-of-type:text-white">Revenue is up 12% on last week, led by the new annual plan.</p>
-            <p class="mt-2 last-of-type:text-slate-400 dark:last-of-type:text-slate-500">Support volume was flat. Median first reply time stayed under an hour.</p>
+            <p class="mt-2 last-of-type:text-slate-500 dark:last-of-type:text-slate-400">Support volume was flat. Median first reply time stayed under an hour.</p>
             <small class="mt-3 block text-xs only-of-type:italic">Posted by Dana, Friday 9:41</small>
           </article>
         </div>
@@ -1909,11 +1910,11 @@ document.addEventListener('input', (e) =&gt; {
         <div class="sc-demo" id="nth-4">
           <div class="mx-auto max-w-xs">
             <ul id="nth-feed" class="rounded-xl bg-white px-4 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
-              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-50 nth-last-2:opacity-70 dark:border-slate-700"><span data-label>Deployed v2.3.0</span></li>
-              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-50 nth-last-2:opacity-70 dark:border-slate-700"><span data-label>Merged PR #478</span></li>
-              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-50 nth-last-2:opacity-70 dark:border-slate-700"><span data-label>Opened issue #481</span></li>
-              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-50 nth-last-2:opacity-70 dark:border-slate-700"><span data-label>Commented on #482</span></li>
-              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-50 nth-last-2:opacity-70 dark:border-slate-700"><span data-label>Deployed v2.4.0</span></li>
+              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-60 nth-last-2:opacity-80 dark:border-slate-700"><span data-label>Deployed v2.3.0</span></li>
+              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-60 nth-last-2:opacity-80 dark:border-slate-700"><span data-label>Merged PR #478</span></li>
+              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-60 nth-last-2:opacity-80 dark:border-slate-700"><span data-label>Opened issue #481</span></li>
+              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-60 nth-last-2:opacity-80 dark:border-slate-700"><span data-label>Commented on #482</span></li>
+              <li class="border-b border-slate-200 py-2.5 nth-last-1:border-b-0 nth-last-1:opacity-60 nth-last-2:opacity-80 dark:border-slate-700"><span data-label>Deployed v2.4.0</span></li>
             </ul>
             <div class="mt-3 flex gap-2">
               <button type="button" data-list="#nth-feed" data-op="add" data-names="Merged PR #483,Tagged v2.4.1,Closed issue #481,Deployed v2.4.1" class="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600">Add event</button>
@@ -1933,13 +1934,13 @@ document.addEventListener('input', (e) =&gt; {
               <div class="mb-2 font-mono text-xs text-slate-500 dark:text-slate-400">nth-1:text-lg</div>
               <h3 class="mb-1 font-semibold text-slate-900 dark:text-white">Release notes</h3>
               <p class="nth-1:text-lg nth-1:font-semibold nth-1:text-indigo-600 dark:nth-1:text-indigo-300">Tailwind 4.3 adds scrollbar utilities.</p>
-              <p class="mt-1 nth-1:text-lg nth-1:font-semibold nth-1:text-indigo-600 dark:nth-1:text-indigo-300">It also fixes a few edge cases in variants.</p>
+              <p class="mt-1 nth-1:text-lg nth-1:font-semibold nth-1:text-indigo-600 dark:nth-1:text-indigo-300">It also adds zoom and tab-size utilities.</p>
             </article>
             <article class="rounded-xl bg-white p-4 text-sm text-slate-600 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10">
               <div class="mb-2 font-mono text-xs text-slate-500 dark:text-slate-400">nth-of-type-1:text-lg</div>
               <h3 class="mb-1 font-semibold text-slate-900 dark:text-white">Release notes</h3>
               <p class="nth-of-type-1:text-lg nth-of-type-1:font-semibold nth-of-type-1:text-indigo-600 dark:nth-of-type-1:text-indigo-300">Tailwind 4.3 adds scrollbar utilities.</p>
-              <p class="mt-1 nth-of-type-1:text-lg nth-of-type-1:font-semibold nth-of-type-1:text-indigo-600 dark:nth-of-type-1:text-indigo-300">It also fixes a few edge cases in variants.</p>
+              <p class="mt-1 nth-of-type-1:text-lg nth-of-type-1:font-semibold nth-of-type-1:text-indigo-600 dark:nth-of-type-1:text-indigo-300">It also adds zoom and tab-size utilities.</p>
             </article>
           </div>
         </div>
@@ -1948,28 +1949,50 @@ document.addEventListener('input', (e) =&gt; {
       </figure>
 
       <figure class="sc-example">
+        <figcaption><code>nth-last-1</code> versus <code>nth-last-of-type-1</code></figcaption>
+        <div class="sc-demo" id="nth-7">
+          <div class="mx-auto grid max-w-xl gap-4 sm:grid-cols-2">
+            <article class="rounded-xl bg-white p-4 text-sm text-slate-600 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10">
+              <div class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-400">nth-last-1:font-semibold</div>
+              <p class="nth-last-1:text-base nth-last-1:font-semibold nth-last-1:text-indigo-700 dark:nth-last-1:text-indigo-300">Export the data as CSV.</p>
+              <p class="mt-1 nth-last-1:text-base nth-last-1:font-semibold nth-last-1:text-indigo-700 dark:nth-last-1:text-indigo-300">Review the totals before you send them.</p>
+              <small class="mt-2 block text-xs text-slate-600 dark:text-slate-400">Updated Friday</small>
+            </article>
+            <article class="rounded-xl bg-white p-4 text-sm text-slate-600 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10">
+              <div class="mb-2 font-mono text-xs text-slate-600 dark:text-slate-400">nth-last-of-type-1:font-semibold</div>
+              <p class="nth-last-of-type-1:text-base nth-last-of-type-1:font-semibold nth-last-of-type-1:text-indigo-700 dark:nth-last-of-type-1:text-indigo-300">Export the data as CSV.</p>
+              <p class="mt-1 nth-last-of-type-1:text-base nth-last-of-type-1:font-semibold nth-last-of-type-1:text-indigo-700 dark:nth-last-of-type-1:text-indigo-300">Review the totals before you send them.</p>
+              <small class="mt-2 block text-xs text-slate-600 dark:text-slate-400">Updated Friday</small>
+            </article>
+          </div>
+        </div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Both cards end with a <code>&lt;small&gt;</code> footer. In the left one the footer is the last child, so <code>nth-last-1:</code> matches neither paragraph. In the right one the second <code>&lt;p&gt;</code> is the last of its type, so <code>nth-last-of-type-1:</code> picks it and ignores the footer.</p></div>
+        <pre class="sc-code" data-code="html" data-from="nth-7"></pre>
+      </figure>
+
+      <figure class="sc-example">
         <figcaption>Which children does each expression pick? (<code>*:nth-…</code>)</figcaption>
         <div class="sc-demo" id="nth-6">
           <div class="mx-auto grid max-w-md gap-4 text-xs text-slate-700 dark:text-slate-200">
             <div class="grid gap-1.5">
               <code class="font-mono">*:nth-3:</code>
-              <div class="flex gap-1 *:grid *:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-3:bg-indigo-600 *:nth-3:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+              <div class="flex gap-1 *:grid *:size-6 sm:*:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-3:bg-indigo-600 *:nth-3:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
             </div>
             <div class="grid gap-1.5">
               <code class="font-mono">*:nth-[3n+1]:</code>
-              <div class="flex gap-1 *:grid *:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-[3n+1]:bg-indigo-600 *:nth-[3n+1]:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+              <div class="flex gap-1 *:grid *:size-6 sm:*:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-[3n+1]:bg-indigo-600 *:nth-[3n+1]:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
             </div>
             <div class="grid gap-1.5">
               <code class="font-mono">*:nth-[-n+3]:</code>
-              <div class="flex gap-1 *:grid *:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-[-n+3]:bg-indigo-600 *:nth-[-n+3]:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+              <div class="flex gap-1 *:grid *:size-6 sm:*:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-[-n+3]:bg-indigo-600 *:nth-[-n+3]:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
             </div>
             <div class="grid gap-1.5">
               <code class="font-mono">*:nth-[n+8]:</code>
-              <div class="flex gap-1 *:grid *:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-[n+8]:bg-indigo-600 *:nth-[n+8]:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+              <div class="flex gap-1 *:grid *:size-6 sm:*:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-[n+8]:bg-indigo-600 *:nth-[n+8]:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
             </div>
             <div class="grid gap-1.5">
               <code class="font-mono">*:nth-last-2:</code>
-              <div class="flex gap-1 *:grid *:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-last-2:bg-indigo-600 *:nth-last-2:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+              <div class="flex gap-1 *:grid *:size-6 sm:*:size-8 *:place-items-center *:rounded *:bg-slate-300 *:text-slate-800 *:nth-last-2:bg-indigo-600 *:nth-last-2:text-white"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
             </div>
           </div>
         </div>
@@ -2000,7 +2023,7 @@ document.addEventListener('input', (e) =&gt; {
         <div class="sc-demo" id="children-1">
           <div class="mx-auto max-w-sm rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-white/10">
             <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">Categories</h3>
-            <ul class="mt-3 flex flex-wrap gap-2 text-sm text-sky-600 *:rounded-full *:border *:border-sky-100 *:bg-sky-50 *:px-2 *:py-0.5 dark:text-sky-300 dark:*:border-sky-500/15 dark:*:bg-sky-500/10">
+            <ul class="mt-3 flex flex-wrap gap-2 text-sm text-sky-700 *:rounded-full *:border *:border-sky-100 *:bg-sky-50 *:px-2 *:py-0.5 dark:text-sky-300 dark:*:border-sky-500/15 dark:*:bg-sky-500/10">
               <li>Sales</li>
               <li>Marketing</li>
               <li>SEO</li>
@@ -2019,9 +2042,9 @@ document.addEventListener('input', (e) =&gt; {
           <div class="mx-auto max-w-xs">
             <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:ring-white/10">
               <div id="children-stack" class="flex *:grid *:size-10 *:place-items-center *:rounded-full *:text-xs *:font-semibold *:text-white *:ring-2 *:ring-white *:not-first:-ml-2 dark:*:ring-slate-800">
-                <span class="bg-indigo-500"><span data-label>AL</span></span>
-                <span class="bg-emerald-500"><span data-label>GH</span></span>
-                <span class="bg-amber-500"><span data-label>AT</span></span>
+                <span class="bg-indigo-600"><span data-label>AL</span></span>
+                <span class="bg-emerald-700"><span data-label>GH</span></span>
+                <span class="bg-amber-700"><span data-label>AT</span></span>
               </div>
             </div>
             <div class="mt-3 flex gap-2">
@@ -2291,7 +2314,7 @@ document.addEventListener('pointercancel', release)</pre>
             <ol class="grid grid-cols-5 gap-1 text-center text-xs"><li class="rounded bg-slate-300 py-1 text-slate-800 [&:nth-child(-n+2)]:font-bold [&:nth-child(3)]:bg-indigo-600 [&:nth-child(3)]:text-white">1</li><li class="rounded bg-slate-300 py-1 text-slate-800 [&:nth-child(-n+2)]:font-bold [&:nth-child(3)]:bg-indigo-600 [&:nth-child(3)]:text-white">2</li><li class="rounded bg-slate-300 py-1 text-slate-800 [&:nth-child(-n+2)]:font-bold [&:nth-child(3)]:bg-indigo-600 [&:nth-child(3)]:text-white">3</li><li class="rounded bg-slate-300 py-1 text-slate-800 [&:nth-child(-n+2)]:font-bold [&:nth-child(3)]:bg-indigo-600 [&:nth-child(3)]:text-white">4</li><li class="rounded bg-slate-300 py-1 text-slate-800 [&:nth-child(-n+2)]:font-bold [&:nth-child(3)]:bg-indigo-600 [&:nth-child(3)]:text-white">5</li></ol>
             <p class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
               <code class="font-mono">[@media(min-width:900px)]:</code>
-              <span class="rounded-full bg-slate-300 px-2.5 py-0.5 font-semibold text-slate-700 before:content-['under_900px'] [@media(min-width:900px)]:bg-emerald-600 [@media(min-width:900px)]:text-white [@media(min-width:900px)]:before:content-['900px_or_wider']"></span>
+              <span class="rounded-full bg-slate-300 px-2.5 py-0.5 font-semibold text-slate-700 before:content-['under_900px'] [@media(min-width:900px)]:bg-emerald-700 [@media(min-width:900px)]:text-white [@media(min-width:900px)]:before:content-['900px_or_wider']"></span>
             </p>
           </div>
         </div>
@@ -2302,7 +2325,7 @@ document.addEventListener('pointercancel', release)</pre>
   &lt;ol class="grid grid-cols-5 gap-1 text-center text-xs"&gt;&lt;li class="rounded bg-slate-300 py-1 text-slate-800 [&amp;:nth-child(-n+2)]:font-bold [&amp;:nth-child(3)]:bg-indigo-600 [&amp;:nth-child(3)]:text-white"&gt;1&lt;/li&gt;&lt;li class="rounded bg-slate-300 py-1 text-slate-800 [&amp;:nth-child(-n+2)]:font-bold [&amp;:nth-child(3)]:bg-indigo-600 [&amp;:nth-child(3)]:text-white"&gt;2&lt;/li&gt;&lt;li class="rounded bg-slate-300 py-1 text-slate-800 [&amp;:nth-child(-n+2)]:font-bold [&amp;:nth-child(3)]:bg-indigo-600 [&amp;:nth-child(3)]:text-white"&gt;3&lt;/li&gt;&lt;li class="rounded bg-slate-300 py-1 text-slate-800 [&amp;:nth-child(-n+2)]:font-bold [&amp;:nth-child(3)]:bg-indigo-600 [&amp;:nth-child(3)]:text-white"&gt;4&lt;/li&gt;&lt;li class="rounded bg-slate-300 py-1 text-slate-800 [&amp;:nth-child(-n+2)]:font-bold [&amp;:nth-child(3)]:bg-indigo-600 [&amp;:nth-child(3)]:text-white"&gt;5&lt;/li&gt;&lt;/ol&gt;
   &lt;p class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300"&gt;
     &lt;code class="font-mono"&gt;[@media(min-width:900px)]:&lt;/code&gt;
-    &lt;span class="rounded-full bg-slate-300 px-2.5 py-0.5 font-semibold text-slate-700 before:content-['under_900px'] [@media(min-width:900px)]:bg-emerald-600 [@media(min-width:900px)]:text-white [@media(min-width:900px)]:before:content-['900px_or_wider']"&gt;&lt;/span&gt;
+    &lt;span class="rounded-full bg-slate-300 px-2.5 py-0.5 font-semibold text-slate-700 before:content-['under_900px'] [@media(min-width:900px)]:bg-emerald-700 [@media(min-width:900px)]:text-white [@media(min-width:900px)]:before:content-['900px_or_wider']"&gt;&lt;/span&gt;
   &lt;/p&gt;
 &lt;/div&gt;</pre>
       </figure>
@@ -2336,7 +2359,7 @@ document.addEventListener('change', (e) =&gt; {
         <figcaption>Hide a scrollbar: <code>[&amp;::-webkit-scrollbar]:hidden</code></figcaption>
         <div class="sc-demo" id="arbitrary-6">
           <div class="mx-auto max-w-sm">
-            <nav aria-label="Categories" class="flex gap-2 overflow-x-auto pb-1 text-sm whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <nav aria-label="Categories" class="flex gap-2 overflow-x-auto pb-1 text-sm whitespace-nowrap scrollbar-none [&::-webkit-scrollbar]:hidden">
               <a href="#" class="shrink-0 rounded-full bg-slate-900 px-3 py-1 text-white dark:bg-white dark:text-slate-900">All</a>
               <a href="#" class="shrink-0 rounded-full bg-white px-3 py-1 text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-600">Design</a>
               <a href="#" class="shrink-0 rounded-full bg-white px-3 py-1 text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-600">Engineering</a>
@@ -2346,9 +2369,9 @@ document.addEventListener('change', (e) =&gt; {
             </nav>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The chip row scrolls sideways with no visible scrollbar: <code>[scrollbar-width:none]</code> is an arbitrary property for Firefox and current Chrome, and <code>[&amp;::-webkit-scrollbar]:hidden</code> is an arbitrary variant for older WebKit. Hiding scrollbars can hide the fact that content scrolls, so only do it when other cues exist.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The chip row scrolls sideways with no visible scrollbar. <code>scrollbar-none</code> (new in v4.3, see <a href="14-v43-utilities.html#scrollbar-width">page 14</a>) sets <code>scrollbar-width: none</code> for Firefox, Chrome 121+ and Safari 18.2+. <code>[&amp;::-webkit-scrollbar]:hidden</code> is an arbitrary variant that covers older WebKit browsers. Hiding scrollbars can hide the fact that content scrolls, so only do it when other cues exist.</p></div>
         <pre class="sc-code" data-code="html">&lt;div class="mx-auto max-w-sm"&gt;
-  &lt;nav aria-label="Categories" class="flex gap-2 overflow-x-auto pb-1 text-sm whitespace-nowrap [scrollbar-width:none] [&amp;::-webkit-scrollbar]:hidden"&gt;
+  &lt;nav aria-label="Categories" class="flex gap-2 overflow-x-auto pb-1 text-sm whitespace-nowrap scrollbar-none [&amp;::-webkit-scrollbar]:hidden"&gt;
     &lt;a href="#" class="shrink-0 rounded-full bg-slate-900 px-3 py-1 text-white dark:bg-white dark:text-slate-900"&gt;All&lt;/a&gt;
     &lt;a href="#" class="shrink-0 rounded-full bg-white px-3 py-1 text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-600"&gt;Design&lt;/a&gt;
     &lt;a href="#" class="shrink-0 rounded-full bg-white px-3 py-1 text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-600"&gt;Engineering&lt;/a&gt;
@@ -2510,7 +2533,7 @@ document.addEventListener('input', (e) =&gt; {
 :is(.first\:\*\:bg-emerald-300:first-child > *) {
   background-color: var(--color-emerald-300);
 }</pre>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Read each class left to right. <code>*:first:</code> is "children, then :first-child". <code>first:*:</code> is "the element if it is a first child, then its children". If you copy a v3 class such as <code>first:*:pt-0</code> into a v4 project, it silently selects different elements. The <code>@tailwindcss/upgrade</code> tool handles most of the migration, but the upgrade guide tells you to check order-sensitive stacks by hand.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Read each class left to right. <code>*:first:</code> is "children, then :first-child". <code>first:*:</code> is "the element if it is a first child, then its children". If you copy a v3 class such as <code>first:*:pt-0</code> into a v4 project, it silently selects different elements. The <code>@tailwindcss/upgrade</code> tool reorders stacked variants when it migrates a v3 project, but classes you copy from v3 examples are not migrated, so reverse them yourself.</p></div>
       </figure>
 
       <figure class="sc-example">
@@ -2518,9 +2541,9 @@ document.addEventListener('input', (e) =&gt; {
         <div class="sc-demo" id="stack-2">
           <div class="mx-auto grid max-w-sm gap-3 text-sm">
             <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
-              <span class="rounded-full bg-slate-300 px-2.5 py-1 text-slate-700 dark:bg-emerald-600 dark:text-white">dark: <span class="before:content-['no'] dark:before:content-['yes']"></span></span>
-              <span class="rounded-full bg-slate-300 px-2.5 py-1 text-slate-700 md:bg-emerald-600 md:text-white">md: <span class="before:content-['no'] md:before:content-['yes']"></span></span>
-              <span class="text-slate-500 dark:text-slate-400">then hover the button:</span>
+              <span class="rounded-full bg-slate-300 px-2.5 py-1 text-slate-700 dark:bg-emerald-700 dark:text-white">dark: <span class="before:content-['no'] dark:before:content-['yes']"></span></span>
+              <span class="rounded-full bg-slate-300 px-2.5 py-1 text-slate-700 md:bg-emerald-700 md:text-white">md: <span class="before:content-['no'] md:before:content-['yes']"></span></span>
+              <span class="text-slate-600 dark:text-slate-400">then hover the button:</span>
             </div>
             <button type="button" class="rounded-lg bg-slate-800 px-4 py-3 font-semibold text-white dark:md:hover:bg-fuchsia-600 md:hover:bg-slate-600">dark:md:hover:bg-fuchsia-600</button>
           </div>
@@ -2668,6 +2691,7 @@ function check(input) {
   clearTimeout(check.timer)
   check.timer = setTimeout(() =&gt; {
     const rules = findRules(cls)
+    probe.className = ''
     out.dataset.ok = String(rules.length &gt; 0)
     out.textContent = rules.length
       ? 'Generates CSS: ' + rules.map((r) =&gt; (r.context ? r.context + ' { ' : '') + r.selector + (r.context ? ' }' : '')).join('  ·  ')
@@ -2694,10 +2718,11 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="compound-3">
           <div class="group mx-auto max-w-sm rounded-xl bg-white p-5 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10 dark:hover:bg-slate-700">
             <p class="not-group-hover:underline"><code class="font-mono text-xs">not-group-hover:underline</code>: underlined until you hover the card</p>
-            <p class="mt-3 group-not-hover:underline"><code class="font-mono text-xs">group-not-hover:underline</code>: never underlined, no CSS exists for it</p>
+            <p id="compound-line" class="mt-3"><code class="font-mono text-xs">group-not-hover:underline</code>: never underlined, no CSS exists for it</p>
+            <label class="mt-3 flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300"><input type="checkbox" data-toggle-class="group-not-hover:underline" data-target="#compound-line" class="accent-indigo-600"> Add <code class="font-mono">group-not-hover:underline</code> to the second line</label>
           </div>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Hover the card. The first line loses its underline, because <code>not-group-hover:</code> wraps <code>group-hover</code>. The second never gets one: <code>group-</code> cannot wrap <code>not-hover</code> (which is really two rules, <code>:not(:hover)</code> and <code>@media not (hover: hover)</code>). Name the negation first: <code>not-group-hover:</code>, <code>not-peer-checked:</code>, <code>not-in-focus:</code>.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Hover the card. The first line loses its underline, because <code>not-group-hover:</code> wraps <code>group-hover</code>. Tick the box to put <code>group-not-hover:underline</code> on the second line: it never gets an underline, because <code>group-</code> cannot wrap <code>not-hover</code> (which is really two rules, <code>:not(:hover)</code> and <code>@media not (hover: hover)</code>). Name the negation first: <code>not-group-hover:</code>, <code>not-peer-checked:</code>, <code>not-in-focus:</code>.</p></div>
         <pre class="sc-code" data-code="html" data-from="compound-3"></pre>
       </figure>
     </div>
@@ -2729,11 +2754,11 @@ document.addEventListener('click', (e) =&gt; {
               <a href="#target-demo-1" class="rounded-full bg-white px-3 py-1 font-medium text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-600 dark:hover:bg-slate-700">Clear</a>
             </nav>
             <article id="target-c1" class="scroll-mt-24 rounded-lg bg-white p-4 text-slate-700 ring-1 ring-slate-200 target:bg-yellow-50 target:text-yellow-950 target:ring-2 target:ring-yellow-400 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-600 dark:target:bg-yellow-500/15 dark:target:text-yellow-100 dark:target:ring-yellow-400">
-              <p class="font-semibold">Priya <span class="font-normal opacity-70">· 2 hours ago</span></p>
+              <p class="font-semibold">Priya <span class="font-normal opacity-80">· 2 hours ago</span></p>
               <p class="mt-1">The new empty state reads much better. Shipping it today.</p>
             </article>
             <article id="target-c2" class="scroll-mt-24 rounded-lg bg-white p-4 text-slate-700 ring-1 ring-slate-200 target:bg-yellow-50 target:text-yellow-950 target:ring-2 target:ring-yellow-400 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-600 dark:target:bg-yellow-500/15 dark:target:text-yellow-100 dark:target:ring-yellow-400">
-              <p class="font-semibold">Dev <span class="font-normal opacity-70">· 1 hour ago</span></p>
+              <p class="font-semibold">Dev <span class="font-normal opacity-80">· 1 hour ago</span></p>
               <p class="mt-1">Can we add the screenshot to the release notes too?</p>
             </article>
           </div>
@@ -2780,16 +2805,12 @@ document.addEventListener('click', (e) =&gt; {
         <figcaption>Visited links (<code>visited:</code>)</figcaption>
         <div class="sc-demo" id="target-demo-4">
           <ul class="mx-auto grid max-w-xs gap-2 text-sm">
-            <li><a href="" class="text-blue-600 underline visited:text-purple-600 dark:text-sky-300 dark:visited:text-purple-300">This page (always visited)</a></li>
-            <li><a href="https://tailwindcss.com/docs/hover-focus-and-other-states" target="_blank" rel="noopener" class="text-blue-600 underline visited:text-purple-600 dark:text-sky-300 dark:visited:text-purple-300">Tailwind docs: states (visited if you have been there)</a></li>
+            <li><a href="#visited-demo" class="text-blue-600 underline visited:text-purple-600 dark:text-sky-300 dark:visited:text-purple-300">Follow this link: it turns purple</a></li>
+            <li><a href="https://tailwindcss.com/docs/hover-focus-and-other-states" target="_blank" rel="noopener" class="text-blue-600 underline visited:text-purple-600 dark:text-sky-300 dark:visited:text-purple-300">Tailwind docs: states (purple if you have been there)</a></li>
           </ul>
         </div>
-        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">The first link points at this very page (<code>href=""</code>), which is in your history, so it should be purple. The second turns purple if you have opened that address before. Private windows, or history that has been cleared, show every link as unvisited. Browsers only allow colour-type properties on <code>:visited</code> and hide the result from scripts, for privacy.</p></div>
+        <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Click the first link. It only adds <code>#visited-demo</code> to the address, but that URL now counts as visited, so the link turns purple and stays purple after a reload until you clear your history. The second link turns purple if you have opened that docs page before. The result depends on your browser history: private windows and cleared history show every link as unvisited, and some browsers ignore visits made from other sites. For privacy, browsers only allow colour-type properties on <code>:visited</code> and hide the result from scripts.</p></div>
         <pre class="sc-code" data-code="html" data-from="target-demo-4"></pre>
-        <pre class="sc-code" data-code="js" data-label="JS (do not reload this page)">// An empty href points at this very page: do not reload it when the demo link is clicked
-document.addEventListener('click', (e) =&gt; {
-  if (e.target.closest('.sc-demo a[href=""]')) e.preventDefault()
-})</pre>
       </figure>
     </div>
   </article>
@@ -2837,7 +2858,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="before-2">
           <blockquote class="mx-auto max-w-sm text-center text-xl font-semibold text-slate-900 dark:text-white">
             When you look
-            <span class="relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-pink-500">
+            <span class="relative inline-block before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-pink-600">
               <span class="relative text-white">annoyed</span>
             </span>
             all the time, people think that you're busy.
@@ -2864,7 +2885,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="before-4">
           <article class="group relative mx-auto max-w-xs rounded-xl bg-white p-4 text-sm text-slate-600 shadow-sm ring-1 ring-slate-900/5 hover:bg-slate-50 focus-within:ring-2 focus-within:ring-indigo-500 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-700/60 dark:focus-within:ring-indigo-400">
             <h3 class="font-semibold text-slate-900 dark:text-white"><a href="#" class="outline-none after:absolute after:inset-0 group-hover:underline">Tailwind 4.3 release notes</a></h3>
-            <p class="mt-1">Scrollbar utilities, zoom and a handful of new variants.</p>
+            <p class="mt-1">Scrollbar utilities, zoom and tab-size utilities.</p>
             <button type="button" class="relative z-10 mt-3 rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600">Save for later</button>
           </article>
         </div>
@@ -3027,7 +3048,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="marker-2">
           <div class="mx-auto max-w-sm rounded-xl bg-white p-5 text-sm text-slate-900 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-100 dark:ring-white/10">
             <h3 class="font-semibold">Pro plan includes</h3>
-            <ul class="mt-2 list-inside space-y-1 marker:font-bold marker:text-emerald-600 marker:content-['✓_'] dark:marker:text-emerald-400">
+            <ul class="mt-2 list-inside space-y-1 marker:font-bold marker:text-emerald-700 marker:content-['✓_'] dark:marker:text-emerald-400">
               <li>Unlimited projects</li>
               <li>Priority support</li>
               <li>Audit log</li>
@@ -3043,7 +3064,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="marker-3">
           <details class="group mx-auto max-w-xs rounded-lg bg-white p-3 text-sm text-slate-700 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-slate-300 dark:ring-white/10">
             <summary class="cursor-pointer font-medium text-slate-900 marker:text-indigo-500 marker:content-['▸_'] group-open:marker:content-['▾_'] dark:text-white dark:marker:text-indigo-300">Release notes</summary>
-            <p class="mt-2">Scrollbar utilities, zoom and a handful of new variants.</p>
+            <p class="mt-2">Scrollbar utilities, zoom and tab-size utilities.</p>
           </details>
         </div>
         <div class="border-t border-(--line) bg-(--surface) px-3 py-2"><p class="sc-note">Open and close the panel: the arrow changes from ▸ to ▾ with no script. <code>group-open:marker:</code> stacks left to right: the group state first, the pseudo-element last. The <code>open:</code> variant is covered on <a href="06-environment-variants.html#open-details">page 06</a>.</p></div>
@@ -3095,7 +3116,7 @@ document.addEventListener('click', (e) =&gt; {
         <div class="sc-demo" id="selection-2">
           <div class="mx-auto grid max-w-lg gap-3 text-sm sm:grid-cols-3">
             <div class="rounded-xl bg-sky-50 p-4 text-sky-950 selection:bg-sky-600 selection:text-white dark:bg-sky-950 dark:text-sky-100">Select this card to get a deep sky blue highlight.</div>
-            <div class="rounded-xl bg-emerald-50 p-4 text-emerald-950 selection:bg-emerald-600 selection:text-white dark:bg-emerald-950 dark:text-emerald-100">This one highlights in emerald, on the same page.</div>
+            <div class="rounded-xl bg-emerald-50 p-4 text-emerald-950 selection:bg-emerald-700 selection:text-white dark:bg-emerald-950 dark:text-emerald-100">This one highlights in emerald, on the same page.</div>
             <div class="rounded-xl bg-amber-50 p-4 text-amber-950 selection:bg-amber-500 selection:text-amber-950 dark:bg-amber-950 dark:text-amber-100">And this one in amber, with dark text on top.</div>
           </div>
         </div>
@@ -3155,7 +3176,7 @@ document.addEventListener('click', (e) =&gt; {
       <figure class="sc-example">
         <figcaption>First line as a headline</figcaption>
         <div class="sc-demo" id="firstline-3">
-          <p class="mx-auto max-w-xs rounded-xl bg-white p-5 text-sm text-slate-500 shadow-sm ring-1 ring-slate-900/5 first-line:font-semibold first-line:text-slate-900 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10 dark:first-line:text-white">Tailwind 4.3 is out. It adds scrollbar utilities, zoom, tab-size and a handful of new variants for working with the DOM around an element.</p>
+          <p class="mx-auto max-w-xs rounded-xl bg-white p-5 text-sm text-slate-500 shadow-sm ring-1 ring-slate-900/5 first-line:font-semibold first-line:text-slate-900 dark:bg-slate-800 dark:text-slate-400 dark:ring-white/10 dark:first-line:text-white">Tailwind 4.3 is out. It adds scrollbar, zoom and tab-size utilities, and lets @variant take stacked variants such as hover:focus.</p>
         </div>
         <pre class="sc-code" data-code="html" data-from="firstline-3"></pre>
       </figure>
@@ -3615,6 +3636,7 @@ document.addEventListener('click', (e) =&gt; {
       clearTimeout(check.timer)
       check.timer = setTimeout(() => {
         const rules = findRules(cls)
+        probe.className = ''
         out.dataset.ok = String(rules.length > 0)
         out.textContent = rules.length
           ? 'Generates CSS: ' + rules.map((r) => (r.context ? r.context + ' { ' : '') + r.selector + (r.context ? ' }' : '')).join('  ·  ')
@@ -3633,12 +3655,6 @@ document.addEventListener('click', (e) =&gt; {
       const input = document.querySelector(btn.dataset.target)
       input.value = btn.dataset.try
       check(input)
-    })
-  }
-  {
-    // An empty href points at this very page: do not reload it when the demo link is clicked
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('.sc-demo a[href=""]')) e.preventDefault()
     })
   }
   {
